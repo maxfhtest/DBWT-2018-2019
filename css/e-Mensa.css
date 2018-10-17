@@ -41,7 +41,9 @@ footer p { /* Copyright nach unten verschieben*/
     border-color: #00b5ad
 }
 
-.mt-5, .my-5 { margin-top: 1rem !important }
+.mt-5, .my-5 {
+    margin-top: 1rem !important
+}
 
 /* Paddings als klassen*/
 .pdt-0 { padding-top: 0px }
@@ -100,8 +102,6 @@ fieldset .btn { /* Alle Buttons im Feldset*/
     display: flex;
     margin: auto; /*ToDo: anderen Weg um Button zu zentrieren*/
 }
-
-
 
 /*---------- Wird derzeit nicht benötigt ----------*/
 
