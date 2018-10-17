@@ -2,139 +2,83 @@ header .navbar {
     margin: 25px 0px 0px 0px; /*Oben Rechts Unten Links*/
 }
 
-header .input-group {
+header .input-group { /* Breite des Suchfelds */
     width: 30%;
 }
 
-header .mb-3, .my-3 {
-    margin-bottom: 0rem !important;
+header .mb-3, .my-3 { /* margin bottom nur im header !*/
+    margin-bottom: 0rem !important; /* höchste Priorität: im Header gibt es keine margin-bottom*/
 }
 
-footer .navbar {
-    margin: 0px 0px 0px 0px;
+footer p { /* Copyright nach unten verschieben*/
+    padding-top: 8px;
 }
 
-footer li {
-    list-style-type: none;
-}
-
-footer p {
-    margin-top: 16px;
-}
-
-.btn-outline-success {
+.btn-outline-success { /* Button "Registrieren" und "Anmelden"*/
     color: #00b5ad;
     background-color: transparent;
-    background-image: none;
     border-color: #00b5ad
 }
 
-    .btn-outline-success:hover {
-        color: #fff;
-        background-color: #00b5ad;
-        border-color: #00b5ad
-    }
-
-    .btn-outline-success.focus,
-    .btn-outline-success:focus {
-        box-shadow: 0 0 0 .2rem rgba(0, 181, 173,.5)
-    }
-
-    .btn-outline-success.disabled,
-    .btn-outline-success:disabled {
-        color: #00b5ad;
-        background-color: transparent
-    }
-
-    .btn-outline-success:not(:disabled):not(.disabled)
-    .active,
-    .btn-outline-success:not(:disabled):not(.disabled):active,
-    .show > .btn-outline-success
-    .dropdown-toggle {
-        color: #fff;
-        background-color: #00b5ad;
-        border-color: #00b5ad
-    }
-
-.mt-5, .my-5 {
-    margin-top: 1rem !important
-}
-
-.pdr-0 {
-    padding-right: 0px
-}
-
-.pdl-0 {
-    padding-left: 0px
-}
-
-hr {
+.btn-outline-success:hover { /* Hover für  Buttons "Registrieren" und "Anmelden"*/
+    color: #fff;
+    background-color: #00b5ad;
     border-color: #00b5ad
 }
 
-.search {
-    padding: 50px
+.btn-outline-success.focus, /* Schatten wenn Buttons Fokus haben */
+.btn-outline-success:focus {
+    box-shadow: 0 0 0 .2rem rgba(0, 181, 173,.5)
 }
 
-
-.splash img, .square { /*Bilder nehmen 100% ihres Platzes ein*/
-    width: 100%
+.btn-outline-success:not(:disabled):not(.disabled)
+.active,
+.btn-outline-success:not(:disabled):not(.disabled):active,
+.show > .btn-outline-success
+.dropdown-toggle {
+    color: #fff;
+    background-color: #00b5ad;
+    border-color: #00b5ad
 }
 
-.splash {
+.mt-5, .my-5 { margin-top: 1rem !important }
+
+/* Paddings als klassen*/
+.pdt-0 { padding-top: 0px }
+.pdr-0 { padding-right: 0px }
+.pdb-0 { padding-bottom: 0px }
+.pdl-0 { padding-left: 0px }
+
+hr { border-color: #00b5ad }
+
+.splash img, .square { width: 100% } /*Bilder nehmen 100% ihres Platzes ein*/
+.splash { /* Container für Titelbilder */
     height: 200px;
     overflow: hidden;
 }
-
-.fhbutton1, .fhbutton2 {
-    background-color: rgb(0, 177, 172);
-    border: none;
-    color: white;
-    border-radius: 6px;
-}
-
-    .fhbutton1:hover, .fhbutton2:hover {
-        background-color: White;
-        color: rgb(0, 177, 172);
-        border-radius: 6px;
-    }
 
 a, h1, h2, h3 {
     color: rgb(0, 177, 172);
 }
 
-nav li a {
+/*-- Trennlinien für Links (li Aufzählung) --*/
+nav li a, footer li a {
     border-right: 1px solid #00b5ad;
-    color: #00b5ad
 }
 
-nav a.last {
-    border-right: 0px dotted #00b5ad
+nav li:last-child a, footer li:last-child a {
+    border-right: 0px;
 }
 
-nav li:last-child a {
-    border-right: 0px dotted #00b5ad
-}
-
-.navbar-light .navbar-nav .nav-link {
+/* Links in Navbar */
+.navbar-nav .nav-link {
     color: #00b5ad;
 }
 
-.navbar-light:hover .navbar-nav:hover .nav-link:hover {
-    color: rgba(0, 181, 173,.5);
+.navbar-nav:hover .nav-link:hover {
+    color: rgba(0, 181, 173,.5); /* fh-farben mit 5% Transparenz*/
 }
 
-footer li a {
-    border-right: 1px solid #00b5ad
-}
-
-footer a.last {
-    border-right: 0px dotted #00b5ad
-}
-
-footer li:last-child a {
-    border-right: 0px dotted #00b5ad
-}
 
 fieldset {
     display: block;
@@ -149,4 +93,32 @@ fieldset {
 
 fieldset legend {
     font-size: 1rem;
+    width: 150px; /*ToDo: vernünftig Wert ermitteln lassen!*/
 }
+
+fieldset .btn { /* Alle Buttons im Feldset*/
+    display: flex;
+    margin: auto; /*ToDo: anderen Weg um Button zu zentrieren*/
+}
+
+
+
+/*---------- Wird derzeit nicht benötigt ----------*/
+
+/*footer .navbar { /* Margin für Navbar im Footer *
+    margin: 0px 0px 0px 0px; /*Oben Rechts Unten Links*
+}*/
+
+/*footer li { /* li style im footer*
+    list-style-type: none;
+}*/
+
+/*footer a.last {
+    border-right: 0px dotted #00b5ad
+}*/
+
+/*.btn-outline-success.disabled,
+.btn-outline-success:disabled { /* Design für Buttons die disabled sind*
+    color: #00b5ad;
+    background-color: transparent
+}*/
