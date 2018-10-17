@@ -77,10 +77,10 @@ hr {
 }
 
 
-.splash img {
+.splash img, .square { /*Bilder nehmen 100% ihres Platzes ein*/
     width: 100%
 }
-/*alle img in Splash */
+
 .splash {
     height: 200px;
     overflow: hidden;
