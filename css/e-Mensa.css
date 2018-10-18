@@ -119,6 +119,10 @@ fieldset .btn { /* Alle Buttons im Feldset*/
     border-radius: 3px;
 }
 
+.text-end {
+    text-algin: end;
+}
+
 /*.col .nav-item {
     border: 1px solid #00b5ad;
     border-bottom: 0px;
