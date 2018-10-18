@@ -120,7 +120,11 @@ fieldset .btn { /* Alle Buttons im Feldset*/
 }
 
 .text-end {
-    text-algin: end;
+    text-align: end;
+}
+
+#preis{
+    font-size: 20px;
 }
 
 /*.col .nav-item {
