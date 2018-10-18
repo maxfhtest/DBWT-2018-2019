@@ -113,6 +113,17 @@ fieldset .btn { /* Alle Buttons im Feldset*/
     display: block;
 }
 
+.tab-pane { /* Das Panel für die Navigationstab auf der Detail.html Seite*/
+    border: 1px solid #00b5ad;
+    height: 100px;
+    border-radius: 3px;
+}
+
+/*.col .nav-item {
+    border: 1px solid #00b5ad;
+    border-bottom: 0px;
+    border-radius: 2px;
+}*/
 /*---------- Wird derzeit nicht benötigt ----------*/
 
 /*footer .navbar { /* Margin für Navbar im Footer *

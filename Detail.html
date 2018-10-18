@@ -6,6 +6,9 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
     <link rel="stylesheet" href="css/e-Mensa.css" />
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="container">
@@ -56,25 +59,58 @@
         </div>
         <div class="row">
             <div class="col-3">
-                Login Frame
-                Text für Login
-            </div>
+                <form>
+                    <fieldset>
+                        <legend>Login</legend>
+                         <div class="form-group">
+                            <label for="username" class="text-black">Benutzer:</label><br>
+                            <input type="text" name="username" id="username" class="form-control" placeholder="Benutzer">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Passwort</label>
+                            <input type="password" class="form-control" name="password" id="password" placeholder="*******">
+                        </div>
+                        <input class="btn btn-outline-success btn-center" type="submit" value="Anmelden"><br />
+                    </fieldset>
+            </form>
+            <p>Melden Sie sich jetzt an, um die wirklich viel günstigeren Preise für Mitarbeiter oder Studenten zu sehen.</p>
+        </div>
             <div class="col-6">
                 <div class="row">
-                    <div class="col">
-                        Bild
+                    <div class="col splash">
+                        <img src="img/catering-2778755_1920.jpg" alt="Titelfoto Unten">
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col">
-                        Auswahlmenü mit Tabs
+                    <div class="col tab">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="descriptions-tab" data-toggle="tab" href="#descriptions" role="tab" aria-controls="descriptions" aria-selected="true">Beschreibung</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="incredients-tab" data-toggle="tab" href="#incredients" role="tab" aria-controls="incredients" aria-selected="false">Zutaten</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="reviews-tab" data-toggle="tab" href="#reviews" role="tab" aria-controls="reviews" aria-selected="false">Bewertungen</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="descriptions" role="tabpanel" aria-labelledby="descriptions-tab">
+                                    Teigtasche mit Falafel aus Kichererbsen und Sesam, dazu passt hervorragend der <a href="Detail.html">Krautsalat</a>
+                            </div>
+                            <div class="tab-pane fade" id="incredients" role="tabpanel" aria-labelledby="incredients-tab">
+                                Zutaten des Gerichtes..
+                            </div>
+                            <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                                Die Bewertungen werden hier angezeigt..
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-3">
                 Preis und Button
             </div>
- 
         </div>
         <hr>
         <footer>
