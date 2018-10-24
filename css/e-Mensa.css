@@ -54,6 +54,7 @@ footer p { /* Copyright nach unten verschieben*/
 hr { border-color: #00b5ad }
 
 .splash img, .square { width: 100% } /*Bilder nehmen 100% ihres Platzes ein*/
+
 .splash { /* Container für Titelbilder */
     height: 200px;
     overflow: hidden;
@@ -127,6 +128,19 @@ fieldset .btn { /* Alle Buttons im Feldset*/
 
 #preis{
     font-size: 20px;
+}
+
+
+.unavailable {
+    filter: grayscale(100%);
+}
+
+.isDisabled {
+    color: currentColor;
+    cursor: not-allowed;
+    opacity: 0.5;
+    text-decoration: none;
+    pointer-events: none;
 }
 
 /*.col .nav-item {
