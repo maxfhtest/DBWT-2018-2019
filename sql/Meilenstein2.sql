@@ -56,6 +56,7 @@ CREATE TABLE Mahlzeiten(
 );
 DESCRIBE Mahlzeiten;
 
+
 DROP TABLE IF EXISTS Deklarationen;
 CREATE TABLE Deklarationen(
 	`Zeichen` VARCHAR(2) NOT NULL,
@@ -64,29 +65,60 @@ CREATE TABLE Deklarationen(
 );
 DESCRIBE Deklarationen;
 
+
 DROP TABLE IF EXISTS Preise;
 CREATE TABLE Preise(
+	`Gastpreis` DECIMAL(4,2) NOT NULL,
+	`Studentpreis` DECIMAL (4,2), -- Optional
+	`MA-Preis` DECIMAL (4,2), -- Optional
+	`Jahr` INT(3) NOT NULL -- Fremdschlüssel ?!
+	-- FOREIGN Key Jahr
 );
+DESCRIBE Preise;
+
 
 DROP TABLE IF EXISTS Kategorien;
 CREATE TABLE Kategorien(
+	`ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`Bezeichnung` VARCHAR(50) NOT NULL,
+	PRIMARY KEY (`ID`)
 );
+DESCRIBE Kategorien;
+
 
 DROP TABLE IF EXISTS Bilder;
 CREATE TABLE Bilder(
+	`ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`Alt-Text` VARCHAR(100) NOT NULL,
+	`Titel` VARCHAR(100),-- Optional
+	`Binärdaten` BLOB NOT NULL,
+	PRIMARY KEY (`ID`)
 );
+DESCRIBE Bilder;
+
 
 DROP TABLE IF EXISTS Zutaten;
 CREATE TABLE Zutaten(
+	`ID` INT(5) UNSIGNED NOT NULL,
+	`Nachname` VARCHAR(50) NOT NULL,
+	`Bio` TINYINT(1) NOT NULL Default 0,
+	`Vegetarisch` TINYINT(1) NOT NULL Default 0,
+	`Vegan` TINYINT(1) NOT NULL Default 0,
+	`Glutenfrei` TINYINT(1) NOT NULL Default 0,
+	PRIMARY KEY (`ID`)
 );
+DESCRIBE Zutaten;
 
-DROP TABLE IF EXISTS Zutaten;
-CREATE TABLE Zutaten(
-);
 
 DROP TABLE IF EXISTS Kommentare;
 CREATE TABLE Kommentare(
+	`ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`Bemerkung` VARCHAR(255), -- optional
+	`Bewertung` VARCHAR(255),
+	PRIMARY KEY (`ID`)
 );
+DESCRIBE Kommentare;
+
 
 DROP TABLE IF EXISTS Deklarationen;
 CREATE TABLE Deklarationen(
