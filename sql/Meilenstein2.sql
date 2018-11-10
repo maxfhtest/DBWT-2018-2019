@@ -15,7 +15,7 @@ USE Meilenstein2;
 -- =======================================================
 DROP TABLE IF EXISTS Benutzer;
 CREATE TABLE Benutzer(
-	`Nummer`        INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+	`Nummer`        INT AUTO_INCREMENT      NOT NULL,
 	-- `NAME`
 	    `Vorname`   VARCHAR(100)            NOT NULL,	
 	    `Nachname`  VARCHAR(50)             NOT NULL,
@@ -24,21 +24,24 @@ CREATE TABLE Benutzer(
 	-- `Auth`
 	    `Salt`      CHAR(32)                NOT NULL,
 	    `Hash`      CHAR(24)                NOT NULL,
-	`Nutzername`    VARCHAR(50) UNIQUE KEY  NOT NULL,
-	`Letzter Login` DATETIME 	DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,   -- optional
-	`E-Mail`        VARCHAR(255)UNIQUE KEY  NOT NULL,
+	`Nutzername`    VARCHAR(50)             NOT NULL,
+	`Letzter Login` DATETIME    DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,   -- optional
+	`E-Mail`        VARCHAR(255)            NOT NULL,
 	`Geburtsdatum`  DATE,                                                   -- optional
-	`Alter`         INT(3) AS (year(CURRENT_TIMESTAMP) - year(`Geburtsdatum`))
+	`Alter`         INT(3) AS (year(CURRENT_TIMESTAMP) - year(`Geburtsdatum`)),
+	CONSTRAINT pk_nummer PRIMARY KEY (`Nummer`)
+	CONSTRAINT uk UNIQUE KEY (`Nutzername`, `E-Mail`)
 );
 DESCRIBE Benutzer;
 
 
 DROP TABLE IF EXISTS Bestellungen;
 CREATE TABLE Bestellungen(
-	`Nummer`            INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+	`Nummer`            INT AUTO_INCREMENT      NOT NULL,
 	`Abholzeitpunkt` 	DATETIME DEFAULT NULL,
-	CONSTRAINT ck_abholzeitpunkt CHECK (Abholzeitpunkt > Bestellzeitpunkt),
-	`Bestellzeitpunkt` 	DATETIME DEFAULT CURRENT_TIMESTAMP
+	`Bestellzeitpunkt` 	DATETIME DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT pk_nummer PRIMARY KEY (`Nummer`),
+	CONSTRAINT ck_abholzeitpunkt CHECK (Abholzeitpunkt > Bestellzeitpunkt)
 	-- `Endpreis` DECIMAL --ToDo ! -- mehr als 99,99€
 );
 DESCRIBE Bestellungen;
@@ -46,30 +49,31 @@ DESCRIBE Bestellungen;
 
 DROP TABLE IF EXISTS Mahlzeiten;
 CREATE TABLE Mahlzeiten(
-	`ID`            INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-	`Beschreibung`  TEXT NOT NULL,
-	`Verfügbar`     TINYINT(1) DEFAULT 0 NOT NULL,
+	`ID`            INT AUTO_INCREMENT      NOT NULL,
+	`Beschreibung`  TEXT                    NOT NULL,
+	`Verfügbar`     TINYINT(1) DEFAULT 0    NOT NULL,
+	`Vorrat`        INT UNSIGNED DEFAULT 0  NOT NULL,
+	CONSTRAINT pk_ID PRIMARY KEY(`ID`),
 	CONSTRAINT ck_verfügbar CHECK (Vorrat = CASE WHEN Vorrat IS NOT `0` THEN Verfügbar IS `1` ELSE `0` END),
-	`Vorrat`        INT UNSIGNED NOT NULL DEFAULT 0
 );
 DESCRIBE Mahlzeiten;
 
 
 DROP TABLE IF EXISTS Deklarationen;
 CREATE TABLE Deklarationen(
-	`Zeichen` VARCHAR(2) NOT NULL,
-	`Beschriftung` VARCHAR(32) NOT NULL,
-	PRIMARY KEY(`Zeichen`)
+	`Zeichen`       VARCHAR(2)   NOT NULL,
+	`Beschriftung`  VARCHAR(32)  NOT NULL,
+	CONSTRAINT pk_zeichen PRIMARY KEY(`Zeichen`)
 );
 DESCRIBE Deklarationen;
 
 
 DROP TABLE IF EXISTS Preise;
 CREATE TABLE Preise(
-	`Gastpreis` DECIMAL(4,2) NOT NULL,
+	`Gastpreis`    DECIMAL(4,2)   NOT NULL,
 	`Studentpreis` DECIMAL (4,2), -- Optional
-	`MA-Preis` DECIMAL (4,2), -- Optional
-	`Jahr` INT(3) NOT NULL -- Fremdschlüssel ?!
+	`MA-Preis`     DECIMAL (4,2), -- Optional
+	`Jahr`         INT(3)         NOT NULL -- Fremdschlüssel ?!
 	-- FOREIGN Key Jahr
 );
 DESCRIBE Preise;
@@ -77,55 +81,52 @@ DESCRIBE Preise;
 
 DROP TABLE IF EXISTS Kategorien;
 CREATE TABLE Kategorien(
-	`ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	`Bezeichnung` VARCHAR(50) NOT NULL,
-	PRIMARY KEY (`ID`)
+	`ID` INT UNSIGNED AUTO_INCREMENT    NOT NULL,
+	`Bezeichnung` VARCHAR(50)           NOT NULL,
+	CONSTRAINT pk_id PRIMARY KEY (`ID`)
 );
 DESCRIBE Kategorien;
 
 
 DROP TABLE IF EXISTS Bilder;
 CREATE TABLE Bilder(
-	`ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	`Alt-Text` VARCHAR(100) NOT NULL,
-	`Titel` VARCHAR(100),-- Optional
-	`Binärdaten` BLOB NOT NULL,
-	PRIMARY KEY (`ID`)
+	`ID` INT UNSIGNED AUTO_INCREMENT   NOT NULL,
+	`Alt-Text`   VARCHAR(100)          NOT NULL,
+	`Titel`      VARCHAR(100),                    -- Optional
+	`Binärdaten` BLOB                  NOT NULL,
+	CONSTRAINT pk_id PRIMARY KEY (`ID`)
 );
 DESCRIBE Bilder;
 
 
 DROP TABLE IF EXISTS Zutaten;
 CREATE TABLE Zutaten(
-	`ID` INT(5) UNSIGNED NOT NULL,
-	`Nachname` VARCHAR(50) NOT NULL,
-	`Bio` TINYINT(1) NOT NULL Default 0,
-	`Vegetarisch` TINYINT(1) NOT NULL Default 0,
-	`Vegan` TINYINT(1) NOT NULL Default 0,
-	`Glutenfrei` TINYINT(1) NOT NULL Default 0,
-	PRIMARY KEY (`ID`)
+	`ID`          INT(5) UNSIGNED      NOT NULL,
+	`Nachname`    VARCHAR(50)          NOT NULL,
+	`Bio`         TINYINT(1) Default 0 NOT NULL,
+	`Vegetarisch` TINYINT(1) Default 0 NOT NULL,
+	`Vegan`       TINYINT(1) Default 0 NOT NULL,
+	`Glutenfrei`  TINYINT(1) Default 0 NOT NULL,
+	CONSTRAINT pk_id PRIMARY KEY (`ID`)
 );
 DESCRIBE Zutaten;
 
 
 DROP TABLE IF EXISTS Kommentare;
 CREATE TABLE Kommentare(
-	`ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	`Bemerkung` VARCHAR(255), -- optional
+	`ID`        INT UNSIGNED AUTO_INCREMENT NOT NULL,
+	`Bemerkung` VARCHAR(255),                         -- optional
 	`Bewertung` VARCHAR(255),
-	PRIMARY KEY (`ID`)
+	CONSTRAINT pk_id PRIMARY KEY (`ID`)
 );
 DESCRIBE Kommentare;
-
-
-DROP TABLE IF EXISTS Deklarationen;
-CREATE TABLE Deklarationen(
-);
 
 -- Ablaufdatum standardmäßig eine Woche in der Zukunft
 -- der Grund wird nicht länger als 255 Zeichen lang
 DROP TABLE IF EXISTS Gäste;
 CREATE TABLE Gäste(
+	`Ablaufdatum`  DATE DEFAULT now()+7,
+	`Grund`        VARCHAR(255)
 );
 
 DROP TABLE IF EXISTS FH Angehörige;
@@ -133,6 +134,10 @@ CREATE TABLE FH Angehörige(
 );
 
 DROP TABLE IF EXISTS Fachbereiche;
+	`ID`          INT(5) UNSIGNED      NOT NULL,
+	`Name`        VARCHAR(50)          NOT NULL,
+	`Website`     VARCHAR(100)         NOT NULL,
+	CONSTRAINT pk_id PRIMARY KEY (`ID`)
 CREATE TABLE Fachbereiche(
 );
 
