@@ -17,18 +17,18 @@ DROP TABLE IF EXISTS Benutzer;
 CREATE TABLE Benutzer(
 	`Nummer`        INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	-- `NAME`
-		`Vorname`   VARCHAR(100)            NOT NULL,	
-		`Nachname`  VARCHAR(50)             NOT NULL,
+	    `Vorname`   VARCHAR(100)            NOT NULL,	
+	    `Nachname`  VARCHAR(50)             NOT NULL,
 	`Aktiv`         TINYINT(1)  DEFAULT 0   NOT NULL,
 	`Anlegedatum`   TIMESTAMP   DEFAULT CURRENT_TIMESTAMP,
 	-- `Auth`
-		`Salt`      CHAR(32)                NOT NULL,
-		`Hash`      CHAR(24)                NOT NULL,
+	    `Salt`      CHAR(32)                NOT NULL,
+	    `Hash`      CHAR(24)                NOT NULL,
 	`Nutzername`    VARCHAR(50) UNIQUE KEY  NOT NULL,
 	`Letzter Login` DATETIME 	DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,   -- optional
 	`E-Mail`        VARCHAR(255)UNIQUE KEY  NOT NULL,
 	`Geburtsdatum`  DATE,                                                   -- optional
-	`Alter`         INT(3) AS (year(CURRENT_TIMESTAMP) - year(`Geburtsdatum`)),
+	`Alter`         INT(3) AS (year(CURRENT_TIMESTAMP) - year(`Geburtsdatum`))
 );
 DESCRIBE Benutzer;
 
@@ -36,8 +36,9 @@ DESCRIBE Benutzer;
 DROP TABLE IF EXISTS Bestellungen;
 CREATE TABLE Bestellungen(
 	`Nummer`            INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-	`Abholzeitpunkt` 	DATETIME DEFAULT NULL CHECK (Abholzeitpunkt > Bestellzeitpunkt),
-	`Bestellzeitpunkt` 	DATETIME DEFAULT CURRENT_TIMESTAMP,
+	`Abholzeitpunkt` 	DATETIME DEFAULT NULL,
+	CONSTRAINT ck_abholzeitpunkt CHECK (Abholzeitpunkt > Bestellzeitpunkt),
+	`Bestellzeitpunkt` 	DATETIME DEFAULT CURRENT_TIMESTAMP
 	-- `Endpreis` DECIMAL --ToDo ! -- mehr als 99,99€
 );
 DESCRIBE Bestellungen;
@@ -45,11 +46,11 @@ DESCRIBE Bestellungen;
 
 DROP TABLE IF EXISTS Mahlzeiten;
 CREATE TABLE Mahlzeiten(
-	`ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	`Beschreibung` VARCHAR(1024) NOT NULL,
-	`Verfügbar` TINYINT(1) NOT NULL Default 0,
-	`Vorrat` INT UNSIGNED NOT NULL DEFAULT 0,
-	PRIMARY KEY(`ID`)
+	`ID`            INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+	`Beschreibung`  TEXT NOT NULL,
+	`Verfügbar`     TINYINT(1) DEFAULT 0 NOT NULL,
+	CONSTRAINT ck_verfügbar CHECK (Vorrat = CASE WHEN Vorrat IS NOT `0` THEN Verfügbar IS `1` ELSE `0` END),
+	`Vorrat`        INT UNSIGNED NOT NULL DEFAULT 0
 );
 DESCRIBE Mahlzeiten;
 
