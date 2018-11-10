@@ -71,9 +71,10 @@ DESCRIBE Deklarationen;
 DROP TABLE IF EXISTS Preise;
 CREATE TABLE Preise(
 	`Gastpreis`    DECIMAL(4,2)   NOT NULL,
-	`Studentpreis` DECIMAL (4,2), -- Optional
-	`MA-Preis`     DECIMAL (4,2), -- Optional
-	`Jahr`         INT(3)         NOT NULL -- Fremdschlüssel ?!
+	`Studentpreis` DECIMAL (4,2),           -- Optional
+	`MA-Preis`     DECIMAL (4,2),           -- Optional
+	`Jahr`         INT(3)         NOT NULL, -- Fremdschlüssel ?!
+	CONSTRAINT ck_studentenpreis CHECK (Studentpreis < MA-Preis)
 	-- FOREIGN Key Jahr
 );
 DESCRIBE Preise;
@@ -134,17 +135,22 @@ CREATE TABLE FH Angehörige(
 );
 
 DROP TABLE IF EXISTS Fachbereiche;
+CREATE TABLE Fachbereiche(
 	`ID`          INT(5) UNSIGNED      NOT NULL,
 	`Name`        VARCHAR(50)          NOT NULL,
 	`Website`     VARCHAR(100)         NOT NULL,
 	CONSTRAINT pk_id PRIMARY KEY (`ID`)
-CREATE TABLE Fachbereiche(
 );
 
 DROP TABLE IF EXISTS Mitarbeiter;
 CREATE TABLE Mitarbeiter(
+	`Büro`       INT(3) UNSIGNED,
+	`Telefon`    INT(15) UNSIGNED
 );
 
 DROP TABLE IF EXISTS Studenten;
 CREATE TABLE Studenten(
+	`Studiengang`   ENUM (`ET`, `INF`, `ISE`, `MCD`, `WI`)  NOT NULL,
+	`Matrikelnummer`INT                                     NOT NULL,
+	CONSTRAINT ck_matrikelnummer CHECK (Matrikelnummer > 7 OR Matrikelnummer < 10)
 );
