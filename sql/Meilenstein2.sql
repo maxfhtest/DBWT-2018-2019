@@ -15,22 +15,22 @@ USE Meilenstein2;
 -- =======================================================
 DROP TABLE IF EXISTS Benutzer;
 CREATE TABLE Benutzer(
-	`Nummer` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+	`Nummer` 		INT AUTO_INCREMENT,
 	-- `NAME`
-		`Vorname` VARCHAR(100) NOT NULL,			
-		`Nachname` VARCHAR(50) NOT NULL,
-	`Aktiv` TINYINT(1) NOT NULL DEFAULT 0,
-	`Anlegedatum` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		`Vorname` 	VARCHAR(100) 			NOT NULL,			
+		`Nachname` 	VARCHAR(50) 			NOT NULL,
+	`Aktiv` 		TINYINT(1) 	DEFAULT 0	NOT NULL,
+	`Anlegedatum` 	TIMESTAMP 	DEFAULT CURRENT_TIMESTAMP,
 	-- `Auth`
-		`Salt` VARCHAR(32) NOT NULL,
-		`Hash` VARCHAR(24) NOT NULL,
-	`Nutzername` VARCHAR(1000) NOT NULL,
-	`Letzter Login` DATETIME DEFAULT NULL, -- ist optional
-	`E-Mail` VARCHAR(255) NOT NULL,
-	`Geburtsdatum` DATE, -- ist Optional
-	`Alter` INT(3) AS (year(CURRENT_TIMESTAMP) - year(`Geburtsdatum`)),
-	PRIMARY KEY (`Nummer`),
-  	UNIQUE KEY (`E-mail`,`Nutzername`)
+		`Salt` 		CHAR(32) 				NOT NULL,
+		`Hash` 		CHAR(24) 				NOT NULL,
+	`Nutzername` 	VARCHAR(50) 			NOT NULL,
+	`Letzter Login` DATETIME 	DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP, 	-- optional
+	`E-Mail` 		VARCHAR(255) 			NOT NULL,
+	`Geburtsdatum` 	DATE, 													-- optional
+	`Alter` 		INT(3) AS (year(CURRENT_TIMESTAMP) - year(`Geburtsdatum`)),
+	PRIMARY KEY 	(`Nummer`),
+  	UNIQUE KEY 		(`E-mail`,`Nutzername`)
 );
 DESCRIBE Benutzer;
 
