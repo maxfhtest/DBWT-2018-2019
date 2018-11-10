@@ -15,33 +15,30 @@ USE Meilenstein2;
 -- =======================================================
 DROP TABLE IF EXISTS Benutzer;
 CREATE TABLE Benutzer(
-	`Nummer` 		INT AUTO_INCREMENT,
+	`Nummer`        INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	-- `NAME`
-		`Vorname` 	VARCHAR(100) 			NOT NULL,			
-		`Nachname` 	VARCHAR(50) 			NOT NULL,
-	`Aktiv` 		TINYINT(1) 	DEFAULT 0	NOT NULL,
-	`Anlegedatum` 	TIMESTAMP 	DEFAULT CURRENT_TIMESTAMP,
+		`Vorname`   VARCHAR(100)            NOT NULL,	
+		`Nachname`  VARCHAR(50)             NOT NULL,
+	`Aktiv`         TINYINT(1)  DEFAULT 0   NOT NULL,
+	`Anlegedatum`   TIMESTAMP   DEFAULT CURRENT_TIMESTAMP,
 	-- `Auth`
-		`Salt` 		CHAR(32) 				NOT NULL,
-		`Hash` 		CHAR(24) 				NOT NULL,
-	`Nutzername` 	VARCHAR(50) 			NOT NULL,
-	`Letzter Login` DATETIME 	DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP, 	-- optional
-	`E-Mail` 		VARCHAR(255) 			NOT NULL,
-	`Geburtsdatum` 	DATE, 													-- optional
-	`Alter` 		INT(3) AS (year(CURRENT_TIMESTAMP) - year(`Geburtsdatum`)),
-	PRIMARY KEY 	(`Nummer`),
-  	UNIQUE KEY 		(`E-mail`,`Nutzername`)
+		`Salt`      CHAR(32)                NOT NULL,
+		`Hash`      CHAR(24)                NOT NULL,
+	`Nutzername`    VARCHAR(50) UNIQUE KEY  NOT NULL,
+	`Letzter Login` DATETIME 	DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,   -- optional
+	`E-Mail`        VARCHAR(255)UNIQUE KEY  NOT NULL,
+	`Geburtsdatum`  DATE,                                                   -- optional
+	`Alter`         INT(3) AS (year(CURRENT_TIMESTAMP) - year(`Geburtsdatum`)),
 );
 DESCRIBE Benutzer;
 
 
 DROP TABLE IF EXISTS Bestellungen;
 CREATE TABLE Bestellungen(
-	`Nummer` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	`Abholzeitpunkt` DATETIME DEFAULT NULL, -- ist optional! --ToDo: Muss wenn er angegeben wird später als der Bestellzeitpunkt
-	`Bestellzeitpunkt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- oder besser CURRENT_DATE ?
+	`Nummer`            INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+	`Abholzeitpunkt` 	DATETIME DEFAULT NULL CHECK (Abholzeitpunkt > Bestellzeitpunkt),
+	`Bestellzeitpunkt` 	DATETIME DEFAULT CURRENT_TIMESTAMP,
 	-- `Endpreis` DECIMAL --ToDo ! -- mehr als 99,99€
-	PRIMARY KEY (`Nummer`)
 );
 DESCRIBE Bestellungen;
 
