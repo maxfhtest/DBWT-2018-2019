@@ -30,7 +30,7 @@ CREATE TABLE Benutzer(
 	`Geburtsdatum`  DATE,                                                   -- optional
 	`Alter`         INT(3) AS (year(CURRENT_TIMESTAMP) - year(`Geburtsdatum`)),
 	CONSTRAINT pk_nummer PRIMARY KEY (`Nummer`)
-	CONSTRAINT uk UNIQUE KEY (`Nutzername`, `E-Mail`)
+	CONSTRAINT uk UNIQUE (`Nutzername`, `E-Mail`)
 );
 DESCRIBE Benutzer;
 
@@ -152,5 +152,5 @@ DROP TABLE IF EXISTS Studenten;
 CREATE TABLE Studenten(
 	`Studiengang`   ENUM (`ET`, `INF`, `ISE`, `MCD`, `WI`)  NOT NULL,
 	`Matrikelnummer`INT                                     NOT NULL,
-	CONSTRAINT ck_matrikelnummer CHECK (Matrikelnummer > 7 OR Matrikelnummer < 10)
+	CONSTRAINT ck_matrikelnummer CHECK (Matrikelnummer > 9999999 OR Matrikelnummer < 1000000000)
 );
