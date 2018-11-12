@@ -1,7 +1,8 @@
 -- DROP DATABASE IF EXISTS Meilenstein2;
 -- CREATE DATABASE Meilenstein2; 
 USE Meilenstein2;
-
+--SET sql_mode='STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE';
+SHOW ENGINE;
 			-- DROP TABLE IF EXISTS Kunden;
 			-- CREATE TABLE TESTINVORLESUNG (
 			-- 	Nummer INT UNSIGNED AUTO_INCREMENT,	
@@ -29,7 +30,7 @@ CREATE TABLE Benutzer(
 	`E-Mail`        VARCHAR(255)            NOT NULL,
 	`Geburtsdatum`  DATE,                                                   -- optional
 	`Alter`         INT(3) AS (year(CURRENT_TIMESTAMP) - year(`Geburtsdatum`)),
-	CONSTRAINT pk_nummer PRIMARY KEY (`Nummer`)
+	PRIMARY KEY (`Nummer`)
 	CONSTRAINT uk UNIQUE (`Nutzername`, `E-Mail`)
 );
 DESCRIBE Benutzer;
@@ -40,7 +41,7 @@ CREATE TABLE Bestellungen(
 	`Nummer`            INT AUTO_INCREMENT      NOT NULL,
 	`Abholzeitpunkt` 	DATETIME DEFAULT NULL,
 	`Bestellzeitpunkt` 	DATETIME DEFAULT CURRENT_TIMESTAMP,
-	CONSTRAINT pk_nummer PRIMARY KEY (`Nummer`),
+	PRIMARY KEY (`Nummer`),
 	CONSTRAINT ck_abholzeitpunkt CHECK (Abholzeitpunkt > Bestellzeitpunkt)
 	-- `Endpreis` DECIMAL --ToDo ! -- mehr als 99,99€
 );
@@ -53,7 +54,7 @@ CREATE TABLE Mahlzeiten(
 	`Beschreibung`  TEXT                    NOT NULL,
 	`Verfügbar`     TINYINT(1) DEFAULT 0    NOT NULL,
 	`Vorrat`        INT UNSIGNED DEFAULT 0  NOT NULL,
-	CONSTRAINT pk_ID PRIMARY KEY(`ID`),
+	PRIMARY KEY(`ID`),
 	CONSTRAINT ck_verfügbar CHECK (Vorrat = CASE WHEN Vorrat IS NOT `0` THEN Verfügbar IS `1` ELSE `0` END),
 );
 DESCRIBE Mahlzeiten;
@@ -95,7 +96,7 @@ CREATE TABLE Bilder(
 	`Alt-Text`   VARCHAR(100)          NOT NULL,
 	`Titel`      VARCHAR(100),                    -- Optional
 	`Binärdaten` BLOB                  NOT NULL,
-	CONSTRAINT pk_id PRIMARY KEY (`ID`)
+	PRIMARY KEY (`ID`)
 );
 DESCRIBE Bilder;
 
@@ -108,7 +109,7 @@ CREATE TABLE Zutaten(
 	`Vegetarisch` TINYINT(1) Default 0 NOT NULL,
 	`Vegan`       TINYINT(1) Default 0 NOT NULL,
 	`Glutenfrei`  TINYINT(1) Default 0 NOT NULL,
-	CONSTRAINT pk_id PRIMARY KEY (`ID`)
+	PRIMARY KEY (`ID`)
 );
 DESCRIBE Zutaten;
 
@@ -118,7 +119,7 @@ CREATE TABLE Kommentare(
 	`ID`        INT UNSIGNED AUTO_INCREMENT NOT NULL,
 	`Bemerkung` VARCHAR(255),                         -- optional
 	`Bewertung` VARCHAR(255),
-	CONSTRAINT pk_id PRIMARY KEY (`ID`)
+	PRIMARY KEY (`ID`)
 );
 DESCRIBE Kommentare;
 
@@ -126,7 +127,7 @@ DESCRIBE Kommentare;
 -- der Grund wird nicht länger als 255 Zeichen lang
 DROP TABLE IF EXISTS Gäste;
 CREATE TABLE Gäste(
-	`Ablaufdatum`  DATE DEFAULT now()+7,
+	`Ablaufdatum`  DATE DEFAULT CURDATE()+7,
 	`Grund`        VARCHAR(255)
 );
 
@@ -139,13 +140,13 @@ CREATE TABLE Fachbereiche(
 	`ID`          INT(5) UNSIGNED      NOT NULL,
 	`Name`        VARCHAR(50)          NOT NULL,
 	`Website`     VARCHAR(100)         NOT NULL,
-	CONSTRAINT pk_id PRIMARY KEY (`ID`)
+	CPRIMARY KEY (`ID`)
 );
 
 DROP TABLE IF EXISTS Mitarbeiter;
 CREATE TABLE Mitarbeiter(
 	`Büro`       INT(3) UNSIGNED,
-	`Telefon`    INT(15) UNSIGNED
+	`Telefon`    VARCHAR (64)
 );
 
 DROP TABLE IF EXISTS Studenten;
