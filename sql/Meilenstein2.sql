@@ -104,7 +104,7 @@ DESCRIBE Bilder;
 DROP TABLE IF EXISTS Zutaten;
 CREATE TABLE Zutaten(
 	`ID`          INT(5) UNSIGNED      NOT NULL,
-	`Nachname`    VARCHAR(50)          NOT NULL,
+	`Name`    	  VARCHAR(50)          NOT NULL,
 	`Bio`         TINYINT(1) Default 0 NOT NULL,
 	`Vegetarisch` TINYINT(1) Default 0 NOT NULL,
 	`Vegan`       TINYINT(1) Default 0 NOT NULL,
@@ -117,8 +117,8 @@ DESCRIBE Zutaten;
 DROP TABLE IF EXISTS Kommentare;
 CREATE TABLE Kommentare(
 	`ID`        INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	`Bemerkung` VARCHAR(255),                         -- optional
-	`Bewertung` VARCHAR(255),
+	`Bemerkung` VARCHAR(255),	-- optional
+	`Bewertung` VARCHAR(255) NOT NULL,
 	PRIMARY KEY (`ID`)
 );
 DESCRIBE Kommentare;
@@ -127,13 +127,15 @@ DESCRIBE Kommentare;
 -- der Grund wird nicht länger als 255 Zeichen lang
 DROP TABLE IF EXISTS Gäste;
 CREATE TABLE Gäste(
-	`Ablaufdatum`  DATE DEFAULT (CURRENT_DATE + INTERVAL 7 DAY),
-	`Grund`        VARCHAR(255)
+	`Ablaufdatum`  DATE DEFAULT (CURRENT_DATE + INTERVAL 7 DAY) NOT NULL,
+	`Grund`        VARCHAR(255) NOT NULL
 );
+DESCRIBE Gäste;
 
 -- DROP TABLE IF EXISTS `FH Angehörige`;
 -- CREATE TABLE `FH Angehörige`(
 -- );
+-- DESCRIBE `FH Angehörige`;
 
 DROP TABLE IF EXISTS Fachbereiche;
 CREATE TABLE Fachbereiche(
@@ -142,12 +144,14 @@ CREATE TABLE Fachbereiche(
 	`Website`     VARCHAR(100)         NOT NULL,
 	PRIMARY KEY (`ID`)
 );
+DESCRIBE Fachbereiche;
 
 DROP TABLE IF EXISTS Mitarbeiter;
 CREATE TABLE Mitarbeiter(
-	`Büro`       INT(3) UNSIGNED,
+	`Büro`       INT(3) UNSIGNED, -- ToDo: Gibt es die nur in einem Gebäude ?
 	`Telefon`    VARCHAR (64)
 );
+DESCRIBE Mitarbeiter;
 
 DROP TABLE IF EXISTS Studenten;
 CREATE TABLE Studenten(
@@ -155,3 +159,4 @@ CREATE TABLE Studenten(
 	`Matrikelnummer`	INT                                     NOT NULL,
 	CONSTRAINT `ck_matrikelnummer` CHECK (`Matrikelnummer` > 9999999 OR `Matrikelnummer` < 1000000000)
 );
+DESCRIBE Studenten;
