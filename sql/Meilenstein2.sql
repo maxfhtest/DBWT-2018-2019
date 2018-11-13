@@ -40,7 +40,7 @@ DROP TABLE IF EXISTS Bestellungen;
 CREATE TABLE Bestellungen(
 	`Nummer`            INT AUTO_INCREMENT      NOT NULL,
 	`Abholzeitpunkt` 	DATETIME DEFAULT NULL,
-	`Bestellzeitpunkt` 	DATETIME DEFAULT CURRENT_TIMESTAMP,
+	`Bestellzeitpunkt` 	DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	PRIMARY KEY (`Nummer`),
 	CONSTRAINT ck_abholzeitpunkt CHECK (Abholzeitpunkt > Bestellzeitpunkt)
 	-- `Endpreis` DECIMAL --ToDo ! -- mehr als 99,99€
