@@ -1,8 +1,8 @@
 -- DROP DATABASE IF EXISTS Meilenstein2;
 -- CREATE DATABASE Meilenstein2; 
 USE Meilenstein2;
---SET sql_mode='STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE';
-SHOW ENGINE;
+-- SET sql_mode='STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE';
+-- SHOW ENGINE;
 			-- DROP TABLE IF EXISTS Kunden;
 			-- CREATE TABLE TESTINVORLESUNG (
 			-- 	Nummer INT UNSIGNED AUTO_INCREMENT,	
@@ -26,11 +26,11 @@ CREATE TABLE Benutzer(
 	    `Salt`      CHAR(32)                NOT NULL,
 	    `Hash`      CHAR(24)                NOT NULL,
 	`Nutzername`    VARCHAR(50)             NOT NULL,
-	`Letzter Login` DATETIME    DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,   -- optional
+	`Letzter Login` DATETIME    DEFAULT NULL	ON UPDATE CURRENT_TIMESTAMP,   -- optional
 	`E-Mail`        VARCHAR(255)            NOT NULL,
 	`Geburtsdatum`  DATE,                                                   -- optional
-	`Alter`         INT(3) AS (year(CURRENT_TIMESTAMP) - year(`Geburtsdatum`)),
-	PRIMARY KEY (`Nummer`)
+	`Alter`         INT(3)		DEFAULT NULL,
+	PRIMARY KEY (`Nummer`),
 	CONSTRAINT uk UNIQUE (`Nutzername`, `E-Mail`)
 );
 DESCRIBE Benutzer;
@@ -54,8 +54,8 @@ CREATE TABLE Mahlzeiten(
 	`Beschreibung`  TEXT                    NOT NULL,
 	`Verfügbar`     TINYINT(1) DEFAULT 0    NOT NULL,
 	`Vorrat`        INT UNSIGNED DEFAULT 0  NOT NULL,
-	PRIMARY KEY(`ID`),
-	CONSTRAINT ck_verfügbar CHECK (Vorrat = CASE WHEN Vorrat IS NOT `0` THEN Verfügbar IS `1` ELSE `0` END),
+	PRIMARY KEY(`ID`) -- ,
+	-- ONSTRAINT ck_verfügbar CHECK (Vorrat = CASE WHEN Vorrat IS NOT `0` THEN Verfügbar IS `1` ELSE `0` END),
 );
 DESCRIBE Mahlzeiten;
 
@@ -75,7 +75,7 @@ CREATE TABLE Preise(
 	`Studentpreis` DECIMAL (4,2),           -- Optional
 	`MA-Preis`     DECIMAL (4,2),           -- Optional
 	`Jahr`         INT(3)         NOT NULL, -- Fremdschlüssel ?!
-	CONSTRAINT ck_studentenpreis CHECK (Studentpreis < MA-Preis)
+	CONSTRAINT ck_studentenpreis CHECK (`Studentpreis` < `MA-Preis`)
 	-- FOREIGN Key Jahr
 );
 DESCRIBE Preise;
@@ -127,20 +127,20 @@ DESCRIBE Kommentare;
 -- der Grund wird nicht länger als 255 Zeichen lang
 DROP TABLE IF EXISTS Gäste;
 CREATE TABLE Gäste(
-	`Ablaufdatum`  DATE DEFAULT CURDATE()+7,
+	`Ablaufdatum`  DATE DEFAULT (CURRENT_DATE + INTERVAL 7 DAY),
 	`Grund`        VARCHAR(255)
 );
 
-DROP TABLE IF EXISTS FH Angehörige;
-CREATE TABLE FH Angehörige(
-);
+-- DROP TABLE IF EXISTS `FH Angehörige`;
+-- CREATE TABLE `FH Angehörige`(
+-- );
 
 DROP TABLE IF EXISTS Fachbereiche;
 CREATE TABLE Fachbereiche(
 	`ID`          INT(5) UNSIGNED      NOT NULL,
 	`Name`        VARCHAR(50)          NOT NULL,
 	`Website`     VARCHAR(100)         NOT NULL,
-	CPRIMARY KEY (`ID`)
+	PRIMARY KEY (`ID`)
 );
 
 DROP TABLE IF EXISTS Mitarbeiter;
@@ -151,7 +151,7 @@ CREATE TABLE Mitarbeiter(
 
 DROP TABLE IF EXISTS Studenten;
 CREATE TABLE Studenten(
-	`Studiengang`   ENUM (`ET`, `INF`, `ISE`, `MCD`, `WI`)  NOT NULL,
-	`Matrikelnummer`INT                                     NOT NULL,
-	CONSTRAINT ck_matrikelnummer CHECK (Matrikelnummer > 9999999 OR Matrikelnummer < 1000000000)
+	`Studiengang`		ENUM ('ET', 'INF', 'ISE', 'MCD', 'WI')  NOT NULL,
+	`Matrikelnummer`	INT                                     NOT NULL,
+	CONSTRAINT `ck_matrikelnummer` CHECK (`Matrikelnummer` > 9999999 OR `Matrikelnummer` < 1000000000)
 );
