@@ -24,7 +24,13 @@ GRANT USAGE ON *.* To 'jverkerk'@'localhost';
 GRANT SELECT, DELETE, INSERT, UPDATE ON `Meilenstein2`.* TO 'jverkerk'@'localhost';
 
 -- =======================================================
+
+DROP TABLE IF EXISTS Studenten;
+DROP TABLE IF EXISTS Mitarbeiter;
+DROP TABLE IF EXISTS fhangehoerige;
+DROP TABLE IF EXISTS gaeste;
 DROP TABLE IF EXISTS Benutzer;
+
 CREATE TABLE Benutzer(
 	`Nummer`        INT AUTO_INCREMENT      NOT NULL,
 	-- `NAME`
@@ -135,17 +141,20 @@ DESCRIBE Kommentare;
 
 -- Ablaufdatum standardmäßig eine Woche in der Zukunft
 -- der Grund wird nicht länger als 255 Zeichen lang
-DROP TABLE IF EXISTS Gäste;
-CREATE TABLE Gäste(
-	`Ablaufdatum`  DATE DEFAULT (CURRENT_DATE + INTERVAL 7 DAY) NOT NULL,
-	`Grund`        VARCHAR(255) NOT NULL
-);
-DESCRIBE Gäste;
 
--- DROP TABLE IF EXISTS `FH Angehörige`;
--- CREATE TABLE `FH Angehörige`(
--- );
--- DESCRIBE `FH Angehörige`;
+CREATE TABLE gaeste(
+	`Ablaufdatum`  DATE DEFAULT (CURRENT_DATE + INTERVAL 7 DAY) NOT NULL, -- (CURDATE()+7)
+	`Grund`        VARCHAR(255) NOT NULL,
+	`benutzer_nummer` INT,
+	FOREIGN KEY (benutzer_nummer) REFERENCES Benutzer(Nummer) ON DELETE CASCADE
+);
+DESCRIBE gaeste;
+
+CREATE TABLE fhangehoerige(
+	`benutzer_nummer` INT,
+	FOREIGN KEY (benutzer_nummer) REFERENCES Benutzer(Nummer) ON DELETE CASCADE
+);
+DESCRIBE fhangehoerige;
 
 DROP TABLE IF EXISTS Fachbereiche;
 CREATE TABLE Fachbereiche(
@@ -156,17 +165,19 @@ CREATE TABLE Fachbereiche(
 );
 DESCRIBE Fachbereiche;
 
-DROP TABLE IF EXISTS Mitarbeiter;
 CREATE TABLE Mitarbeiter(
 	`Büro`       INT(3) UNSIGNED, -- ToDo: Gibt es die nur in einem Gebäude ?
-	`Telefon`    VARCHAR (64)
+	`Telefon`    VARCHAR (64),
+	`benutzer_nummer` INT,
+	FOREIGN KEY (benutzer_nummer) REFERENCES fhangehoerige(benutzer_nummer) ON DELETE CASCADE
 );
 DESCRIBE Mitarbeiter;
 
-DROP TABLE IF EXISTS Studenten;
 CREATE TABLE Studenten(
 	`Studiengang`		ENUM ('ET', 'INF', 'ISE', 'MCD', 'WI')  NOT NULL,
 	`Matrikelnummer`	INT                                     NOT NULL,
-	CONSTRAINT `ck_matrikelnummer` CHECK (`Matrikelnummer` > 9999999 OR `Matrikelnummer` < 1000000000)
+	CONSTRAINT `ck_matrikelnummer` CHECK (`Matrikelnummer` > 9999999 OR `Matrikelnummer` < 1000000000),
+	`benutzer_nummer` INT,
+	FOREIGN KEY (benutzer_nummer) REFERENCES fhangehoerige(benutzer_nummer) ON DELETE CASCADE
 );
 DESCRIBE Studenten;
