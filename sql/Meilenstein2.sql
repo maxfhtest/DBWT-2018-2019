@@ -13,6 +13,16 @@ USE Meilenstein2;
 			-- 	PRIMARY KEY(Nummer) -- Künstlich --> Surrogate Key
 			-- );
 
+DROP USER IF EXISTS 'feschmit'@'localhost';
+CREATE USER 'feschmit'@'localhost' IDENTIFIED BY 'feschmit';
+GRANT USAGE ON *.* To 'feschmit'@'localhost';
+GRANT SELECT, DELETE, INSERT, UPDATE ON `Meilenstein2`.* TO 'feschmit'@'localhost';
+
+DROP USER IF EXISTS 'jverkerk'@'localhost';
+CREATE User 'jverkerk'@'localhost' IDENTIFIED BY 'jverkerk';
+GRANT USAGE ON *.* To 'jverkerk'@'localhost';
+GRANT SELECT, DELETE, INSERT, UPDATE ON `Meilenstein2`.* TO 'jverkerk'@'localhost';
+
 -- =======================================================
 DROP TABLE IF EXISTS Benutzer;
 CREATE TABLE Benutzer(
