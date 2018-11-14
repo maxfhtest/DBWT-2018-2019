@@ -1,7 +1,79 @@
 ﻿<!DOCTYPE html>
 @{
     Layout = "~/_Layout.cshtml";
-    Page.Title = "Impressum";
+    Page.Title = "Produkte";
 }
-<meta http-equiv="refresh" content="3; url=Start.cshtml">
-<div class="row"><div class="col-12"><h1>Impressum</h1></div></div>
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-9">
+        <h1>Verfügbare Speisen (Bestseller)</h1>
+    </div>
+</div>
+<div class="row mt-5">
+    <div class="col-3">
+        <form>
+            <fieldset>
+                <legend>Speiseliste filtern</legend>
+                <select class="form-control btn-outline-success">
+                    <option selected> Kategorien</option>
+                    <option> Option 1 </option>
+                    <option> Option 2 </option>
+                </select>
+                <br />
+                <input type="checkbox" name="name1" value="Verfügbar"><label class="choice ml-1">nur verfügbare</label><br />
+                <input type="checkbox" name="name2" value="Vegetarisch"><label class="choice ml-1">nur vegetarische</label><br />
+                <input type="checkbox" name="name3" value="Vegan"><label class="choice ml-1">nur vegane</label><br /><br />
+                <input class="btn btn-outline-success btn-center" type="submit" value="Speisen filtern"><br />
+            </fieldset>
+        </form>
+    </div>
+    <div class="col-7">
+        <div class="row">
+            <!-- Obere Reihe der Speisen-->
+            <div class="col-3">
+                <img title="Wok-Bild" class="square" alt="gericht" src="img/curry_wok.jpg" />
+                <p class="mb-0">Curry Wok</p>
+                <a href="Detail.cshtml" class="mb-1">Details</a>
+            </div>
+            <div class="col-3">
+                <img title="Schnitzel-Bild" class="square" alt="gericht" src="img/schnitzel.jpg" />
+                <p class="mb-0">Schnitzel</p>
+                <a href="Detail.cshtml" class="mb-1">Details</a>
+            </div>
+            <div class="col-3">
+                <img title="Bratrolle-Bild" class="square" alt="gericht" src="img/bratrolle.jpg" />
+                <p class="mb-0">Bratrolle</p>
+                <a href="Detail.cshtml" class="mb-1">Details</a>
+            </div>
+            <div class="col-3">
+                <img title="Krautsalat-Bild" class="square" alt="gericht" src="img/krautsalat.jpg" />
+                <p class="mb-0">Krautsalat</p>
+                <a href="Detail.cshtml" class="mb-1">Details</a>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Untere Reihe der Speisen-->
+            <div class="col-3">
+                <img title="Falafel-Bild" class="square" alt="gericht" src="img/falafel.jpg" />
+                <p class="mb-0">Falafel</p>
+                <a href="Detail.cshtml">Details</a>
+            </div>
+            <div class="col-3">
+                <img title="Currywurst-Bild" class="square" alt="gericht" src="img/currywurst.jpg" />
+                <p class="mb-0">Currywurst</p>
+                <a href="Detail.cshtml">Details</a>
+            </div>
+            <div class="col-3">
+                <img title="Käsestulle-Bild" class="square unavailable" alt="gericht" src="img/kaesestulle.jpg" />
+                <p class="mb-0">Käsestulle</p>
+                <a class="isDisabled" href="Detail.cshtml">Details</a>
+            </div>
+            <div class="col-3">
+                <img title="Spiegelei-Bild" class="square" alt="gericht" src="img/spiegelei.jpg" />
+                <p class="mb-0">Spiegelei</p>
+                <a href="Detail.cshtml">Details</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-2"></div>
+</div>
