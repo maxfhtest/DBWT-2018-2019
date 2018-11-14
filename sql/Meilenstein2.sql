@@ -25,159 +25,181 @@ GRANT SELECT, DELETE, INSERT, UPDATE ON `Meilenstein2`.* TO 'jverkerk'@'localhos
 
 -- =======================================================
 
-DROP TABLE IF EXISTS Studenten;
-DROP TABLE IF EXISTS Mitarbeiter;
-DROP TABLE IF EXISTS fhangehoerige;
-DROP TABLE IF EXISTS gaeste;
-DROP TABLE IF EXISTS Benutzer;
 
-CREATE TABLE Benutzer(
-	`Nummer`        INT AUTO_INCREMENT      NOT NULL,
+
+CREATE TABLE users (
+	id              INT UNSIGNED AUTO_INCREMENT NOT NULL,
 	-- `NAME`
-	    `Vorname`   VARCHAR(100)            NOT NULL,	
-	    `Nachname`  VARCHAR(50)             NOT NULL,
-	`Aktiv`         TINYINT(1)  DEFAULT 0   NOT NULL,
-	`Anlegedatum`   TIMESTAMP   DEFAULT CURRENT_TIMESTAMP,
-	-- `Auth`
-	    `Salt`      CHAR(32)                NOT NULL,
-	    `Hash`      CHAR(24)                NOT NULL,
-	`Nutzername`    VARCHAR(50)             NOT NULL,
-	`Letzter Login` DATETIME    DEFAULT NULL	ON UPDATE CURRENT_TIMESTAMP,   -- optional
-	`E-Mail`        VARCHAR(255)            NOT NULL,
-	`Geburtsdatum`  DATE,                                                   -- optional
-	`Alter`         INT(3)		DEFAULT NULL,
-	PRIMARY KEY (`Nummer`),
-	CONSTRAINT uk UNIQUE (`Nutzername`, `E-Mail`)
+    firstname       VARCHAR(100)            NOT NULL,
+    lastname        VARCHAR(100)            NOT NULL,
+	active          TINYINT(1) DEFAULT TRUE NOT NULL,
+	created_at      DATE DEFAULT CURRENT_DATE,
+	salt            CHAR(32)                NOT NULL,
+	`hash`          CHAR(24)                NOT NULL,
+    loginname       VARCHAR(50)             NOT NULL,
+	last_login      DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+	mail            VARCHAR(255)            NOT NULL,
+	birth           DATE,            
+	age             INT(3) AS (year(CURRENT_TIMESTAMP) - year(birth)) DEFAULT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT uk UNIQUE (loginname, mail)
 );
-DESCRIBE Benutzer;
 
-
-DROP TABLE IF EXISTS Bestellungen;
-CREATE TABLE Bestellungen(
-	`Nummer`            INT AUTO_INCREMENT      NOT NULL,
-	`Abholzeitpunkt` 	DATETIME DEFAULT NULL,
-	`Bestellzeitpunkt` 	DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	PRIMARY KEY (`Nummer`),
-	CONSTRAINT ck_abholzeitpunkt CHECK (Abholzeitpunkt > Bestellzeitpunkt)
-	-- `Endpreis` DECIMAL --ToDo ! -- mehr als 99,99€
+CREATE TABLE IF NOT EXISTS members (
+    id      INT UNSIGNED AUTO_INCREMENT     NOT NULL ,
+    FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE,
+    PRIMARY KEY (id)
 );
-DESCRIBE Bestellungen;
 
-
-DROP TABLE IF EXISTS Mahlzeiten;
-CREATE TABLE Mahlzeiten(
-	`ID`            INT AUTO_INCREMENT      NOT NULL,
-	`Beschreibung`  TEXT                    NOT NULL,
-	`Verfügbar`     TINYINT(1) DEFAULT 0    NOT NULL,
-	`Vorrat`        INT UNSIGNED DEFAULT 0  NOT NULL,
-	PRIMARY KEY(`ID`) -- ,
-	-- ONSTRAINT ck_verfügbar CHECK (Vorrat = CASE WHEN Vorrat IS NOT `0` THEN Verfügbar IS `1` ELSE `0` END),
+CREATE TABLE IF NOT EXISTS guests (
+    id             INT UNSIGNED             NOT NULL,
+    reason         VARCHAR(200)             NOT NULL,
+    expiry_date    DATE DEFAULT (CURDATE()+7),
+    FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE,
+    PRIMARY KEY (id)
 );
-DESCRIBE Mahlzeiten;
 
-
-DROP TABLE IF EXISTS Deklarationen;
-CREATE TABLE Deklarationen(
-	`Zeichen`       VARCHAR(2)   NOT NULL,
-	`Beschriftung`  VARCHAR(32)  NOT NULL,
-	CONSTRAINT pk_zeichen PRIMARY KEY(`Zeichen`)
+CREATE TABLE IF NOT EXISTS students (
+    id             INT UNSIGNED             NOT NULL,
+    course         ENUM ('ET', 'INF', 'ISE', 'MCD', 'WI')  NOT NULL,
+    matric_no      INT UNSIGNED UNIQUE CHECK( id > 9999999 AND id < 1000000000),
+    FOREIGN KEY (id) REFERENCES members(id) ON DELETE CASCADE,
+    PRIMARY KEY (id)
+	-- 	CONSTRAINT `chk_matrikelnummer` CHECK (`Matrikelnummer` > 9999999 OR `Matrikelnummer` < 1000000000)
 );
-DESCRIBE Deklarationen;
 
+CREATE TABLE IF NOT EXISTS courses (
+    id             INT UNSIGNED             NOT NULL,
+    designation    VARCHAR(64)              NOT NULL,
+	website        VARCHAR(128)             NOT NULL,
+	PRIMARY KEY (id)	
+)
 
-DROP TABLE IF EXISTS Preise;
-CREATE TABLE Preise(
-	`Gastpreis`    DECIMAL(4,2)   NOT NULL,
-	`Studentpreis` DECIMAL (4,2),           -- Optional
-	`MA-Preis`     DECIMAL (4,2),           -- Optional
-	`Jahr`         INT(3)         NOT NULL, -- Fremdschlüssel ?!
-	CONSTRAINT ck_studentenpreis CHECK (`Studentpreis` < `MA-Preis`)
-	-- FOREIGN Key Jahr
+CREATE TABLE IF NOT EXISTS enrolment (
+	student_id     INT UNSIGNED             NOT NULL,
+	course_id      INT UNSIGNED             NOT NULL,
+	FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+	FOREIGN KEY (course_id) REFERENCES courses(id),
+)
+
+CREATE TABLE IF NOT EXISTS employees (
+    id             INT UNSIGNED             NOT NULL,
+    phone_number   VARCHAR (64),
+    office         VARCHAR(3) UNSIGNED,
+    FOREIGN KEY (id) REFERENCES members(id) ON DELETE CASCADE,
+    PRIMARY KEY (id)
 );
-DESCRIBE Preise;
 
-
-DROP TABLE IF EXISTS Kategorien;
-CREATE TABLE Kategorien(
-	`ID` INT UNSIGNED AUTO_INCREMENT    NOT NULL,
-	`Bezeichnung` VARCHAR(50)           NOT NULL,
-	CONSTRAINT pk_id PRIMARY KEY (`ID`)
+CREATE TABLE IF NOT EXISTS orders (
+    id             INT UNSIGNED AUTO_INCREMENT NOT NULL,
+    order_time     TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	pickup_time    TIMESTAMP DEFAULT NULL CHECK (pickup_time > order_time),
+    user_id        INT UNSIGNED                NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    PRIMARY KEY (id)
+	-- CONSTRAINT chk_abholzeitpunkt CHECK (pickup_time > order_time),
+	-- Endpreis ToDo!
 );
-DESCRIBE Kategorien;
 
-
-DROP TABLE IF EXISTS Bilder;
-CREATE TABLE Bilder(
-	`ID` INT UNSIGNED AUTO_INCREMENT   NOT NULL,
-	`Alt-Text`   VARCHAR(100)          NOT NULL,
-	`Titel`      VARCHAR(100),                    -- Optional
-	`Binärdaten` BLOB                  NOT NULL,
-	PRIMARY KEY (`ID`)
+CREATE TABLE IF NOT EXISTS products (
+   	id            INT AUTO_INCREMENT       NOT NULL,
+	description   TEXT                     NOT NULL,
+	stock         INT UNSIGNED DEFAULT 0   NOT NULL,
+	available     TINYINT(1) DEFAULT 0     NOT NULL CHECK (CASE WHEN stock IS NOT `0` THEN available IS `1` ELSE `0` END),
+    category_id   INT UNSIGNED             NOT NULL,	
+    FOREIGN KEY (image_id) REFERENCES images(id),
+    FOREIGN KEY (category_id) REFERENCES categorys(id),
+    PRIMARY KEY (id)
+	-- CONSTRAINT chk_avail CHECK (CASE WHEN stock IS NOT `0` THEN available IS `1` ELSE `0` END),
 );
-DESCRIBE Bilder;
 
-
-DROP TABLE IF EXISTS Zutaten;
-CREATE TABLE Zutaten(
-	`ID`          INT(5) UNSIGNED      NOT NULL,
-	`Name`    	  VARCHAR(50)          NOT NULL,
-	`Bio`         TINYINT(1) Default 0 NOT NULL,
-	`Vegetarisch` TINYINT(1) Default 0 NOT NULL,
-	`Vegan`       TINYINT(1) Default 0 NOT NULL,
-	`Glutenfrei`  TINYINT(1) Default 0 NOT NULL,
-	PRIMARY KEY (`ID`)
+CREATE TABLE IF NOT EXISTS order_items (
+    product_id     INT UNSIGNED            NOT NULL,
+	quantity       INT DEFAULT 0           NOT NULL,
+    order_id       INT UNSIGNED            NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products(id),
+    FOREIGN KEY (order_id) REFERENCES orders(id)
 );
-DESCRIBE Zutaten;
 
-
-DROP TABLE IF EXISTS Kommentare;
-CREATE TABLE Kommentare(
-	`ID`        INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	`Bemerkung` VARCHAR(255),	-- optional
-	`Bewertung` VARCHAR(255) NOT NULL,
-	PRIMARY KEY (`ID`)
+CREATE TABLE IF NOT EXISTS categorys (
+    id            INT UNSIGNED AUTO_INCREMENT NOT NULL,
+    designation   VARCHAR(100),
+    upper_category_id INT UNSIGNED DEFAULT NULL,
+    image_id INT UNSIGNED,
+    FOREIGN KEY (image_id) REFERENCES images(id),
+    PRIMARY KEY (id),
+	CONSTRAINT upper_category FOREIGN KEY (upper_category_id) REFERENCES categorys(id),
 );
-DESCRIBE Kommentare;
 
--- Ablaufdatum standardmäßig eine Woche in der Zukunft
--- der Grund wird nicht länger als 255 Zeichen lang
-
-CREATE TABLE gaeste(
-	`Ablaufdatum`  DATE DEFAULT (CURRENT_DATE + INTERVAL 7 DAY) NOT NULL, -- (CURDATE()+7)
-	`Grund`        VARCHAR(255) NOT NULL,
-	`benutzer_nummer` INT,
-	FOREIGN KEY (benutzer_nummer) REFERENCES Benutzer(Nummer) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS prices (
+    guest         DECIMAL(4,2)             NOT NULL,
+    student       DECIMAL(4,2),
+    employee      DECIMAL (4,2),
+    id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (id) REFERENCES products(id),
+	CONSTRAINT ck_studentenpreis CHECK (student < employee)
+	-- Jahr ?!
 );
-DESCRIBE gaeste;
 
-CREATE TABLE fhangehoerige(
-	`benutzer_nummer` INT,
-	FOREIGN KEY (benutzer_nummer) REFERENCES Benutzer(Nummer) ON DELETE CASCADE
-);
-DESCRIBE fhangehoerige;
+CREATE TABLE IF NOT EXISTS label (
+	symbol        VARCHAR(2)               NOT NULL,
+	label         VARCHAR(32)              NOT NULL,
+	PRIMARY KEY (symbol)
+)
 
-DROP TABLE IF EXISTS Fachbereiche;
-CREATE TABLE Fachbereiche(
-	`ID`          INT(5) UNSIGNED      NOT NULL,
-	`Name`        VARCHAR(50)          NOT NULL,
-	`Website`     VARCHAR(100)         NOT NULL,
-	PRIMARY KEY (`ID`)
-);
-DESCRIBE Fachbereiche;
+CREATE TABLE IF NOT EXISTS product_label (
+	products_id    INT                     NOT NULL,
+	label_symbol   INT                     NOT NULL,
+	FOREIGN KEY (product_id) REFERENCES products(id),
+	FOREIGN KEY (label_symbol) REFERENCES label(symbol)
+)
 
-CREATE TABLE Mitarbeiter(
-	`Büro`       INT(3) UNSIGNED, -- ToDo: Gibt es die nur in einem Gebäude ?
-	`Telefon`    VARCHAR (64),
-	`benutzer_nummer` INT,
-	FOREIGN KEY (benutzer_nummer) REFERENCES fhangehoerige(benutzer_nummer) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS images (
+    id             INT UNSIGNED AUTO_INCREMENT,
+    blob_data      BLOB                    NOT NULL,
+    alttext        VARCHAR(60)             NOT NULL,
+    title          VARCHAR(60),
+    PRIMARY KEY(ID)
 );
-DESCRIBE Mitarbeiter;
 
-CREATE TABLE Studenten(
-	`Studiengang`		ENUM ('ET', 'INF', 'ISE', 'MCD', 'WI')  NOT NULL,
-	`Matrikelnummer`	INT                                     NOT NULL,
-	CONSTRAINT `ck_matrikelnummer` CHECK (`Matrikelnummer` > 9999999 OR `Matrikelnummer` < 1000000000),
-	`benutzer_nummer` INT,
-	FOREIGN KEY (benutzer_nummer) REFERENCES fhangehoerige(benutzer_nummer) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS product_image (
+	product_id     INT                     NOT NULL,
+	image_id       INT                     NOT NULL,
+	FOREIGN KEY (product_id) REFERENCES products(id),
+	FOREIGN KEY (image_id) REFERENCES images(id)
+)
+
+CREATE TABLE IF NOT EXISTS ingredients (
+    id             INT UNSIGNED AUTO_INCREMENT NOT NULL,
+	`name`    	   VARCHAR(50)          NOT NULL,
+	bio            TINYINT(1) Default 0 NOT NULL,
+	vegetarian     TINYINT(1) Default 0 NOT NULL,
+	vegan          TINYINT(1) Default 0 NOT NULL,
+	gluten-free    TINYINT(1) Default 0 NOT NULL,
+	PRIMARY KEY (id)
 );
-DESCRIBE Studenten;
+
+CREATE TABLE IF NOT EXISTS products_ingredients (
+    product_id     INT UNSIGNED         NOT NULL,
+    ingredient_id  INT UNSIGNED         NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products(id),
+    FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)
+);
+
+CREATE TABLE IF NOT EXISTS comments (
+    id             INT UNSIGNED AUTO_INCREMENT NOT NULL,	
+	comment        VARCHAR(255),
+	rating         ENUM ('Poor', 'Fair', 'Average', 'Good', 'Excellent', 'It`s only food' )  NOT NULL,
+	student_id     INT UNSIGNED         NOT NULL,
+	product_id    INT UNSIGNED         NOT NULL,
+	FOREIGN KEY (product_id) REFERENCES products(id),
+	FOREIGN KEY (student_id) REFERENCES students(id)
+)
+
+CREATE TABLE friends(
+	friendone	 INT,
+	friendtwo	 INT,
+	FOREIGN KEY (friendone) REFERENCES Benutzer(Nummer),
+	FOREIGN KEY (friendtwo) REFERENCES Benutzer(Nummer),
+	CONSTRAINT chk_friends CHECK (friendone != friendtwo)
+);
