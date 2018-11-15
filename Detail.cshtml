@@ -36,15 +36,14 @@
         con.Open();
         MySqlCommand cmd;
         cmd = con.CreateCommand();
-        cmd.CommandText = "SELECT * FROM products Where id like " + G.ID + ";";
+        cmd.CommandText = "SELECT * FROM Mahlzeiten Where ID like " + G.ID + ";";
         MySqlDataReader r = cmd.ExecuteReader();
 
         while (r.Read())
         {
-
-            G.Beschreibung = r["description"].ToString();
-            G.Stock = Convert.ToInt32(r["stock"]);
-            G.Verfuegbar = Convert.ToBoolean(r["available"]);
+            G.Beschreibung = r["Beschreibung"].ToString();
+            G.Stock = Convert.ToInt32(r["Vorrat"]);
+            //G.Verfuegbar = Convert.ToBoolean(r["Verfügbar"]);
         }
         r.Close();
     }
@@ -54,7 +53,7 @@
         GotException = true;
     }
 
-    if (G.ID == 0 || qstring == "" || @GotException)
+    if (G.ID == 0 || qstring == "" || @GotException || @G.Beschreibung == null)
     {
     @section head{
         <meta http-equiv="refresh" content="3; url=Start.cshtml">
