@@ -2,6 +2,8 @@
 # Diese .gitignore-Datei wurde von Microsoft(R) Visual Studio automatisch erstellt.
 ################################################################################
 
+docker-data/**
+
 /VS/VS
 /VS/.vs/VS/v15
 /VS
