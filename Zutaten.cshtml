@@ -8,6 +8,19 @@
 {
 <i class="far @(flag ? "fa-check-circle" : "fa-circle")"></i>
 }
+@functions
+{
+    class ZutatenModel
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string Beschreibung { get; set; }
+        public bool Bio { get; set; }
+        public bool Vegetarisch { get; set; }
+        public bool Vegan { get; set; }
+        public bool Glutenfrei { get; set; }
+    }
+}
 @helper MarkBio(bool bio)
 {
     if (bio)
@@ -15,68 +28,66 @@
 <img src="~/img/bio.svg" height="25" alt="[BIO!]" />
     }
 }
+@{
+    string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
+    MySqlConnection con = new MySqlConnection(conString);
+}
 <div class="table-responsive">
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>Zutat</th>
-                <th>Beschreibung</th>
-                <th>Vegetarisch?</th>
-                <th>Vegan?</th>
-                <th>Glutenfrei?</th>
-            </tr>
-        </thead>
-        <tbody>
-            @{
-                string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
-                MySqlConnection con = new MySqlConnection(conString);
-                con.Open();
-                MySqlCommand cmd;
-                try
+    @{
+        try
+        {
+            con.Open();
+            MySqlCommand cmd;
+            cmd = con.CreateCommand();
+            cmd.CommandText = "SELECT * FROM ingredients ORDER BY bio DESC";
+            MySqlDataReader r = cmd.ExecuteReader();
+
+            while (r.Read())
+            {
+                var z = new ZutatenModel
                 {
-                    cmd = con.CreateCommand();
-                    cmd.CommandText = "SELECT * FROM ingredients ORDER BY bio DESC";
-                    MySqlDataReader r = cmd.ExecuteReader();
+                    ID = Convert.ToInt32(r["ID"]),
+                    Name = r["name"].ToString(),
+                    Beschreibung = r["beschreibung"].ToString(),
+                    Bio = Convert.ToBoolean(r["bio"]),
+                    Vegetarisch = Convert.ToBoolean(r["vegetarian"]),
+                    Vegan = Convert.ToBoolean(r["vegan"]),
+                    Glutenfrei = Convert.ToBoolean(r["gluten-free"])
+                };
 
-                    while (r.Read())
-                    {
-                        //var zutat = new ZutatenModel
-                        //{
-                        //    //ID = Convert.ToInt32(r["ID"]),
-                        //    Name = r["name"].ToString(),
-                        //    Bio = Convert.ToBoolean(r["bio"]),
-                        //    Vegetarisch = Convert.ToBoolean(r["vegetarian"]),
-                        //    Vegan = Convert.ToBoolean(r["vegan"]),
-                        //    Glutenfrei = Convert.ToBoolean(r["gluten-free"])
-                        //};
+                String Tooltipp = "Suchen sie nach '" + @z.Name + "' im Web";
 
-                        String Tooltipp = "Suchen sie nach '"+@r["name"]+"' im Web";
-
-                        String NameForWebSearch = ""+@r["name"];
-                        NameForWebSearch = NameForWebSearch.Replace(" ", "%20");
-
+                String NameForWebSearch = "" + @z.Name;
+                NameForWebSearch = NameForWebSearch.Replace(" ", "%20");
+        <table class="table table-hover">
+            <thead>
                 <tr>
-                    <td><a href="@($"http://www.google.de/search?q={NameForWebSearch}")" target="_blank" title="@Tooltipp">@r["name"] @MarkBio(Convert.ToBoolean(@r["bio"]))</a></td>
-                    <td>@r["Beschreibung"]</td>
-                    <td>@FlagIcon(Convert.ToBoolean(@r["vegetarian"]))</td>
-                    <td>@FlagIcon(Convert.ToBoolean(@r["vegan"]))</td>
-                    <td>@FlagIcon(Convert.ToBoolean(@r["gluten-free"]))</td>
+                    <th>Zutat</th>
+                    <th>Beschreibung</th>
+                    <th>Vegetarisch?</th>
+                    <th>Vegan?</th>
+                    <th>Glutenfrei?</th>
                 </tr>
-
-                    }
-                    r.Close();
-                }
-                catch (Exception e)
-                {
-                    //throw new Exception();
-                <li>
-                    <p class="error">Das hat nicht geklappt.</p>
-                    <pre>@e.Message</pre>
-                </li>
-                }
-                con.Close();
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a href="@($"http://www.google.de/search?q={NameForWebSearch}")" target="_blank" title="@Tooltipp">@z.Name @MarkBio(z.Bio)</a></td>
+                    <td>@z.Beschreibung</td>
+                    <td>@FlagIcon(z.Vegetarisch)</td>
+                    <td>@FlagIcon(z.Vegan)</td>
+                    <td>@FlagIcon(z.Glutenfrei)</td>
+                </tr>
+            </tbody>
+        </table>
             }
-
-        </tbody>
-    </table>
+            r.Close();
+        }
+        catch (Exception e)
+        {
+            //throw new Exception();
+        <p class="error">Das hat nicht geklappt.</p>
+        <pre>@e.Message</pre>
+        }
+        con.Close();
+    }
 </div>
