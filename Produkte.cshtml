@@ -15,7 +15,7 @@
         public int ID { get; set; }
         public string Beschreibung { get; set; }
         public int Stock { get; set; }
-        public bool Verfuegbar { get; set; }
+        public bool Verfügbar { get; set; }
     }
 }
 <div class="row">
@@ -51,7 +51,7 @@
                     con.Open();
                     MySqlCommand cmd;
                     cmd = con.CreateCommand();
-                    cmd.CommandText = "SELECT * FROM products ORDER BY id Limit 4;";
+                    cmd.CommandText = "SELECT * FROM mahlzeiten ORDER BY id Limit 4;";
                     MySqlDataReader r = cmd.ExecuteReader();
 
                     int count = 0;
@@ -59,15 +59,15 @@
                     {
                         var G = new GerichtModel
                         {
-                            ID = Convert.ToInt32(r["id"]),
-                            Beschreibung = r["description"].ToString(),
-                            Stock = Convert.ToInt32(r["stock"]),
-                            Verfuegbar = Convert.ToBoolean(r["available"])
+                            ID = Convert.ToInt32(r["ID"]),
+                            Beschreibung = r["Beschreibung"].ToString(),
+                            Stock = Convert.ToInt32(r["Vorrat"]),
+                            Verfügbar = Convert.ToBoolean(r["Verfuegbar"])
                         };
 
                 <div class="col-3">
                     @{
-                                if (G.Verfuegbar)
+                                if (G.Verfügbar)
                                 {
                         <img title="Wok-Bild" class="square" alt="gericht" src="img/krautsalat.jpg" />
                         <p class="mb-0">@G.Beschreibung</p>
