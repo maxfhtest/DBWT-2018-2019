@@ -65,19 +65,19 @@
                             Verfuegbar = Convert.ToBoolean(r["available"])
                         };
 
-                <div class="col-3">
-                    @{
-                                 if (G.Verfuegbar){
-                        <img title="Wok-Bild" class="square" alt="gericht" src="img/krautsalat.jpg" />
-                        <p class="mb-0">@G.Beschreibung</p>
-                        <a href="Detail.cshtml?id=@G.ID" class="mb-1">Details</a>
-                                 } else {
-                        <img title="Wok-Bild" class="square unavailable" alt="gericht" src="img/krautsalat.jpg" />
-                        <p class="mb-0">@G.Beschreibung</p>
-                        <p>Vergriffen</p>
-                                 }
-                    }
-                </div>
+                        <div class="col-3">
+                            @{
+                                         if (G.Verfuegbar){
+                                <img title="Wok-Bild" class="square" alt="gericht" src="img/krautsalat.jpg" />
+                                <p class="mb-0">@G.Beschreibung</p>
+                                <a href="Detail.cshtml?id=@G.ID" class="mb-1">Details</a>
+                                         } else {
+                                <img title="Wok-Bild" class="square unavailable" alt="gericht" src="img/krautsalat.jpg" />
+                                <p class="mb-0">@G.Beschreibung</p>
+                                <p>Vergriffen</p>
+                                         }
+                            }
+                        </div>
 
                         // HIER: wenn count == 3 erreicht ist (also Vier gerichte erstellt wurden,
                         //dann sollte ein </div> zu gehen und eine neue <div class = "row"> Reihe aufgemacht werden
