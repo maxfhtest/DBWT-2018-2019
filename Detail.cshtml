@@ -20,20 +20,23 @@
 }
 @{
     string qstring = Request.QueryString["id"];
-    var G = new GerichtModel{};
+    var G = new GerichtModel { };
 
-    try{
+    try
+    {
         G.ID = Convert.ToInt32(qstring);
-    } catch {
+    }
+    catch
+    {
         G.ID = 0;
     }
-
+    Boolean GotException = false;
     try
     {
         con.Open();
         MySqlCommand cmd;
         cmd = con.CreateCommand();
-        cmd.CommandText = "SELECT * FROM products Where id like "+G.ID+";";
+        cmd.CommandText = "SELECT * FROM products Where id like " + G.ID + ";";
         MySqlDataReader r = cmd.ExecuteReader();
 
         while (r.Read())
@@ -47,9 +50,15 @@
     }
     catch (Exception e)
     {
-        G.Beschreibung = ""+e.Message;
-        G.Stock = 0;
-        G.Verfuegbar = false;
+    <p> @e.Message</p>
+        GotException = true;
+    }
+
+    if (G.ID == 0 || qstring == "" || @GotException)
+    {
+    @section head{
+        <meta http-equiv="refresh" content="3; url=Start.cshtml">
+    }
     }
 }
 <div class="row">
