@@ -14,7 +14,7 @@
     {
         public int ID { get; set; }
         public string Name { get; set; }
-        public string Beschreibung { get; set; }
+        //public string Beschreibung { get; set; }
         public bool Bio { get; set; }
         public bool Vegetarisch { get; set; }
         public bool Vegan { get; set; }
@@ -25,7 +25,7 @@
 {
     if (bio)
     {
-<img src="~/img/bio.svg" height="25" alt="[BIO!]" />
+        <img src="~/img/bio.svg" height="25" alt="[BIO!]" />
     }
 }
 @{
@@ -33,61 +33,62 @@
     MySqlConnection con = new MySqlConnection(conString);
 }
 <div class="table-responsive">
-    @{
-        try
-        {
-            con.Open();
-            MySqlCommand cmd;
-            cmd = con.CreateCommand();
-            cmd.CommandText = "SELECT * FROM ingredients ORDER BY bio DESC";
-            MySqlDataReader r = cmd.ExecuteReader();
-
-            while (r.Read())
-            {
-                var z = new ZutatenModel
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Zutat</th>
+                @*<th>Beschreibung</th>*@
+                <th>Vegetarisch?</th>
+                <th>Vegan?</th>
+                <th>Glutenfrei?</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                try
                 {
-                    ID = Convert.ToInt32(r["ID"]),
-                    Name = r["name"].ToString(),
-                    Beschreibung = r["beschreibung"].ToString(),
-                    Bio = Convert.ToBoolean(r["bio"]),
-                    Vegetarisch = Convert.ToBoolean(r["vegetarian"]),
-                    Vegan = Convert.ToBoolean(r["vegan"]),
-                    Glutenfrei = Convert.ToBoolean(r["gluten-free"])
-                };
+                    con.Open();
+                    MySqlCommand cmd;
+                    cmd = con.CreateCommand();
+                    cmd.CommandText = "SELECT * FROM zutaten ORDER BY Bio DESC";
+                    MySqlDataReader r = cmd.ExecuteReader();
 
-                String Tooltipp = "Suchen sie nach '" + @z.Name + "' im Web";
 
-                String NameForWebSearch = "" + @z.Name;
-                NameForWebSearch = NameForWebSearch.Replace(" ", "%20");
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Zutat</th>
-                    <th>Beschreibung</th>
-                    <th>Vegetarisch?</th>
-                    <th>Vegan?</th>
-                    <th>Glutenfrei?</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><a href="@($"http://www.google.de/search?q={NameForWebSearch}")" target="_blank" title="@Tooltipp">@z.Name @MarkBio(z.Bio)</a></td>
-                    <td>@z.Beschreibung</td>
-                    <td>@FlagIcon(z.Vegetarisch)</td>
-                    <td>@FlagIcon(z.Vegan)</td>
-                    <td>@FlagIcon(z.Glutenfrei)</td>
-                </tr>
-            </tbody>
-        </table>
+                    while (r.Read())
+                    {
+                        var z = new ZutatenModel
+                        {
+                            ID = Convert.ToInt32(r["ID"]),
+                            Name = r["Name"].ToString(),
+                            //Beschreibung = r["Beschreibung"].ToString(),
+                            Bio = Convert.ToBoolean(r["Bio"]),
+                            Vegetarisch = Convert.ToBoolean(r["Vegetarisch"]),
+                            Vegan = Convert.ToBoolean(r["Vegan"]),
+                            Glutenfrei = Convert.ToBoolean(r["Glutenfrei"])
+                        };
+
+                        String Tooltipp = "Suchen sie nach '" + @z.Name + "' im Web";
+
+                        String NameForWebSearch = "" + @z.Name;
+                        NameForWebSearch = NameForWebSearch.Replace(" ", "%20");
+                        <tr>
+                            <td><a href="@($"http://www.google.de/search?q={NameForWebSearch}")" target="_blank" title="@Tooltipp">@z.Name @MarkBio(z.Bio)</a></td>
+                            @*<td>@z.Beschreibung</td>*@
+                            <td>@FlagIcon(z.Vegetarisch)</td>
+                            <td>@FlagIcon(z.Vegan)</td>
+                            <td>@FlagIcon(z.Glutenfrei)</td>
+                        </tr>
+                    }
+                    r.Close();
+                }
+                catch (Exception e)
+                {
+                    //throw new Exception();
+                    <p class="error">Das hat nicht geklappt.</p>
+                    <pre>@e.Message</pre>
+                }
+                con.Close();
             }
-            r.Close();
-        }
-        catch (Exception e)
-        {
-            //throw new Exception();
-        <p class="error">Das hat nicht geklappt.</p>
-        <pre>@e.Message</pre>
-        }
-        con.Close();
-    }
+        </tbody>
+    </table>
 </div>
