@@ -1,7 +1,22 @@
-﻿<!DOCTYPE html>
+﻿@using System.Configuration
+@using MySql.Data.MySqlClient;
 @{
     Layout = "~/_Layout.cshtml";
     Page.Title = "Produkte";
+}
+@{
+    string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
+    MySqlConnection con = new MySqlConnection(conString);
+}
+@functions
+{
+    class GerichtModel
+    {
+        public int ID { get; set; }
+        public string Beschreibung { get; set; }
+        public int Stock { get; set; }
+        public bool Verfügbar { get; set; }
+    }
 }
 <div class="row">
     <div class="col-3"></div>
@@ -30,50 +45,61 @@
     <div class="col-7">
         <div class="row">
             <!-- Obere Reihe der Speisen-->
-            <div class="col-3">
-                <img title="Wok-Bild" class="square" alt="gericht" src="img/curry_wok.jpg" />
-                <p class="mb-0">Curry Wok</p>
-                <a href="Detail.cshtml" class="mb-1">Details</a>
-            </div>
-            <div class="col-3">
-                <img title="Schnitzel-Bild" class="square" alt="gericht" src="img/schnitzel.jpg" />
-                <p class="mb-0">Schnitzel</p>
-                <a href="Detail.cshtml" class="mb-1">Details</a>
-            </div>
-            <div class="col-3">
-                <img title="Bratrolle-Bild" class="square" alt="gericht" src="img/bratrolle.jpg" />
-                <p class="mb-0">Bratrolle</p>
-                <a href="Detail.cshtml" class="mb-1">Details</a>
-            </div>
-            <div class="col-3">
-                <img title="Krautsalat-Bild" class="square" alt="gericht" src="img/krautsalat.jpg" />
-                <p class="mb-0">Krautsalat</p>
-                <a href="Detail.cshtml" class="mb-1">Details</a>
-            </div>
-        </div>
-        <div class="row">
-            <!-- Untere Reihe der Speisen-->
-            <div class="col-3">
-                <img title="Falafel-Bild" class="square" alt="gericht" src="img/falafel.jpg" />
-                <p class="mb-0">Falafel</p>
-                <a href="Detail.cshtml">Details</a>
-            </div>
-            <div class="col-3">
-                <img title="Currywurst-Bild" class="square" alt="gericht" src="img/currywurst.jpg" />
-                <p class="mb-0">Currywurst</p>
-                <a href="Detail.cshtml">Details</a>
-            </div>
-            <div class="col-3">
-                <img title="Käsestulle-Bild" class="square unavailable" alt="gericht" src="img/kaesestulle.jpg" />
-                <p class="mb-0">Käsestulle</p>
-                <a class="isDisabled" href="Detail.cshtml">Details</a>
-            </div>
-            <div class="col-3">
-                <img title="Spiegelei-Bild" class="square" alt="gericht" src="img/spiegelei.jpg" />
-                <p class="mb-0">Spiegelei</p>
-                <a href="Detail.cshtml">Details</a>
-            </div>
+            @{
+                try
+                {
+                    con.Open();
+                    MySqlCommand cmd;
+                    cmd = con.CreateCommand();
+                    cmd.CommandText = "SELECT * FROM mahlzeiten ORDER BY id Limit 4;";
+                    MySqlDataReader r = cmd.ExecuteReader();
+
+                    int count = 0;
+                    while (r.Read() && count < 8)
+                    {
+                        var G = new GerichtModel
+                        {
+                            ID = Convert.ToInt32(r["ID"]),
+                            Beschreibung = r["Beschreibung"].ToString(),
+                            Stock = Convert.ToInt32(r["Vorrat"]),
+                            Verfügbar = Convert.ToBoolean(r["Verfuegbar"])
+                        };
+
+                <div class="col-3">
+                    @{
+                                if (G.Verfügbar)
+                                {
+                        <img title="Wok-Bild" class="square" alt="gericht" src="img/krautsalat.jpg" />
+                        <p class="mb-0">@G.Beschreibung</p>
+                        <a href="Detail.cshtml?id=@G.ID" class="mb-1">Details</a>
+                                }
+                                else
+                                {
+                        <img title="Wok-Bild" class="square unavailable" alt="gericht" src="img/krautsalat.jpg" />
+                        <p class="mb-0">@G.Beschreibung</p>
+                        <p>Vergriffen</p>
+                                }
+                    }
+                </div>
+
+                        // HIER: wenn count == 3 erreicht ist (also Vier gerichte erstellt wurden,
+                        //dann sollte ein </div> zu gehen und eine neue <div class = "row"> Reihe aufgemacht werden
+                        //(also die nächsten Vier Gerichte in  der nächsten Reihe...)
+
+                        count++;
+                    }
+                    r.Close();
+                }
+                catch (Exception e)
+                {
+                <div class="col-12">
+                    @*<img title="Wok-Bild" class="square unavailable" alt="gericht" src="" />*@
+                    <p class="mb-0">@e.Message</p>
+                </div>
+                }
+            }
         </div>
     </div>
-    <div class="col-2"></div>
+    <div class="col-2">
+    </div>
 </div>

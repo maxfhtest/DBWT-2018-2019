@@ -1,0 +1,94 @@
+@using System.Configuration
+@using MySql.Data.MySqlClient;
+@{
+    Layout = "~/_Layout.cshtml";
+    Page.Title = "Zutaten";
+}
+@helper FlagIcon(bool flag)
+{
+<i class="far @(flag ? "fa-check-circle" : "fa-circle")"></i>
+}
+@functions
+{
+    class ZutatenModel
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        //public string Beschreibung { get; set; }
+        public bool Bio { get; set; }
+        public bool Vegetarisch { get; set; }
+        public bool Vegan { get; set; }
+        public bool Glutenfrei { get; set; }
+    }
+}
+@helper MarkBio(bool bio)
+{
+    if (bio)
+    {
+        <img src="~/img/bio.svg" height="25" alt="[BIO!]" />
+    }
+}
+@{
+    string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
+    MySqlConnection con = new MySqlConnection(conString);
+}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Zutat</th>
+                @*<th>Beschreibung</th>*@
+                <th>Vegetarisch?</th>
+                <th>Vegan?</th>
+                <th>Glutenfrei?</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                try
+                {
+                    con.Open();
+                    MySqlCommand cmd;
+                    cmd = con.CreateCommand();
+                    cmd.CommandText = "SELECT * FROM zutaten ORDER BY Bio DESC";
+                    MySqlDataReader r = cmd.ExecuteReader();
+
+
+                    while (r.Read())
+                    {
+                        var z = new ZutatenModel
+                        {
+                            ID = Convert.ToInt32(r["ID"]),
+                            Name = r["Name"].ToString(),
+                            //Beschreibung = r["Beschreibung"].ToString(),
+                            Bio = Convert.ToBoolean(r["Bio"]),
+                            Vegetarisch = Convert.ToBoolean(r["Vegetarisch"]),
+                            Vegan = Convert.ToBoolean(r["Vegan"]),
+                            Glutenfrei = Convert.ToBoolean(r["Glutenfrei"])
+                        };
+
+                        String Tooltipp = "Suchen sie nach '" + @z.Name + "' im Web";
+
+                        String NameForWebSearch = "" + @z.Name;
+                        NameForWebSearch = NameForWebSearch.Replace(" ", "%20");
+                        <tr>
+                            <td><a href="@($"http://www.google.de/search?q={NameForWebSearch}")" target="_blank" title="@Tooltipp">@z.Name @MarkBio(z.Bio)</a></td>
+                            @*<td>@z.Beschreibung</td>*@
+                            <td>@FlagIcon(z.Vegetarisch)</td>
+                            <td>@FlagIcon(z.Vegan)</td>
+                            <td>@FlagIcon(z.Glutenfrei)</td>
+                        </tr>
+                    }
+                    r.Close();
+                }
+                catch (Exception e)
+                {
+                    //throw new Exception();
+                    <p class="error">Das hat nicht geklappt.</p>
+                    <pre>@e.Message</pre>
+                }
+                con.Close();
+            }
+        </tbody>
+    </table>
+</div>

@@ -193,6 +193,20 @@ CREATE TABLE IF NOT EXISTS ingredients (
     vegan         TINYINT(1) DEFAULT TRUE NOT NULL,
     PRIMARY KEY (id)
 );
+-- INSERT INTO `ingredients` (`id`, `name`, `Beschreibung`, `vegan`, `vegetarian`, `bio`, `gluten-free`) VALUES
+--	(1, 'Tomate', 'Das ist ein rotes, essbares, rundes Gemüse', 1, 1, 1, 1),
+--	(2, 'Zwiebel', 'Rundet alles ab', 1, 1, 1, 1),
+--	(3, 'Rinderfleisch', 'Zartes und saftiges Rinderfleisch', 0, 0, 1, 1),
+--	(4, 'Hähnchen', 'Auf engsten Raum gehalten.', 0, 0, 0, 1),
+--	(5, 'Brötchen', 'Frisch gebacken.', 1, 1, 0, 0),
+--	(6, 'Ketchup', 'Heinz leistet da gute arbeit.', 0, 0, 0, 0),
+--	(7, 'Eisberg Salat', 'Bauer Heinz beliefert uns täglich.', 1, 1, 1, 1),
+--	(8, 'Eier', 'Jeden Tag frische Eier.', 1, 1, 1, 1),
+--	(9, 'Curry', 'Curry aus Indien.', 1, 1, 1, 1),
+--	(10, 'Karotten', 'Frische Karotten.', 1, 1, 1, 1),
+--	(11, 'Bratrolle', 'Aus den Niederlanden.', 0, 0, 0, 1),
+--	(12, 'Schweinefleisch', 'Massenhaltung für Billigpreis', 0, 0, 0, 1),
+--	(13, 'Pommes', 'Kartoffelsticks', 0, 0, 0, 0);
 
 CREATE TABLE IF NOT EXISTS products_ingredients (
     product_id INT UNSIGNED NOT NULL,

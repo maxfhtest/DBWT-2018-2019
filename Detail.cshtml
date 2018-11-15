@@ -1,11 +1,69 @@
-﻿@{
+﻿@using System.Configuration
+@using MySql.Data.MySqlClient;
+@{
     Layout = "~/_Layout.cshtml";
     Page.Title = "Detail";
+}
+@{
+    string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
+    MySqlConnection con = new MySqlConnection(conString);
+}
+@functions
+{
+    class GerichtModel
+    {
+        public int ID { get; set; }
+        public string Beschreibung { get; set; }
+        public int Stock { get; set; }
+        public bool Verfuegbar { get; set; }
+    }
+}
+@{
+    string qstring = Request.QueryString["id"];
+    var G = new GerichtModel { };
+
+    try
+    {
+        G.ID = Convert.ToInt32(qstring);
+    }
+    catch
+    {
+        G.ID = 0;
+    }
+    Boolean GotException = false;
+    try
+    {
+        con.Open();
+        MySqlCommand cmd;
+        cmd = con.CreateCommand();
+        cmd.CommandText = "SELECT * FROM Mahlzeiten Where ID like " + G.ID + ";";
+        MySqlDataReader r = cmd.ExecuteReader();
+
+        while (r.Read())
+        {
+            G.Beschreibung = r["Beschreibung"].ToString();
+            G.Stock = Convert.ToInt32(r["Vorrat"]);
+            //G.Verfuegbar = Convert.ToBoolean(r["Verfügbar"]);
+        }
+        r.Close();
+    }
+    catch (Exception e)
+    {
+    <p> @e.Message</p>
+        GotException = true;
+    }
+
+    if (G.ID == 0 || qstring == "" || @GotException || @G.Beschreibung == null)
+    {
+    @section head{
+        <meta http-equiv="refresh" content="3; url=Start.cshtml">
+    }
+    }
 }
 <div class="row">
     <div class="col-3"></div>
     <div class="col-6">
-        <h1>Details für "Falafel"</h1>
+        <h1>Details für "@G.Beschreibung"</h1>
     </div>
     <div class="col-3"></div>
 </div>
@@ -48,7 +106,7 @@
                 </ul>
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade show active" id="descriptions" role="tabpanel" aria-labelledby="descriptions-tab">
-                        Teigtasche mit Falafel aus Kichererbsen und Sesam, dazu passt hervorragend der <a href="Detail.cshtml">Krautsalat</a>
+                        Die Beschreibung des Gerichtes '@G.Beschreibung'
                     </div>
                     <div class="tab-pane fade" id="incredients" role="tabpanel" aria-labelledby="incredients-tab">
                         Zutaten des Gerichtes..
