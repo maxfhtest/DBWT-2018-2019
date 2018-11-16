@@ -7,7 +7,29 @@
 @{
     string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
     MySqlConnection con = new MySqlConnection(conString);
+
+    int MaxMeals = 0;
+    Boolean NoQueryString = false;
+    String qstring = Request.QueryString["meals"];
+
+    if (qstring != null)
+    {
+        try
+        {
+            MaxMeals = Convert.ToInt32(qstring);
+        }
+        catch
+        {
+            MaxMeals = 8;
+        }
+    }
+    else
+    {
+        MaxMeals = 8;
+
+    }
 }
+
 @functions
 {
     class GerichtModel
@@ -51,11 +73,11 @@
                     con.Open();
                     MySqlCommand cmd;
                     cmd = con.CreateCommand();
-                    cmd.CommandText = "SELECT * FROM mahlzeiten ORDER BY id Limit 4;";
+                    cmd.CommandText = "SELECT * FROM mahlzeiten ORDER BY id"; /*Limit 4;";*/
                     MySqlDataReader r = cmd.ExecuteReader();
 
                     int count = 0;
-                    while (r.Read() && count < 8)
+                    while (r.Read() && count < MaxMeals)
                     {
                         var G = new GerichtModel
                         {
@@ -65,27 +87,22 @@
                             Verfügbar = Convert.ToBoolean(r["Verfuegbar"])
                         };
 
-                <div class="col-3">
-                    @{
-                                if (G.Verfügbar)
-                                {
-                        <img title="Wok-Bild" class="square" alt="gericht" src="img/krautsalat.jpg" />
-                        <p class="mb-0">@G.Beschreibung</p>
-                        <a href="Detail.cshtml?id=@G.ID" class="mb-1">Details</a>
-                                }
-                                else
-                                {
-                        <img title="Wok-Bild" class="square unavailable" alt="gericht" src="img/krautsalat.jpg" />
-                        <p class="mb-0">@G.Beschreibung</p>
-                        <p>Vergriffen</p>
-                                }
-                    }
-                </div>
-
-                        // HIER: wenn count == 3 erreicht ist (also Vier gerichte erstellt wurden,
-                        //dann sollte ein </div> zu gehen und eine neue <div class = "row"> Reihe aufgemacht werden
-                        //(also die nächsten Vier Gerichte in  der nächsten Reihe...)
-
+                        <div class="col-3">
+                            @{
+                                            if (G.Verfügbar)
+                                            {
+                                <img title="Wok-Bild" class="square" alt="gericht" src="img/krautsalat.jpg" />
+                                <p class="mb-0">@G.Beschreibung</p>
+                                <a href="Detail.cshtml?id=@G.ID" class="mb-1">Details</a>
+                                            }
+                                            else
+                                            {
+                                <img title="Wok-Bild" class="square unavailable" alt="gericht" src="img/krautsalat.jpg" />
+                                <p class="mb-0">@G.Beschreibung</p>
+                                <p>Vergriffen</p>
+                                            }
+                            }
+                        </div>
                         count++;
                     }
                     r.Close();
