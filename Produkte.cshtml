@@ -17,7 +17,7 @@
         try
         {
             MaxMeals = Convert.ToInt32(qstring);
-            if(MaxMeals > 8)
+            if (MaxMeals > 8)
             {
                 MaxMeals = 8;
             }
@@ -43,6 +43,8 @@
         //public string Beschreibung { get; set; }
         public int Stock { get; set; }
         public bool Verfügbar { get; set; }
+        public Object Bilddaten { get; set; }
+        public string Bildtitel { get; set; }
     }
 }
 <div class="row">
@@ -78,7 +80,7 @@
                     con.Open();
                     MySqlCommand cmd;
                     cmd = con.CreateCommand();
-                    cmd.CommandText = "SELECT * FROM products ORDER BY id "; /*Limit 4;";*/
+                    cmd.CommandText = "SELECT products.* , images.`blob_data`, images.`title` FROM products, images WHERE products.`image_id` like images.`id` ORDER BY `id`;";
                     MySqlDataReader r = cmd.ExecuteReader();
 
                     int count = 0;
@@ -90,21 +92,22 @@
                             Name = r["name"].ToString(),
                             //Beschreibung = r["description"].ToString(),
                             Stock = Convert.ToInt32(r["stock"]),
-                            Verfügbar = Convert.ToBoolean(r["available"])
+                            Verfügbar = Convert.ToBoolean(r["available"]),
+                            Bilddaten = r["blob_data"],
+                            Bildtitel = r["title"].ToString()
                         };
 
                 <div class="col-3">
                     @{
+                        @Helper.Base64Image((byte[])r["blob_data"], r["title"].ToString(), G.Verfügbar)
+                        <p class="mb-0">@G.Name</p>
+
                                 if (G.Verfügbar)
                                 {
-                        <img title="Wok-Bild" class="square" alt="gericht" src="img/krautsalat.jpg" />
-                        <p class="mb-0">@G.Name</p>
                         <a href="Detail.cshtml?id=@G.ID" class="mb-1">Details</a>
                                 }
                                 else
                                 {
-                        <img title="Wok-Bild" class="square unavailable" alt="gericht" src="img/krautsalat.jpg" />
-                        <p class="mb-0">@G.Name</p>
                         <p>Vergriffen</p>
                                 }
                     }
