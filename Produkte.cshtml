@@ -73,7 +73,7 @@
                     con.Open();
                     MySqlCommand cmd;
                     cmd = con.CreateCommand();
-                    cmd.CommandText = "SELECT * FROM mahlzeiten ORDER BY id"; /*Limit 4;";*/
+                    cmd.CommandText = "SELECT * FROM mahlzeiten ORDER BY id "; /*Limit 4;";*/
                     MySqlDataReader r = cmd.ExecuteReader();
 
                     int count = 0;
@@ -87,22 +87,22 @@
                             Verfügbar = Convert.ToBoolean(r["Verfuegbar"])
                         };
 
-                        <div class="col-3">
-                            @{
-                                            if (G.Verfügbar)
-                                            {
-                                <img title="Wok-Bild" class="square" alt="gericht" src="img/krautsalat.jpg" />
-                                <p class="mb-0">@G.Beschreibung</p>
-                                <a href="Detail.cshtml?id=@G.ID" class="mb-1">Details</a>
-                                            }
-                                            else
-                                            {
-                                <img title="Wok-Bild" class="square unavailable" alt="gericht" src="img/krautsalat.jpg" />
-                                <p class="mb-0">@G.Beschreibung</p>
-                                <p>Vergriffen</p>
-                                            }
-                            }
-                        </div>
+                <div class="col-3">
+                    @{
+                                if (G.Verfügbar)
+                                {
+                        <img title="Wok-Bild" class="square" alt="gericht" src="img/krautsalat.jpg" />
+                        <p class="mb-0">@G.Beschreibung</p>
+                        <a href="Detail.cshtml?id=@G.ID" class="mb-1">Details</a>
+                                }
+                                else
+                                {
+                        <img title="Wok-Bild" class="square unavailable" alt="gericht" src="img/krautsalat.jpg" />
+                        <p class="mb-0">@G.Beschreibung</p>
+                        <p>Vergriffen</p>
+                                }
+                    }
+                </div>
                         count++;
                     }
                     r.Close();
