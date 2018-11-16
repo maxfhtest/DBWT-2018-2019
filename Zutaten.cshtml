@@ -50,7 +50,7 @@
                     con.Open();
                     MySqlCommand cmd;
                     cmd = con.CreateCommand();
-                    cmd.CommandText = "SELECT * FROM zutaten ORDER BY Bio DESC";
+                    cmd.CommandText = "SELECT * FROM ingredients ORDER BY bio DESC";
                     MySqlDataReader r = cmd.ExecuteReader();
 
 
@@ -58,13 +58,13 @@
                     {
                         var z = new ZutatenModel
                         {
-                            ID = Convert.ToInt32(r["ID"]),
-                            Name = r["Name"].ToString(),
+                            ID = Convert.ToInt32(r["id"]),
+                            Name = r["name"].ToString(),
                             //Beschreibung = r["Beschreibung"].ToString(),
-                            Bio = Convert.ToBoolean(r["Bio"]),
-                            Vegetarisch = Convert.ToBoolean(r["Vegetarisch"]),
-                            Vegan = Convert.ToBoolean(r["Vegan"]),
-                            Glutenfrei = Convert.ToBoolean(r["Glutenfrei"])
+                            Bio = Convert.ToBoolean(r["bio"]),
+                            Vegetarisch = Convert.ToBoolean(r["vegetarian"]),
+                            Vegan = Convert.ToBoolean(r["vegan"]),
+                            Glutenfrei = Convert.ToBoolean(r["glutenfree"])
                         };
 
                         String Tooltipp = "Suchen sie nach '" + @z.Name + "' im Web";
