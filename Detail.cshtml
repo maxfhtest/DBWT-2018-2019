@@ -39,23 +39,23 @@
         con.Open();
         MySqlCommand cmd;
         cmd = con.CreateCommand();
-        cmd.CommandText = "SELECT * FROM Mahlzeiten Where ID like " + G.ID + ";";
+        cmd.CommandText = "SELECT * FROM products Where id like " + G.ID + ";";
         MySqlDataReader r = cmd.ExecuteReader();
 
         while (r.Read())
         {
-            G.Beschreibung = r["Beschreibung"].ToString();
-            G.Stock = Convert.ToInt32(r["Vorrat"]);
+            G.Beschreibung = r["description"].ToString();
+            G.Stock = Convert.ToInt32(r["stock"]);
             //G.Verfuegbar = Convert.ToBoolean(r["Verfügbar"]);
         }
         r.Close();
 
         //Speichere Zutaten zum Gericht in einer Liste
-        cmd.CommandText = "Select zutaten.ID, zutaten.Name, `mahlzeit-zutaten`.`Mahlzeiten-ID` FROM zutaten, `mahlzeit-zutaten` WHERE zutaten.ID = `mahlzeit-zutaten`.`Zutaten-ID` and `mahlzeit-zutaten`.`Mahlzeiten-ID` = " + G.ID + ";";
+        cmd.CommandText = "Select ingredients.id, ingredients.name, `products_ingredients`.`product_id` FROM ingredients, `products_ingredients` WHERE ingredients.id = `products_ingredients`.`ingredient_id` and `products_ingredients`.`product_id = " + G.ID + ";";
         r = cmd.ExecuteReader();
         while (r.Read())
         {
-            zutatenliste.Add(r["Name"].ToString() + " ".ToString());
+            zutatenliste.Add(r["name"].ToString() + " ".ToString());
         }
         r.Close();
     }
