@@ -15,6 +15,7 @@
 {
     class GerichtModel
     {
+        public string Name { get; set; }
         public int ID { get; set; }
         public string Beschreibung { get; set; }
         public int Stock { get; set; }
@@ -44,6 +45,7 @@
 
         while (r.Read())
         {
+            G.Name = r["name"].ToString();
             G.Beschreibung = r["description"].ToString();
             G.Stock = Convert.ToInt32(r["stock"]);
             //G.Verfuegbar = Convert.ToBoolean(r["Verfügbar"]);
@@ -51,7 +53,7 @@
         r.Close();
 
         //Speichere Zutaten zum Gericht in einer Liste
-        cmd.CommandText = "Select ingredients.id, ingredients.name, `products_ingredients`.`product_id` FROM ingredients, `products_ingredients` WHERE ingredients.id = `products_ingredients`.`ingredient_id` and `products_ingredients`.`product_id = " + G.ID + ";";
+        cmd.CommandText = "Select ingredients.id, ingredients.name, `products_ingredients`.`product_id` FROM ingredients, `products_ingredients` WHERE ingredients.id = `products_ingredients`.`ingredient_id` and `products_ingredients`.`product_id` = " + G.ID + ";";
         r = cmd.ExecuteReader();
         while (r.Read())
         {
@@ -75,7 +77,7 @@
 <div class="row">
     <div class="col-3"></div>
     <div class="col-6">
-        <h1>Details für "@G.Beschreibung"</h1>
+        <h1>Details für "@G.Name"</h1>
     </div>
     <div class="col-3"></div>
 </div>
@@ -118,7 +120,7 @@
                 </ul>
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade show active" id="descriptions" role="tabpanel" aria-labelledby="descriptions-tab">
-                        Die Beschreibung des Gerichtes '@G.Beschreibung'
+                        @G.Beschreibung
                     </div>
                     <div class="tab-pane fade" id="incredients" role="tabpanel" aria-labelledby="incredients-tab">
                         <p>
