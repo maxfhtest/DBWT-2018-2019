@@ -17,6 +17,10 @@
         try
         {
             MaxMeals = Convert.ToInt32(qstring);
+            if(MaxMeals > 8)
+            {
+                MaxMeals = 8;
+            }
         }
         catch
         {
@@ -35,7 +39,8 @@
     class GerichtModel
     {
         public int ID { get; set; }
-        public string Beschreibung { get; set; }
+        public string Name { get; set; }
+        //public string Beschreibung { get; set; }
         public int Stock { get; set; }
         public bool Verfügbar { get; set; }
     }
@@ -73,7 +78,7 @@
                     con.Open();
                     MySqlCommand cmd;
                     cmd = con.CreateCommand();
-                    cmd.CommandText = "SELECT * FROM mahlzeiten ORDER BY id "; /*Limit 4;";*/
+                    cmd.CommandText = "SELECT * FROM products ORDER BY id "; /*Limit 4;";*/
                     MySqlDataReader r = cmd.ExecuteReader();
 
                     int count = 0;
@@ -81,10 +86,11 @@
                     {
                         var G = new GerichtModel
                         {
-                            ID = Convert.ToInt32(r["ID"]),
-                            Beschreibung = r["Beschreibung"].ToString(),
-                            Stock = Convert.ToInt32(r["Vorrat"]),
-                            Verfügbar = Convert.ToBoolean(r["Verfuegbar"])
+                            ID = Convert.ToInt32(r["id"]),
+                            Name = r["name"].ToString(),
+                            //Beschreibung = r["description"].ToString(),
+                            Stock = Convert.ToInt32(r["stock"]),
+                            Verfügbar = Convert.ToBoolean(r["available"])
                         };
 
                 <div class="col-3">
@@ -92,13 +98,13 @@
                                 if (G.Verfügbar)
                                 {
                         <img title="Wok-Bild" class="square" alt="gericht" src="img/krautsalat.jpg" />
-                        <p class="mb-0">@G.Beschreibung</p>
+                        <p class="mb-0">@G.Name</p>
                         <a href="Detail.cshtml?id=@G.ID" class="mb-1">Details</a>
                                 }
                                 else
                                 {
                         <img title="Wok-Bild" class="square unavailable" alt="gericht" src="img/krautsalat.jpg" />
-                        <p class="mb-0">@G.Beschreibung</p>
+                        <p class="mb-0">@G.Name</p>
                         <p>Vergriffen</p>
                                 }
                     }
