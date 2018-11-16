@@ -121,10 +121,12 @@
                         Die Beschreibung des Gerichtes '@G.Beschreibung'
                     </div>
                     <div class="tab-pane fade" id="incredients" role="tabpanel" aria-labelledby="incredients-tab">
+
                         @foreach (var item in zutatenliste)
                         {
-                            <p>@item</p>
+                        <p>@item</p>
                         }
+
                     </div>
                     <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab" style="height: 150%">
                         <!--ToDo: Schöne Lösung-->
