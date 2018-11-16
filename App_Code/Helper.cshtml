@@ -1,197 +1,23 @@
-@helper HelperName(string name)
+@helper Base64Image(byte[] bindata, string alt, bool available)
 {
-    // your helper can contain code and/or markup, e.g.
-    // var msg = "Hello " + name;
-    // <p>@msg</p>
-    // For more information, visit https://go.microsoft.com/fwlink/?LinkID=204658
-}
-@using MySql.Data.MySqlClient
-@using System.Data
-@{
-    string constring = ConfigurationManager.ConnectionStrings["mariadb"].ConnectionString;
-}
-@functions
-{
-    public static void getSession(string user, string constring)
+    if (bindata != null && bindata.Length > 0)
     {
-        using (MySqlConnection con = new MySqlConnection(constring))
-        {
-            con.Open();
-            MySqlCommand cmd;
-            cmd = con.CreateCommand();
-            cmd.CommandText = "SELECT `FE-Nutzer`.Vorname AS vn, Nr FROM `FE-Nutzer` WHERE `FE-Nutzer`.Loginname='" + user + "';";
+        string Base64Prefix = "data:image/jpeg;base64,";
+        string image = Base64Prefix + System.Convert.ToBase64String(bindata);
 
-            MySqlDataReader r = cmd.ExecuteReader(CommandBehavior.SingleResult);
-
-            while (r.Read())
-            {
-                Session["user"] = r["vn"].ToString();
-                findRole(Convert.ToInt32(r["nr"]), constring);
-            }
-            r.Close();
-            con.Close();
-        }
-    }
-    public static void findRole(int id, string constring)
-    {
-        if (Helper.finRole_Helper(id, constring,
-            "SELECT COUNT(*) AS count FROM `fe-nutzer` WHERE `fe-nutzer`.nr = @id AND EXISTS(SELECT gast.`FE-Nr` FROM `fe-nutzer` JOIN gast ON gast.`FE-Nr` = @id)")
-                != 0)
+        // Diese Base64-codierte Repräsentation der Bilddatei wird dem Browser direkt übergeben
+        if (available)
         {
-            Session["role"] = "Gast";
+<img class="square" alt="@alt" src="@image" />
         }
-        else if (Helper.finRole_Helper(id, constring,
-            "SELECT COUNT(*) AS count FROM `fe-nutzer` WHERE `fe-nutzer`.nr = @id AND EXISTS(SELECT student.`FE-Nr` FROM `fe-nutzer` JOIN student ON student.`FE-Nr` = @id)")
-                != 0)
+        else
         {
-            Session["role"] = "Student";
+<img class="square unavailable" alt="@alt" src="@image" />
         }
-        else if (Helper.finRole_Helper(id, constring,
-            "SELECT COUNT(*) AS count FROM `fe-nutzer` WHERE `fe-nutzer`.nr = @id AND EXISTS(SELECT mitarbeiter.`FE-Nr` FROM `fe-nutzer` JOIN mitarbeiter ON mitarbeiter.`FE-Nr` = @id)")
-                != 0)
-        {
-            Session["role"] = "Mitarbeiter";
-        }
-    }
-    public static int finRole_Helper(int id, string constring, string query)
-    {
-        int count = 0;
-        using (MySqlConnection con = new MySqlConnection(constring))
-        {
-            con.Open();
-            MySqlCommand cmd;
-            cmd = con.CreateCommand();
-            cmd.CommandText = query;
-            cmd.Parameters.AddWithValue("id", id);
 
-            MySqlDataReader r = cmd.ExecuteReader(CommandBehavior.SingleResult);
-
-            while (r.Read())
-            {
-                count = Convert.ToInt32(r["count"]);
-            }
-            r.Close();
-            con.Close();
-        }
-        return count;
-    }
-    public static bool validId(int id, string connectString)
-    {
-        using (MySqlConnection con = new MySqlConnection(connectString))
-        {
-            con.Open();
-            MySqlCommand cmd;
-            cmd = con.CreateCommand();
-            cmd.CommandText = "SELECT name FROM produkt WHERE produkt.id=@id";
-            cmd.Parameters.AddWithValue("id", id);
-
-            MySqlDataReader r = cmd.ExecuteReader(CommandBehavior.SingleResult);
-            while (r.Read())
-            {
-                r.Close();
-                con.Close();
-                return true;
-            }
-            r.Close();
-            con.Close();
-        }
-        return false;
-    }
-    public static string BlobToBase64(object b)
-    {
-        byte[] bytes = (byte[])b;
-        if (bytes != null)
-        {
-            return Convert.ToBase64String(bytes);
-        }
-        return "";
-    }
-
-}
-@helper products(string name, object picture, string altText, int nummer)
-{
-    string pic = Helper.BlobToBase64(picture);
-<div class="food col-md-2" id="speise-@nummer">
-    <img src="data:image/jpg;base64,@pic" class="col-md-12 img-thumbnail" alt="@altText" />
-    <div class="col-md-12 text-center">
-        <p>@name<br /><a href="~/Detail.cshtml?id=@nummer">Details</a></p>
-    </div>
-</div>
-}
-@helper categories(int headid, string connectString)
-{
-    using (MySqlConnection con = new MySqlConnection(connectString))
-    {
-        con.Open();
-        MySqlCommand cmd;
-        cmd = con.CreateCommand();
-        cmd.CommandText = "SELECT id, bezeichnung FROM kategorie WHERE oberkategorie =@id";
-        cmd.Parameters.AddWithValue("id", headid);
-
-        MySqlDataReader r = cmd.ExecuteReader();
-        while (r.Read())
-        {
-<option id="category-@Convert.ToInt64(r["id"])" value="@Convert.ToInt64(r["id"])">@r["bezeichnung"].ToString()</option>
-        }
-        r.Close();
-        con.Close();
-    }
-
-}
-@helper headline_category(int id, string connectString)
-{
-    if (id == 0)
-    {
-<h1 class="col-md-12 text-center">Verfügbare Speisen</h1>
     }
     else
     {
-        using (MySqlConnection con = new MySqlConnection(connectString))
-        {
-            con.Open();
-            MySqlCommand cmd;
-            cmd = con.CreateCommand();
-            cmd.CommandText = "SELECT bezeichnung FROM kategorie WHERE kategorie.id=@id";
-            cmd.Parameters.AddWithValue("id", id);
-
-            MySqlDataReader r = cmd.ExecuteReader(CommandBehavior.SingleResult);
-            while (r.Read())
-            {
-<h1 class="col-md-12 text-center">Verfügbare Speisen (@r["bezeichnung"])</h1>
-            }
-            r.Close();
-            con.Close();
-        }
+<p class="error">Es kann kein Bild gezeigt werden </p>
     }
 }
-@helper headline_detail(int id, string connectString)
-{
-    using (MySqlConnection con = new MySqlConnection(connectString))
-    {
-        con.Open();
-        MySqlCommand cmd;
-        cmd = con.CreateCommand();
-        cmd.CommandText = "SELECT name FROM produkt WHERE produkt.id=@id";
-        cmd.Parameters.AddWithValue("id", id);
-
-        MySqlDataReader r = cmd.ExecuteReader(CommandBehavior.SingleResult);
-        while (r.Read())
-        {
-<div class="col-md-2 invisible">Content</div>
-<h1 class="col-md-10">Details für "@r["name"]"</h1>
-        }
-        r.Close();
-        con.Close();
-    }
-}
-@helper detail(string preisname, double preis, object picture)
-{
-<img src="data:image/jpg;base64,@BlobToBase64(picture)" class="col-md-8" alt="Bild" style="height:150px; margin-top:1%;" />
-<div class="col-md-2" id="preis">
-    <h3 class="col-md-12">@preisname Preis @preis€</h3>
-    <div class="col-md-12">
-        <p class="text-center button_filter" role="button" id="vorbestellen"><i class="glyphicon glyphicon-cutlery"></i> Vorbestellen</p>
-    </div>
-</div>
-}
-
