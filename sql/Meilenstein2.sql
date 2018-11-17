@@ -1,5 +1,5 @@
-DROP DATABASE IF EXISTS Meilenstein2;
-CREATE DATABASE IF NOT EXISTS Meilenstein2;
+-- DROP DATABASE IF EXISTS Meilenstein2;
+-- CREATE DATABASE IF NOT EXISTS Meilenstein2;
 USE Meilenstein2;
 
 DROP TABLE IF EXISTS products_ingredients;
