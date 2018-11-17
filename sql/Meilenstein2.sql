@@ -191,7 +191,7 @@ CREATE TABLE IF NOT EXISTS prices (
     guest         DECIMAL(4,2)             NOT NULL,
     student       DECIMAL(4,2),
     employee      DECIMAL (4,2),
-    id INT UNSIGNED NOT NULL,
+    id INT UNSIGNED NOT NULL UNIQUE,
     `year` YEAR,
     FOREIGN KEY (id) REFERENCES products(id),
 	CONSTRAINT ck_studentenpreis CHECK (student < employee)
@@ -370,14 +370,14 @@ INSERT INTO `products` (name, description, stock, available, image_id, category_
 
 INSERT INTO prices (id, `year`, guest)
 	VALUES
-	('1', '2018', '5.95'),
-	('2', '2018', '5.95'),
-	('3', '2018', '5.95'),
+	('1', '2018', '2.95'),
+	('2', '2018', '3.95'),
+	('3', '2018', '4.95'),
 	('4', '2018', '5.95'),
-	('5', '2018', '5.95'),
-	('6', '2018', '5.95'),
-	('7', '2018', '5.95'),
-	('8', '2018', '5.95');
+	('5', '2018', '6.95'),
+	('6', '2018', '7.95'),
+	('7', '2018', '222.95'),
+	('8', '2018', '0.95');
 	
 	-- INSERT INTO `categorys` (`name`)
 	-- VALUES
