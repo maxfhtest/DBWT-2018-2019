@@ -40,7 +40,7 @@
         con.Open();
         MySqlCommand cmd;
         cmd = con.CreateCommand();
-        cmd.CommandText = "SELECT * FROM products Where id like " + G.ID + ";";
+        cmd.CommandText = "SELECT * FROM products Where id = " + G.ID + ";";
         MySqlDataReader r = cmd.ExecuteReader();
 
         while (r.Read())
@@ -165,7 +165,7 @@
     <div class="col-2">
         <p class="text-end">
             <b>Gast-Preis</b><br />
-            <b id="preis">5,95 &euro;</b>
+            <b id="preis">@Helper.GetPreisByGerichtID(G.ID) &euro;</b>
         </p>
         <div class="input-group-append">
             <button class="btn btn-block btn-outline-success" type="submit"><i class="fas fa-utensils"> Vorbestellen</i></button>

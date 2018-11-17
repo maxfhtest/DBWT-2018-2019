@@ -1,23 +1,50 @@
+@using System.Configuration
+@using MySql.Data.MySqlClient;
+
 @helper Base64Image(byte[] bindata, string alt, bool available)
 {
-    if (bindata != null && bindata.Length > 0)
-    {
-        string Base64Prefix = "data:image/jpeg;base64,";
-        string image = Base64Prefix + System.Convert.ToBase64String(bindata);
+                    /**/
 
-        // Diese Base64-codierte Repräsentation der Bilddatei wird dem Browser direkt übergeben
-        if (available)
-        {
-<img class="square" alt="@alt" src="@image" />
-        }
-        else
-        {
-<img class="square unavailable" alt="@alt" src="@image" />
-        }
+                    if (bindata != null && bindata.Length > 0)
+                    {
+                        string Base64Prefix = "data:image/jpeg;base64,";
+                        string image = Base64Prefix + System.Convert.ToBase64String(bindata);
 
-    }
-    else
+                        // Diese Base64-codierte Repräsentation der Bilddatei wird dem Browser direkt übergeben
+                        if (available)
+                        {
+                            <img class="square" alt="@alt" src="@image" />
+                        }
+                        else
+                        {
+                            <img class="square unavailable" alt="@alt" src="@image" />
+                        }
+
+                    }
+                    else
+                    {
+                        <p class="error">Es kann kein Bild gezeigt werden </p>
+                    }
+}
+
+
+
+@helper GetPreisByGerichtID(int id)
+{
+    string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
+    MySqlConnection con = new MySqlConnection(conString);
+    List<string> zutatenliste = new List<string>();
+
+    con.Open();
+    MySqlCommand cmd;
+    cmd = con.CreateCommand();
+    cmd.CommandText = "SELECT guest FROM prices Where id = @id";
+    cmd.Parameters.AddWithValue("id", id);
+    MySqlDataReader r = cmd.ExecuteReader();
+
+    while (r.Read())
     {
-<p class="error">Es kann kein Bild gezeigt werden </p>
+        @r["guest"].ToString();
     }
+    r.Close();
 }
