@@ -1,5 +1,5 @@
--- DROP DATABASE IF EXISTS Meilenstein2;
--- CREATE DATABASE IF NOT EXISTS Meilenstein2;
+DROP DATABASE IF EXISTS Meilenstein2;
+CREATE DATABASE IF NOT EXISTS Meilenstein2;
 USE Meilenstein2;
 
 DROP TABLE IF EXISTS products_ingredients;
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS members (
 CREATE TABLE IF NOT EXISTS guests (
     id             INT UNSIGNED             NOT NULL,
     reason         VARCHAR(200)             NOT NULL,
-    expiry_date    DATE DEFAULT (CURDATE()+7),
+    expire_date    DATE DEFAULT (CURDATE()+7),
     FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE,
     PRIMARY KEY (id)
 );
@@ -199,7 +199,7 @@ CREATE TABLE IF NOT EXISTS prices (
 
 CREATE TABLE IF NOT EXISTS ingredients (
     id            INT UNSIGNED AUTO_INCREMENT NOT NULL,
-    `name`    	   VARCHAR(50)          NOT NULL,
+    name    	   VARCHAR(50)          NOT NULL,
 	 glutenfree    TINYINT(1) DEFAULT TRUE NOT NULL,
     bio           TINYINT(1) DEFAULT TRUE NOT NULL,
     vegetarian    TINYINT(1) DEFAULT TRUE NOT NULL,
@@ -356,7 +356,7 @@ VALUES ('Klassiker','9'),
 ('Vegetarisch','9'),
 ('Tellergericht','9');
 
-DESCRIBE `products`;
+-- DESCRIBE `products`;
 INSERT INTO `products` (name, description, stock, available, image_id, category_id)
 	VALUES 
 	('Curry Wok', 	'Ein leckerer Wok'					, '12', 	'1', '1', '1'),
