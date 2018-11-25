@@ -5,47 +5,7 @@
     Page.Title = "Produkte";
 }
 @{
-    string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
-    MySqlConnection con = new MySqlConnection(conString);
-
-    int MaxMeals = 0;
-    Boolean NoQueryString = false;
     String qstring = Request.QueryString["meals"];
-
-    if (qstring != null)
-    {
-        try
-        {
-            MaxMeals = Convert.ToInt32(qstring);
-            if (MaxMeals > 8)
-            {
-                MaxMeals = 8;
-            }
-        }
-        catch
-        {
-            MaxMeals = 8;
-        }
-    }
-    else
-    {
-        MaxMeals = 8;
-
-    }
-}
-
-@functions
-{
-    class GerichtModel
-    {
-        public int ID { get; set; }
-        public string Name { get; set; }
-        //public string Beschreibung { get; set; }
-        public int Stock { get; set; }
-        public bool Verfügbar { get; set; }
-        public Object Bilddaten { get; set; }
-        public string Bildtitel { get; set; }
-    }
 }
 <div class="row">
     <div class="col-3"></div>
@@ -74,56 +34,7 @@
     <div class="col-7">
         <div class="row">
             <!-- Obere Reihe der Speisen-->
-            @{
-                try
-                {
-                    con.Open();
-                    MySqlCommand cmd;
-                    cmd = con.CreateCommand();
-                    cmd.CommandText = "SELECT products.* , images.`blob_data`, images.`title` FROM products, images WHERE products.`image_id` like images.`id` ORDER BY `id`;";
-                    MySqlDataReader r = cmd.ExecuteReader();
-
-                    int count = 0;
-                    while (r.Read() && count < MaxMeals)
-                    {
-                        var G = new GerichtModel
-                        {
-                            ID = Convert.ToInt32(r["id"]),
-                            Name = r["name"].ToString(),
-                            //Beschreibung = r["description"].ToString(),
-                            Stock = Convert.ToInt32(r["stock"]),
-                            Verfügbar = Convert.ToBoolean(r["available"]),
-                            Bilddaten = r["blob_data"],
-                            Bildtitel = r["title"].ToString()
-                        };
-
-                <div class="col-3">
-                    @{
-                        @Helper.Base64Image((byte[])r["blob_data"], r["title"].ToString(), G.Verfügbar)
-                        <p class="mb-0">@G.Name</p>
-
-                                if (G.Verfügbar)
-                                {
-                        <a href="Detail.cshtml?id=@G.ID" class="mb-1">Details</a>
-                                }
-                                else
-                                {
-                        <p>Vergriffen</p>
-                                }
-                    }
-                </div>
-                        count++;
-                    }
-                    r.Close();
-                }
-                catch (Exception e)
-                {
-                <div class="col-12">
-                    @*<img title="Wok-Bild" class="square unavailable" alt="gericht" src="" />*@
-                    <p class="mb-0">@e.Message</p>
-                </div>
-                }
-            }
+            @Helper.DrawProducts(qstring);
         </div>
     </div>
     <div class="col-2">
