@@ -3,31 +3,27 @@
 
 @helper Base64Image(byte[] bindata, string alt, bool available)
 {
-                    /**/
+    if (bindata != null && bindata.Length > 0)
+    {
+        string Base64Prefix = "data:image/jpeg;base64,";
+        string image = Base64Prefix + System.Convert.ToBase64String(bindata);
 
-                    if (bindata != null && bindata.Length > 0)
-                    {
-                        string Base64Prefix = "data:image/jpeg;base64,";
-                        string image = Base64Prefix + System.Convert.ToBase64String(bindata);
+        // Diese Base64-codierte Repräsentation der Bilddatei wird dem Browser direkt übergeben
+        if (available)
+        {
+<img class="square" alt="@alt" src="@image" />
+        }
+        else
+        {
+<img class="square unavailable" alt="@alt" src="@image" />
+        }
 
-                        // Diese Base64-codierte Repräsentation der Bilddatei wird dem Browser direkt übergeben
-                        if (available)
-                        {
-                            <img class="square" alt="@alt" src="@image" />
-                        }
-                        else
-                        {
-                            <img class="square unavailable" alt="@alt" src="@image" />
-                        }
-
-                    }
-                    else
-                    {
-                        <p class="error">Es kann kein Bild gezeigt werden </p>
-                    }
+    }
+    else
+    {
+<p class="error">Es kann kein Bild gezeigt werden </p>
+    }
 }
-
-
 
 @helper GetPreisByGerichtID(int id)
 {
@@ -44,7 +40,265 @@
 
     while (r.Read())
     {
-        @r["guest"].ToString();
+@r["guest"].ToString();
     }
     r.Close();
+    con.Close();
+}
+
+@*
+    - listet alle Zutaten auf
+*@
+@helper DrawIncredients()
+{
+    string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
+    MySqlConnection con = new MySqlConnection(conString);
+    try
+    {
+        con.Open();
+        MySqlCommand cmd;
+        cmd = con.CreateCommand();
+        cmd.CommandText = "SELECT id  FROM ingredients  ORDER BY id;";
+        MySqlDataReader r = cmd.ExecuteReader();
+        int count = 0;
+        while (r.Read()) //für jede id in der Tabelle incredients
+        {
+            ZutatenModel Z = GetZutatByID(Convert.ToInt32(r["id"]));
+            String Tooltipp = "Suchen sie nach '" + @Z.Name + "' im Web";
+            String NameForWebSearch = "" + @Z.Name;
+            NameForWebSearch = NameForWebSearch.Replace(" ", "%20");
+<tr>
+    <td><a href="@($"http://www.google.de/search?q={NameForWebSearch}")" target="_blank" title="@Tooltipp">@Z.Name @MarkBio(Z.Bio)</a></td>
+    @*<td>@z.Beschreibung</td>*@
+    <td>@FlagIcon(Z.Vegetarisch)</td>
+    <td>@FlagIcon(Z.Vegan)</td>
+    <td>@FlagIcon(Z.Glutenfrei)</td>
+</tr>
+        }
+        r.Close();
+        con.Close();
+    }
+    catch (Exception e)
+    {
+
+    }
+}
+
+@*
+    - Zeichnet (wenn Verbindung zur DB vorhanden) max. die ersten 8 Gericht sortiert nach der ID.
+    - Wenn keine Verbindung zur DB besteht, dann wird die jeweilige Exception mit ausgegeben.
+    - Die Anzahl der Gerichte kann direkt aus dem Query-String hier mit übergeben werden (zb. "6")
+    - zu den ersten 8 IDs wird je ein Objekt der Klasse "GerichtModel" erzeugt.
+*@
+@helper DrawProducts(string qstring)
+{
+    int MaxMeals = 0;
+    if (qstring != null)
+    {
+        try
+        {
+            MaxMeals = Convert.ToInt32(qstring);
+            if (MaxMeals > 8)
+            {
+                MaxMeals = 8;
+            }
+        }
+        catch
+        {
+            MaxMeals = 8;
+        }
+    }
+    else
+    {
+        MaxMeals = 8;
+
+    }
+
+    string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
+    MySqlConnection con = new MySqlConnection(conString);
+    try
+    {
+        con.Open();
+        MySqlCommand cmd;
+        cmd = con.CreateCommand();
+        cmd.CommandText = "SELECT products.id FROM products ORDER BY id;";
+        MySqlDataReader r = cmd.ExecuteReader();
+        int count = 0;
+        while (r.Read() && count < MaxMeals) //für jede id in der Tabelle Products (jedoch max. 8) :
+        {
+            GerichtModel G = GetGerichtByID(r["id"].ToString());
+<div class="col-3">
+    @{
+        @Helper.Base64Image((byte[])r["blob_data"], r["title"].ToString(), G.Verfuegbar)
+        <p class="mb-0">@G.Name</p>
+
+                    if (G.Verfuegbar)
+                    {
+        <a href="Detail.cshtml?id=@G.ID" class="mb-1">Details</a>
+                    }
+                    else
+                    {
+        <p>Vergriffen</p>
+                    }
+    }
+</div>
+            count++;
+        }
+        r.Close();
+        con.Close();
+    }
+    catch (Exception e)
+    {
+<div class="col-12">
+    @*<img title="Wok-Bild" class="square unavailable" alt="gericht" src="" />*@
+    <p class="mb-0">@e.Message</p>
+</div>
+    }
+}
+
+@* Helper: zeichnet ein Kreis bzw. ein angecheckten Kreis abhängig eines übergebenen Bools *@
+@helper FlagIcon(bool flag)
+{
+<i class="far @(flag ? "fa-check-circle" : "fa-circle")"></i>
+}
+
+@*Helper: fügt abhängig des übergebenen bools ein svg Bild ein*@
+@helper MarkBio(bool bio)
+{
+    if (bio)
+    {
+<img src="~/img/bio.svg" height="25" alt="[BIO!]" />
+    }
+}
+
+@functions
+{
+    class GerichtModel
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string Beschreibung { get; set; }
+        public int Stock { get; set; }
+        public bool Verfuegbar { get; set; }
+        public Object Bilddaten { get; set; }
+        public string Bildtitel { get; set; }
+    }
+
+    GerichtModel GetGerichtByID(string querystring)
+    {
+        string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
+        MySqlConnection con = new MySqlConnection(conString);
+        var G = new GerichtModel { };
+
+        try
+        {
+            G.ID = Convert.ToInt32(querystring);
+        }
+        catch
+        {
+            G.ID = 0;
+        }
+
+        try
+        {
+            con.Open();
+            MySqlCommand cmd;
+            cmd = con.CreateCommand();
+            cmd.CommandText = "SELECT products.*, images.`blob_data`, images.`title` AS alttext FROM products, images  Where products.`image_id` like images.`id` and products.id = " + G.ID + ";";
+            MySqlDataReader r = cmd.ExecuteReader();
+
+            while (r.Read())
+            {
+                G.Name = r["name"].ToString();
+                G.Beschreibung = r["description"].ToString();
+                G.Stock = Convert.ToInt32(r["stock"]);
+                G.Verfuegbar = Convert.ToBoolean(r["Verfügbar"]);
+                G.Bilddaten = r["blob_data"];
+                G.Bildtitel = r["alttext"].ToString();
+            }
+            r.Close();
+            con.Close();
+        }
+        catch (Exception e)
+        {
+            G.Beschreibung = "";
+            G.ID = 0;
+            G.Stock = 0;
+            G.Verfuegbar = false;
+        }
+        return G;
+    }
+
+    List<string> GetZutatenByGerichtID(int gerichtid)
+    {
+        List<string> liste = new List<string>();
+        string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
+        MySqlConnection con = new MySqlConnection(conString);
+        try
+        {
+            con.Open();
+            MySqlCommand cmd;
+            cmd = con.CreateCommand();
+            cmd.CommandText = "Select ingredients.id, ingredients.name, `products_ingredients`.`product_id` FROM ingredients, `products_ingredients` WHERE ingredients.id = `products_ingredients`.`ingredient_id` and `products_ingredients`.`product_id` = " + gerichtid.ToString() + ";";
+            MySqlDataReader r = cmd.ExecuteReader();
+            while (r.Read()) //Speichere alle Zutaten in einer Liste
+            {
+                liste.Add(r["name"].ToString() + " ".ToString());
+            }
+            r.Close();
+            con.Close();
+        }
+        catch
+        {
+        }
+        return liste;
+    }
+
+    class ZutatenModel
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        //public string Beschreibung { get; set; }
+        public bool Bio { get; set; }
+        public bool Vegetarisch { get; set; }
+        public bool Vegan { get; set; }
+        public bool Glutenfrei { get; set; }
+    }
+
+    ZutatenModel GetZutatByID(int zutatid)
+    {
+        string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
+        MySqlConnection con = new MySqlConnection(conString);
+        var Z = new ZutatenModel { };
+        try
+        {
+            con.Open();
+            MySqlCommand cmd;
+            cmd = con.CreateCommand();
+            cmd.CommandText = "SELECT id, name, glutenfree, bio, vegetarian, vegan FROM ingredients WHERE id = " + zutatid + " ORDER BY id;";
+            MySqlDataReader r = cmd.ExecuteReader();
+            while (r.Read())
+            {
+                Z.ID = Convert.ToInt32(r["id"]);
+                Z.Name = r["name"].ToString();
+                //Z.Beschreibung = r["Beschreibung"].ToString(),
+                Z.Bio = Convert.ToBoolean(r["bio"]);
+                Z.Vegetarisch = Convert.ToBoolean(r["vegetarian"]);
+                Z.Vegan = Convert.ToBoolean(r["vegan"]);
+                Z.Glutenfrei = Convert.ToBoolean(r["glutenfree"]);
+            }
+            r.Close();
+            con.Close();
+        }
+        catch
+        {
+            Z.ID = 0;
+            Z.Name = "";
+            Z.Bio = false;
+            Z.Vegetarisch = false;
+            Z.Vegan = false;
+            Z.Glutenfrei = false;
+        }
+        return Z;
+    }
 }
