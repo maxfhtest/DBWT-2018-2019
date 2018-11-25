@@ -1,73 +1,16 @@
 ﻿@using System.Configuration
 @using MySql.Data.MySqlClient;
-@using System.Collections.Generic; @*für array*@
+@using System.Collections.Generic; @*für Lists*@
 @{
     Layout = "~/_Layout.cshtml";
     Page.Title = "Detail";
 }
 @{
-    string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
-    MySqlConnection con = new MySqlConnection(conString);
-
-    List<string> zutatenliste = new List<string>();
-}
-@functions
-{
-    class GerichtModel
-    {
-        public string Name { get; set; }
-        public int ID { get; set; }
-        public string Beschreibung { get; set; }
-        public int Stock { get; set; }
-        public bool Verfuegbar { get; set; }
-    }
-}
-@{
     string qstring = Request.QueryString["id"];
-    var G = new GerichtModel { };
+    var G = Helper.GetGerichtByID(qstring);
+    List<string> zutatenliste = Helper.GetZutatenByGerichtID(G.ID);
 
-    try
-    {
-        G.ID = Convert.ToInt32(qstring);
-    }
-    catch
-    {
-        G.ID = 0;
-    }
-    Boolean GotException = false;
-    try
-    {
-        con.Open();
-        MySqlCommand cmd;
-        cmd = con.CreateCommand();
-        cmd.CommandText = "SELECT * FROM products Where id = " + G.ID + ";";
-        MySqlDataReader r = cmd.ExecuteReader();
-
-        while (r.Read())
-        {
-            G.Name = r["name"].ToString();
-            G.Beschreibung = r["description"].ToString();
-            G.Stock = Convert.ToInt32(r["stock"]);
-            //G.Verfuegbar = Convert.ToBoolean(r["Verfügbar"]);
-        }
-        r.Close();
-
-        //Speichere Zutaten zum Gericht in einer Liste
-        cmd.CommandText = "Select ingredients.id, ingredients.name, `products_ingredients`.`product_id` FROM ingredients, `products_ingredients` WHERE ingredients.id = `products_ingredients`.`ingredient_id` and `products_ingredients`.`product_id` = " + G.ID + ";";
-        r = cmd.ExecuteReader();
-        while (r.Read())
-        {
-            zutatenliste.Add(r["name"].ToString() + " ".ToString());
-        }
-        r.Close();
-    }
-    catch (Exception e)
-    {
-    <p> @e.Message</p>
-        GotException = true;
-    }
-
-    if (G.ID == 0 || qstring == "" || @GotException || @G.Beschreibung == null)
+    if (G.ID == 0 || qstring == "" || G.Beschreibung == null)
     {
     @section head{
         <meta http-equiv="refresh" content="3; url=Start.cshtml">
