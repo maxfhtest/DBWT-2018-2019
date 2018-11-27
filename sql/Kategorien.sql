@@ -1,0 +1,16 @@
+REPLACE INTO `categorys` (`id`, `name`, `upper_category_id` , `image_id`) VALUES
+	(1, 'Hauptspeisen', NULL, NULL),
+	(2, 'Kleinigkeiten', NULL, NULL),
+	(3, 'Smoothies', 2, NULL),
+	(4, 'Snacks', 2, NULL),
+	(5, 'Burger und Co', 1, NULL),
+	(6, 'Asiatisch', 1, NULL),
+	(7, 'Klassiker', 1, NULL),
+	(8, 'Italienisch', 1, NULL),
+	(9, 'Aktionen', NULL, NULL),
+	(10, 'Weihnachten', 9, NULL),
+	(11, 'Sommergenuss', 9, NULL),
+	(12, 'Mensa Vital', 9, NULL),
+	(13, 'Sonderangebote', NULL, NULL),
+	(14, 'Ersti-Woche', 13, NULL),
+	(15, 'Geburtstagsessen', 13, NULL);
