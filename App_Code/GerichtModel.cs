@@ -33,10 +33,6 @@ public class GerichtModel
         Studentpreis = 0;
         Mitarbeiterpreis = 0;
     }
-
-    // TODO: Set doesnt make any sense. Whe should call it getGerichtByID
-    // because we fetch our information from the connected DB and map them
-    // to our model.
     public bool SetGerichtByID(int id)
     {
         string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
@@ -84,12 +80,17 @@ public class GerichtModel
             r.Close();
 
             //Speichere Zutatenliste zum Gericht
-            cmd.CommandText = "Select ingredients.id, ingredients.name, `products_ingredients`.`product_id` FROM ingredients, `products_ingredients` WHERE ingredients.id = `products_ingredients`.`ingredient_id` and `products_ingredients`.`product_id` = " + this.ID + ";";
+            cmd.CommandText = "Select ingredients.id, ingredients.name, ingredients.bio, ingredients.vegetarian, ingredients.vegan, ingredients.glutenfree, `products_ingredients`.`product_id` FROM ingredients, `products_ingredients` WHERE ingredients.id = `products_ingredients`.`ingredient_id` and `products_ingredients`.`product_id` = " + this.ID + ";";
             MySqlDataReader r2 = cmd.ExecuteReader();
             while (r2.Read())
             {
                 ZutatenModel z = new ZutatenModel();
+                z.ID = Convert.ToInt32(r2["id"]);
                 z.Name = r2["name"].ToString();
+                z.Bio = Convert.ToBoolean(r2["bio"]);
+                z.Vegetarisch = Convert.ToBoolean(r2["vegetarian"]);
+                z.Vegan = Convert.ToBoolean(r2["vegan"]);
+                z.Glutenfrei = Convert.ToBoolean(r2["glutenfree"]);
                 this.Zutatenliste.Add(z);
             }
             r2.Close();
