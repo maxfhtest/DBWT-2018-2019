@@ -15,7 +15,7 @@ public class GerichtModel
     public bool Verfuegbar { get; set; }
     public Object Bilddaten { get; set; }
     public string Bildtitel { get; set; }
-    public List<string> Zutatenliste { get; set; }
+    public List<ZutatenModel> Zutatenliste { get; set; }
     public float Gastpreis { get; set; }
     public float Studentpreis { get; set; }
     public float Mitarbeiterpreis { get; set; }
@@ -28,7 +28,7 @@ public class GerichtModel
         Verfuegbar = false;
         Bilddaten = null;
         Bildtitel = "";
-        Zutatenliste = new List<string>();
+        Zutatenliste = new List<ZutatenModel>();
         Gastpreis = 0;
         Studentpreis = 0;
         Mitarbeiterpreis = 0;
@@ -88,7 +88,9 @@ public class GerichtModel
             MySqlDataReader r2 = cmd.ExecuteReader();
             while (r2.Read())
             {
-                this.Zutatenliste.Add(r2["name"].ToString() + " ".ToString());
+                ZutatenModel z = new ZutatenModel();
+                z.Name = r2["name"].ToString();
+                this.Zutatenliste.Add(z);
             }
             r2.Close();
 
