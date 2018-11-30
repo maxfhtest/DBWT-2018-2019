@@ -427,3 +427,17 @@ REPLACE INTO `users_friends` (`friendone`, `friendtwo`) VALUES (21, 23);
 REPLACE INTO `users_friends` (`friendone`, `friendtwo`) VALUES (21, 24);
 REPLACE INTO `users_friends` (`friendone`, `friendtwo`) VALUES (22, 23);
 REPLACE INTO `users_friends` (`friendone`, `friendtwo`) VALUES (22, 24);
+
+CREATE VIEW `Extended Product View` AS
+SELECT p.id, p.description, p.name, p.stock, p.available, 
+MIN(ing.vegetarian) AS VGT, 
+Min(ing.vegan) As VGN,
+img.blob_data, img.alttext, img.title
+FROM products p 
+JOIN products_ingredients pXing 
+JOIN ingredients ing
+ON p.id = pXing.product_id AND ing.id = pXing.ingredient_id 
+JOIN images img 
+ON p.image_id = img.id
+GROUP BY p.name
+ORDER BY p.id;
