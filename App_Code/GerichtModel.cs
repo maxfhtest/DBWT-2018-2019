@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Data.SqlClient;
 
 public class GerichtModel
 {
@@ -71,9 +72,9 @@ public class GerichtModel
                 this.Verfuegbar = Convert.ToBoolean(r["available"]);
                 this.Bilddaten = r["blob_data"];
                 this.Bildtitel = r["alttext"].ToString();
-                this.Gastpreis = (float) Convert.ToDouble(r["guest"]);
-                this.Studentpreis = (float) Convert.ToDouble(r["student"]);
-                this.Mitarbeiterpreis =(float) Convert.ToDouble(r["employee"]);
+                this.Gastpreis = (float)Convert.ToDouble(r["guest"]);
+                this.Studentpreis = (float)Convert.ToDouble(r["student"]);
+                this.Mitarbeiterpreis = (float)Convert.ToDouble(r["employee"]);
                 OK = true;
             }
             else
