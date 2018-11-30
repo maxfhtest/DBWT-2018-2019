@@ -268,7 +268,7 @@ REPLACE INTO `ingredients` (id, `name`, bio, vegan, vegetarian, glutenfree) VALU
 	(00150, 'Zuckerkulör', 0, 1, 1, 1),
 	(00171, 'Titandioxid', 0, 1, 1, 1),
 	(00220, 'Schwefeldioxid', 0, 1, 1, 1),
-	(00270, 'Milchsäure', 0, 1, 1, 1),
+	(00270, 'Milchsäure', 0, 0, 1, 1),
 	(00322, 'Lecithin', 0, 1, 1, 1),
 	(00330, 'Zitronensäure', 1, 1, 1, 1),
 	(00999, 'Weizenmehl', 1, 1, 1, 0),
@@ -400,12 +400,15 @@ INSERT INTO products_ingredients (`product_id`,`ingredient_id`) VALUES
 	('1',2101),
 	('1',2105),
 	('2',1000),
+	('2',2101),
 	('3',2101),
 	('4',1010),
 	('5',1001),
 	('6',1010),
+	('6',2101),
 	('7',999),
 	('7',2105),
+	('7',270),
 	('8',9110);
 
 REPLACE INTO `users` (`id`, `firstname`, `lastname`, `mail`, `loginname`, `last_login`, `created_at`, `birth`, `age`, `salt`, `hash`, `active`) 
