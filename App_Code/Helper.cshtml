@@ -106,72 +106,79 @@
 *@
 @helper ProductHelper()
 {
-Boolean available;
-Boolean vegetarian;
-Boolean vegan;
-String currurl = HttpContext.Current.Request.RawUrl; //z.B "/Produkte.cshtml?available=..."
-String QueryString = currurl.Substring(currurl.IndexOf('?') + 1); //z.b. "available=..."
-try
-{
-    var res = HttpUtility.ParseQueryString(QueryString).Get("available");
-    available = (res == "1");
-}
-catch
-{
-    available = false;
-}
-try
-{
-    var res = HttpUtility.ParseQueryString(QueryString).Get("vegetarian");
-    vegetarian = (res == "1");
-}
-catch
-{
-    vegetarian = false;
-}
-try
-{
-    var res = HttpUtility.ParseQueryString(QueryString).Get("vegan");
-    vegan = (res == "1");
-}
-catch
-{
-    vegan = false;
-}
-
-string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
-MySqlConnection con = new MySqlConnection(conString);
-try
-{
-    con.Open();
-    MySqlCommand cmd;
-    cmd = con.CreateCommand();
-    cmd.CommandText = @"SELECT * FROM `Extended Product View` WHERE available = " + (available ? 1 : 0) +" AND VGT = " + (vegetarian ? 1 : 0) +" AND VGN = " + (vegan ? 1 : 0) +";";
-    MySqlDataReader r = cmd.ExecuteReader();
-    int count = 0;
-    while (r.Read() || (r.Read() && count < 8)) //für jede id in der Tabelle Products (jedoch max. 8) :
+    Boolean available;
+    Boolean vegetarian;
+    Boolean vegan;
+    String currurl = HttpContext.Current.Request.RawUrl; //z.B "/Produkte.cshtml?available=..."
+    String QueryString = currurl.Substring(currurl.IndexOf('?') + 1); //z.b. "available=..."
+    try
     {
-        GerichtModel G = new GerichtModel();
-        try
+        var res = HttpUtility.ParseQueryString(QueryString).Get("available");
+        available = (res == "1");
+    }
+    catch
+    {
+        available = false;
+    }
+    try
+    {
+        var res = HttpUtility.ParseQueryString(QueryString).Get("vegetarian");
+        vegetarian = (res == "1");
+    }
+    catch
+    {
+        vegetarian = false;
+    }
+    try
+    {
+        var res = HttpUtility.ParseQueryString(QueryString).Get("vegan");
+        vegan = (res == "1");
+    }
+    catch
+    {
+        vegan = false;
+    }
+
+    string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
+    MySqlConnection con = new MySqlConnection(conString);
+    try
+    {
+        con.Open();
+        MySqlCommand cmd;
+        cmd = con.CreateCommand();
+        if (QueryString == "/Produkte.cshtml") //es wurden keine Parameter ünbergeben
         {
-            G.ID = Convert.ToInt32(r["id"]);
-            G.Name = r["name"].ToString();
-            G.Beschreibung = r["description"].ToString();
-            G.Stock = Convert.ToInt32(r["stock"]);
-            G.Verfuegbar = Convert.ToBoolean(r["available"]);
-            G.Bilddaten = r["blob_data"];
-            G.Bildtitel = r["alttext"].ToString();
+            cmd.CommandText = @"SELECT * FROM `Extended Product View`;";
         }
-        catch
+        else //es wurden Parameter übergeben
         {
-            G.ID = 0;
-            G.Name = "";
-            G.Beschreibung = "";
-            G.Stock = 0;
-            G.Verfuegbar = false;
-            G.Bilddaten = null;
-            G.Bildtitel = "";
+            cmd.CommandText = @"SELECT * FROM `Extended Product View` WHERE available = " + (available ? 1 : 0) + " AND VGT = " + (vegetarian ? 1 : 0) + " AND VGN = " + (vegan ? 1 : 0) + ";";
         }
+        MySqlDataReader r = cmd.ExecuteReader();
+        int count = 0;
+        while (r.Read() || (r.Read() && count < 8)) //für jede id in der Tabelle Products (jedoch max. 8) :
+        {
+            GerichtModel G = new GerichtModel();
+            try
+            {
+                G.ID = Convert.ToInt32(r["id"]);
+                G.Name = r["name"].ToString();
+                G.Beschreibung = r["description"].ToString();
+                G.Stock = Convert.ToInt32(r["stock"]);
+                G.Verfuegbar = Convert.ToBoolean(r["available"]);
+                G.Bilddaten = r["blob_data"];
+                G.Bildtitel = r["alttext"].ToString();
+            }
+            catch
+            {
+                G.ID = 0;
+                G.Name = "";
+                G.Beschreibung = "";
+                G.Stock = 0;
+                G.Verfuegbar = false;
+                G.Bilddaten = null;
+                G.Bildtitel = "";
+            }
 
 <div class="col-3">
     @{
@@ -188,13 +195,13 @@ try
                     }
     }
 </div>
-                            count++;
-                        }
-                        r.Close();
-                        con.Close();
-                    }
-                    catch (Exception e)
-                    {
+            count++;
+        }
+        r.Close();
+        con.Close();
+    }
+    catch (Exception e)
+    {
 <div class="col-12">
     @*<img title="Wok-Bild" class="square unavailable" alt="gericht" src="" />*@
     <p class="mb-0">@e.Message</p>
