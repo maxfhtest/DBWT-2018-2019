@@ -152,7 +152,8 @@ CREATE TABLE IF NOT EXISTS products_images (
 	product_id     INT UNSIGNED            NOT NULL,
 	image_id       INT UNSIGNED            NOT NULL,
 	FOREIGN KEY (product_id) REFERENCES products(id),
-	FOREIGN KEY (image_id) REFERENCES images(id)
+	FOREIGN KEY (image_id) REFERENCES images(id),
+	PRIMARY KEY(product_id, image_id)
 );
 
 CREATE TABLE IF NOT EXISTS label (
@@ -387,10 +388,19 @@ INSERT INTO prices (id, `year`, guest)
 
 -- =======================
 -- DESCRIBE products_ingredients;
-	
-REPLACE INTO `products_ingredients` (`product_id`,`ingredient_id`)
-Values('1','80'),
-		('1','81'),
-		('1','82'),
-		('1','83'),
-		('2','123');
+		
+INSERT INTO products_ingredients (`product_id`,`ingredient_id`) VALUES
+	('1',1010),
+	('1',84),
+	('1',2019),
+	('1',2020),
+	('1',2101),
+	('1',2105),
+	('2',1000),
+	('3',2101),
+	('4',1010),
+	('5',1001),
+	('6',1010),
+	('7',999),
+	('7',2105),
+	('8',9110);
