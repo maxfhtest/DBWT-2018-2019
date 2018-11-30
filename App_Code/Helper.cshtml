@@ -79,7 +79,7 @@
     }
     catch (Exception e)
     {
-
+<tr><td>@e.Message</td></tr>
     }
 }
 
@@ -113,48 +113,62 @@ try
     con.Open();
     MySqlCommand cmd;
     cmd = con.CreateCommand();
-    cmd.CommandTest = @"
-                  SELECT
-                      p.id, p.description, p.name, p.stock, p.available,
-                      i.`blob_data`, i.title,
-                      v.glutenfree, v.bio, v.vegetarian, v.vegan
-                  FROM products p
-                  JOIN products_images pi ON (p.image_id = pi.image_id)
-                  JOIN images i ON (i.id = pi.image_id)
-                  JOIN products_ingredients pig ON (pig.product_id = p.id)
-                  JOIN ingredients v ON (pig.ingredient_id = v.id)
-                  JOIN prices v ON (v.id = p.id)
-                  WHERE p.available < @available
-                      AND v.vegetarian = @vegetarian
-                      AND v.vegan = @vegan
-                       ";
+    cmd.CommandText = @"
+      SELECT
+          p.id, p.description, p.name, p.stock, p.available,
+          i.`blob_data`, i.title,
+          v.glutenfree, v.bio, v.vegetarian, v.vegan
+      FROM products p
+      JOIN products_images pi ON (p.image_id = pi.image_id)
+      JOIN images i ON (i.id = pi.image_id)
+      JOIN products_ingredients pig ON (pig.product_id = p.id)
+      JOIN ingredients v ON (pig.ingredient_id = v.id)
+      JOIN prices v ON (v.id = p.id)
+      WHERE p.available < @available
+          AND v.vegetarian = @vegetarian
+          AND v.vegan = @vegan
+           ";
 
     String currurl = HttpContext.Current.Request.RawUrl;
-    Bool available;
-    Bool vegetarian;
-    Bool vegan;
-    try{
-        res = HttpUtility.ParseQueryString(currurl.Query).Get("available");
+    Boolean available;
+    Boolean vegetarian;
+    Boolean vegan;
+    String res;
+    String QueryString = currurl.Substring(currurl.IndexOf('?') + 1);
+    try
+    {
+        res = HttpUtility.ParseQueryString(QueryString).Get("available");
         available = Convert.ToBoolean(res);
-    } catch {
-        stock = false;
     }
-    try{
-        res = HttpUtility.ParseQueryString(currurl.Query).Get("vegetarian");
+    catch
+    {
+        available = false;
+    }
+    try
+    {
+        res = HttpUtility.ParseQueryString(QueryString).Get("vegetarian");
         vegetarian = Convert.ToBoolean(res);
-    } catch {
+    }
+    catch
+    {
         vegetarian = false;
     }
-    try{
-        res = HttpUtility.ParseQueryString(currurl.Query).Get("vegan");
+    try
+    {
+        res = HttpUtility.ParseQueryString(QueryString).Get("vegan");
         vegan = Convert.ToBoolean(res);
-    } catch {
+    }
+    catch
+    {
         vegan = false;
     }
 
-    cmd.Parameters.Add(new SqlParameter("@available", available));
-    cmd.Parameters.Add(new SqlParameter("@vegetarian", vegetarian));
-    cmd.Parameters.Add(new SqlParameter("@vegan", vegan));
+    //cmd.Parameters.Add(new SqlParameter("@available", available));
+    cmd.Parameters.Add("@available", MySqlDbType.Bit);
+    //cmd.Parameters.Add(new SqlParameter("@vegetarian", vegetarian));
+    cmd.Parameters.Add("@vegetarian", MySqlDbType.Bit);
+    //cmd.Parameters.Add(new SqlParameter("@vegan", vegan));
+    cmd.Parameters.Add("@vegan", MySqlDbType.Bit);
     MySqlDataReader r = cmd.ExecuteReader();
     int count = 0;
     while (r.Read() || (r.Read() && count < 8)) //für jede id in der Tabelle Products (jedoch max. 8) :
@@ -188,7 +202,7 @@ try
 
 <div class="col-3">
     @{
-        @Helper.Base64Image((byte[])G.Bilddaten,G.Bildtitel,G.Verfuegbar);
+        @Helper.Base64Image((byte[])G.Bilddaten, G.Bildtitel, G.Verfuegbar);
         <p class="mb-0">@G.Name</p>
 
                     if (G.Verfuegbar)

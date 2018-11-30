@@ -51,7 +51,8 @@ public class KategorieModel
                                 parent
                             FROM category
                            ";
-            cmd.Parameters.Add(new SqlParameter("@id", id));
+            //cmd.Parameters.Add(new SqlParameter("@id", id));
+            cmd.Parameters.Add("@id", MySqlDbType.Int32);
             MySqlDataReader r = cmd.ExecuteReader();
 
             // Speichere Informationen zur Kategorie
@@ -63,6 +64,12 @@ public class KategorieModel
             }
             r.Close();
 
+
+        }
+        catch
+        {
+
+        }
         return K;
     }
 }
