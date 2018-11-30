@@ -63,8 +63,6 @@ public class KategorieModel
                 this.Current = r["child"].ToString();
             }
             r.Close();
-
-
         }
         catch
         {

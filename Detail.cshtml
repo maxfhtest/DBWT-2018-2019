@@ -75,9 +75,33 @@
                     </div>
                     <div class="tab-pane fade" id="incredients" role="tabpanel" aria-labelledby="incredients-tab">
                         <p>
-                            @foreach (var item in G.Zutatenliste)
+                            @* VORBEREITUNG: Ausgabe in Tabelle
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Zutat</th>
+                                            <th>Vegetarisch?</th>
+                                            <th>Vegan?</th>
+                                            <th>Glutenfrei?</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var Z in G.Zutatenliste)
+                                        {
+                                            @item.Name//evtl hier auch noch ein Leerzeichen einfügen oder <li> verwenden
+                                            <tr>
+                                                <td>@Z.Name @Helper.MarkBio(Z.Bio)</td>
+                                                <td>@Helper.FlagIcon(Z.Vegetarisch)</td>
+                                                <td>@Helper.FlagIcon(Z.Vegan)</td>
+                                                <td>@Helper.FlagIcon(Z.Glutenfrei)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            *@
+                            @foreach (var Z in G.Zutatenliste)
                             {
-                            @item.Name //evtl hier auch noch ein Leerzeichen einfügen oder <li> verwenden
+                            @Z.Name
                             }
                         </p>
                     </div>
