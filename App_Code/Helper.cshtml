@@ -129,16 +129,15 @@ try
           AND v.vegan = @vegan
            ";
 
-    String currurl = HttpContext.Current.Request.RawUrl;
     Boolean available;
     Boolean vegetarian;
     Boolean vegan;
-    String res;
-    String QueryString = currurl.Substring(currurl.IndexOf('?') + 1);
+    String currurl = HttpContext.Current.Request.RawUrl; //z.B "/Produkte.cshtml?available=..."
+    String QueryString = currurl.Substring(currurl.IndexOf('?') + 1); //z.b. "available=..."
     try
     {
-        res = HttpUtility.ParseQueryString(QueryString).Get("available");
-        available = Convert.ToBoolean(res);
+        var res = HttpUtility.ParseQueryString(QueryString).Get("available");
+        available = (res == "1");
     }
     catch
     {
@@ -146,8 +145,8 @@ try
     }
     try
     {
-        res = HttpUtility.ParseQueryString(QueryString).Get("vegetarian");
-        vegetarian = Convert.ToBoolean(res);
+        var res = HttpUtility.ParseQueryString(QueryString).Get("vegetarian");
+        vegetarian = (res == "1");
     }
     catch
     {
@@ -155,8 +154,8 @@ try
     }
     try
     {
-        res = HttpUtility.ParseQueryString(QueryString).Get("vegan");
-        vegan = Convert.ToBoolean(res);
+        var res = HttpUtility.ParseQueryString(QueryString).Get("vegan");
+        vegan = (res == "1");
     }
     catch
     {
@@ -164,11 +163,11 @@ try
     }
 
     //cmd.Parameters.Add(new SqlParameter("@available", available));
-    cmd.Parameters.Add("@available", MySqlDbType.Bit);
+    cmd.Parameters.Add("available", available);
     //cmd.Parameters.Add(new SqlParameter("@vegetarian", vegetarian));
-    cmd.Parameters.Add("@vegetarian", MySqlDbType.Bit);
+    cmd.Parameters.Add("vegetarian", vegetarian);
     //cmd.Parameters.Add(new SqlParameter("@vegan", vegan));
-    cmd.Parameters.Add("@vegan", MySqlDbType.Bit);
+    cmd.Parameters.Add("vegan", vegan);
     MySqlDataReader r = cmd.ExecuteReader();
     int count = 0;
     while (r.Read() || (r.Read() && count < 8)) //für jede id in der Tabelle Products (jedoch max. 8) :
