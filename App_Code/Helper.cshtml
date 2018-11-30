@@ -113,13 +113,54 @@ try
     con.Open();
     MySqlCommand cmd;
     cmd = con.CreateCommand();
-    //cmd.CommandText = "SELECT products.*, images.`blob_data`, images.`title` AS alttext FROM products, images  Where products.`image_id` like images.`id` and products.id = " + G.ID + ";";
-    cmd.CommandText = "SELECT products.*, images.`blob_data`, images.`title` AS alttext FROM products, images  Where products.`image_id` like images.`id`;";
+    cmd.CommandTest = @"
+                  SELECT
+                      p.id, p.description, p.name, p.stock, p.available,
+                      i.`blob_data`, i.title,
+                      v.glutenfree, v.bio, v.vegetarian, v.vegan
+                  FROM products p
+                  JOIN products_images pi ON (p.image_id = pi.image_id)
+                  JOIN images i ON (i.id = pi.image_id)
+                  JOIN products_ingredients pig ON (pig.product_id = p.id)
+                  JOIN ingredients v ON (pig.ingredient_id = v.id)
+                  JOIN prices v ON (v.id = p.id)
+                  WHERE p.available < @available
+                      AND v.vegetarian = @vegetarian
+                      AND v.vegan = @vegan
+                       ";
+
+    String currurl = HttpContext.Current.Request.RawUrl;
+    Bool available;
+    Bool vegetarian;
+    Bool vegan;
+    try{
+        res = HttpUtility.ParseQueryString(currurl.Query).Get("available");
+        available = Convert.ToBoolean(res);
+    } catch {
+        stock = false;
+    }
+    try{
+        res = HttpUtility.ParseQueryString(currurl.Query).Get("vegetarian");
+        vegetarian = Convert.ToBoolean(res);
+    } catch {
+        vegetarian = false;
+    }
+    try{
+        res = HttpUtility.ParseQueryString(currurl.Query).Get("vegan");
+        vegan = Convert.ToBoolean(res);
+    } catch {
+        vegan = false;
+    }
+
+    cmd.Parameters.Add(new SqlParameter("@available", available));
+    cmd.Parameters.Add(new SqlParameter("@vegetarian", vegetarian));
+    cmd.Parameters.Add(new SqlParameter("@vegan", vegan));
     MySqlDataReader r = cmd.ExecuteReader();
     int count = 0;
     while (r.Read() || (r.Read() && count < 8)) //für jede id in der Tabelle Products (jedoch max. 8) :
     {
         GerichtModel G = new GerichtModel();
+        ZutatenModel Z = new ZutatenModel();
         try
         {
             G.ID = Convert.ToInt32(r["id"]);
@@ -129,6 +170,10 @@ try
             G.Verfuegbar = Convert.ToBoolean(r["available"]);
             G.Bilddaten = r["blob_data"];
             G.Bildtitel = r["alttext"].ToString();
+            Z.Bio = Convert.ToBoolean(r["bio"]);
+            Z.Vegetarisch = Convert.ToBoolean(r["vegetarian"]);
+            Z.Vegan = Convert.ToBoolean(r["vegan"]);
+            Z.Glutenfrei = Convert.ToBoolean(r["glutenfree"]);
         }
         catch
         {

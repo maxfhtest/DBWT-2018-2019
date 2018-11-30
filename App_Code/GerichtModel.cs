@@ -33,7 +33,10 @@ public class GerichtModel
         Mitarbeiterpreis = 0;
     }
 
-    public bool SetGerichtByID(int Pid)
+    // TODO: Set doesnt make any sense. Whe should call it getGerichtByID
+    // because we fetch our information from the connected DB and map them
+    // to our model.
+    public bool SetGerichtByID(int id)
     {
         string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
         MySqlConnection con = new MySqlConnection(conString);
@@ -44,11 +47,21 @@ public class GerichtModel
             con.Open();
             MySqlCommand cmd;
             cmd = con.CreateCommand();
-            //Todo: auch die Preise holen
-            cmd.CommandText = "SELECT products.*, images.`blob_data`, images.`title` AS alttext FROM products, images  Where products.`image_id` like images.`id` and products.id = " + Pid + ";";
+            cmd.CommandText = @"
+                           SELECT
+                               p.id, p.description, p.name, p.stock, p.available,
+                               i.`blob_data`, i.title,
+                               v.guest, v.student, v.employee
+                           FROM products p
+                           JOIN products_images pi ON (p.image_id = pi.image_id)
+                           JOIN images i ON (i.id = pi.image_id)
+                           JOIN prices v ON (v.id = p.id)
+                           WHERE p.id = @id
+                           ";
+            cmd.Parameters.Add(new SqlParameter("@id", id));
             MySqlDataReader r = cmd.ExecuteReader();
 
-            //Speichere Informationen zum Gericht 
+            //Speichere Informationen zum Gericht
             if (r.Read())
             {
                 this.ID = Convert.ToInt32(r["id"]);
@@ -58,9 +71,9 @@ public class GerichtModel
                 this.Verfuegbar = Convert.ToBoolean(r["available"]);
                 this.Bilddaten = r["blob_data"];
                 this.Bildtitel = r["alttext"].ToString();
-                //this.Gastpreis = 
-                //this.Studentpreis =
-                //this.Mitarbeiterpreis =
+                this.Gastpreis = (float) Convert.ToDouble(r["guest"]);
+                this.Studentpreis = (float) Convert.ToDouble(r["student"]);
+                this.Mitarbeiterpreis =(float) Convert.ToDouble(r["employee"]);
                 OK = true;
             }
             else
