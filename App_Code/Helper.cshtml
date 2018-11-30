@@ -106,6 +106,39 @@
 *@
 @helper ProductHelper()
 {
+Boolean available;
+Boolean vegetarian;
+Boolean vegan;
+String currurl = HttpContext.Current.Request.RawUrl; //z.B "/Produkte.cshtml?available=..."
+String QueryString = currurl.Substring(currurl.IndexOf('?') + 1); //z.b. "available=..."
+try
+{
+    var res = HttpUtility.ParseQueryString(QueryString).Get("available");
+    available = (res == "1");
+}
+catch
+{
+    available = false;
+}
+try
+{
+    var res = HttpUtility.ParseQueryString(QueryString).Get("vegetarian");
+    vegetarian = (res == "1");
+}
+catch
+{
+    vegetarian = false;
+}
+try
+{
+    var res = HttpUtility.ParseQueryString(QueryString).Get("vegan");
+    vegan = (res == "1");
+}
+catch
+{
+    vegan = false;
+}
+
 string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
 MySqlConnection con = new MySqlConnection(conString);
 try
@@ -113,67 +146,12 @@ try
     con.Open();
     MySqlCommand cmd;
     cmd = con.CreateCommand();
-    cmd.CommandText = @"
-      SELECT
-          p.id, p.description, p.name, p.stock, p.available,
-          i.`blob_data`, i.title,
-          v.glutenfree, v.bio, v.vegetarian, v.vegan
-      FROM products p
-      JOIN products_images pi ON (p.image_id = pi.image_id)
-      JOIN images i ON (i.id = pi.image_id)
-      JOIN products_ingredients pig ON (pig.product_id = p.id)
-      JOIN ingredients v ON (pig.ingredient_id = v.id)
-      JOIN prices v ON (v.id = p.id)
-      WHERE p.available < @available
-          AND v.vegetarian = @vegetarian
-          AND v.vegan = @vegan
-           ";
-
-    Boolean available;
-    Boolean vegetarian;
-    Boolean vegan;
-    String currurl = HttpContext.Current.Request.RawUrl; //z.B "/Produkte.cshtml?available=..."
-    String QueryString = currurl.Substring(currurl.IndexOf('?') + 1); //z.b. "available=..."
-    try
-    {
-        var res = HttpUtility.ParseQueryString(QueryString).Get("available");
-        available = (res == "1");
-    }
-    catch
-    {
-        available = false;
-    }
-    try
-    {
-        var res = HttpUtility.ParseQueryString(QueryString).Get("vegetarian");
-        vegetarian = (res == "1");
-    }
-    catch
-    {
-        vegetarian = false;
-    }
-    try
-    {
-        var res = HttpUtility.ParseQueryString(QueryString).Get("vegan");
-        vegan = (res == "1");
-    }
-    catch
-    {
-        vegan = false;
-    }
-
-    //cmd.Parameters.Add(new SqlParameter("@available", available));
-    cmd.Parameters.Add("available", available);
-    //cmd.Parameters.Add(new SqlParameter("@vegetarian", vegetarian));
-    cmd.Parameters.Add("vegetarian", vegetarian);
-    //cmd.Parameters.Add(new SqlParameter("@vegan", vegan));
-    cmd.Parameters.Add("vegan", vegan);
+    cmd.CommandText = @"SELECT * FROM `Extended Product View` WHERE available = " + (available ? 1 : 0) +" AND VGT = " + (vegetarian ? 1 : 0) +" AND VGN = " + (vegan ? 1 : 0) +";";
     MySqlDataReader r = cmd.ExecuteReader();
     int count = 0;
     while (r.Read() || (r.Read() && count < 8)) //für jede id in der Tabelle Products (jedoch max. 8) :
     {
         GerichtModel G = new GerichtModel();
-        ZutatenModel Z = new ZutatenModel();
         try
         {
             G.ID = Convert.ToInt32(r["id"]);
@@ -183,10 +161,6 @@ try
             G.Verfuegbar = Convert.ToBoolean(r["available"]);
             G.Bilddaten = r["blob_data"];
             G.Bildtitel = r["alttext"].ToString();
-            Z.Bio = Convert.ToBoolean(r["bio"]);
-            Z.Vegetarisch = Convert.ToBoolean(r["vegetarian"]);
-            Z.Vegan = Convert.ToBoolean(r["vegan"]);
-            Z.Glutenfrei = Convert.ToBoolean(r["glutenfree"]);
         }
         catch
         {
@@ -214,16 +188,17 @@ try
                     }
     }
 </div>
-            count++;
-        }
-        r.Close();
-        con.Close();
-    }
-    catch (Exception e)
-    {
+                            count++;
+                        }
+                        r.Close();
+                        con.Close();
+                    }
+                    catch (Exception e)
+                    {
 <div class="col-12">
     @*<img title="Wok-Bild" class="square unavailable" alt="gericht" src="" />*@
     <p class="mb-0">@e.Message</p>
 </div>
     }
 }
+
