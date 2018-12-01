@@ -11,33 +11,13 @@
     Boolean available;
     Boolean vegetarian;
     Boolean vegan;
-    try
-    {
-        var res = HttpUtility.ParseQueryString(QueryString).Get("available");
-        available = (res == "true");
-    }
-    catch
-    {
-        available = false;
-    }
-    try
-    {
-        var res = HttpUtility.ParseQueryString(QueryString).Get("vegetarian");
-        vegetarian = (res == "true");
-    }
-    catch
-    {
-        vegetarian = false;
-    }
-    try
-    {
-        var res = HttpUtility.ParseQueryString(QueryString).Get("vegan");
-        vegan = (res == "true");
-    }
-    catch
-    {
-        vegan = false;
-    }
+
+    var res = HttpUtility.ParseQueryString(QueryString).Get("available");
+    available = (res == "true");
+    res = HttpUtility.ParseQueryString(QueryString).Get("vegetarian");
+    vegetarian = (res == "true");
+    res = HttpUtility.ParseQueryString(QueryString).Get("vegan");
+    vegan = (res == "true");
 }
 <div class="row">
     <div class="col-3"></div>
