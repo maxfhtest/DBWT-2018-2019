@@ -6,6 +6,38 @@
 }
 @{
     //String qstring = Request.QueryString["meals"];
+    String currurl = HttpContext.Current.Request.RawUrl; //z.B "/Produkte.cshtml?available=..."
+    String QueryString = currurl.Substring(currurl.IndexOf('?') + 1); //z.b. "available=..."
+    Boolean available;
+    Boolean vegetarian;
+    Boolean vegan;
+    try
+    {
+        var res = HttpUtility.ParseQueryString(QueryString).Get("available");
+        available = (res == "true");
+    }
+    catch
+    {
+        available = false;
+    }
+    try
+    {
+        var res = HttpUtility.ParseQueryString(QueryString).Get("vegetarian");
+        vegetarian = (res == "true");
+    }
+    catch
+    {
+        vegetarian = false;
+    }
+    try
+    {
+        var res = HttpUtility.ParseQueryString(QueryString).Get("vegan");
+        vegan = (res == "true");
+    }
+    catch
+    {
+        vegan = false;
+    }
 }
 <div class="row">
     <div class="col-3"></div>
@@ -24,9 +56,9 @@
                     <option> Option 2 </option>
                 </select>
                 <br />
-                <input type="checkbox" name="cAvailable" value="Verfügbar"><label class="choice ml-1">nur verfügbare</label><br />
-                <input type="checkbox" name="cVegetarian" value="Vegetarisch"><label class="choice ml-1">nur vegetarische</label><br />
-                <input type="checkbox" name="cVegan" value="Vegan"><label class="choice ml-1">nur vegane</label><br /><br />
+                @Helper.CreateCheckbox("available", "nur verfügbare", available)
+                @Helper.CreateCheckbox("vegetarian", "nur vegetarische", vegetarian)
+                @Helper.CreateCheckbox("vegan", "nur vegane", vegan)
                 <input class="btn btn-outline-success btn-center" type="submit" value="Speisen filtern"><br />
             </fieldset>
         </form>
@@ -34,7 +66,7 @@
     <div class="col-7">
         <div class="row">
             <!-- Obere Reihe der Speisen-->
-            @Helper.ProductHelper()
+            @Helper.ProductHelper(available, vegetarian, vegan)
         </div>
     </div>
     <div class="col-2">

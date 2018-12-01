@@ -375,7 +375,7 @@ INSERT INTO `products` (name, description, stock, available, image_id, category_
 	('Curry Wok', 	'Ein leckerer Wok'					, '12', 	'1', '1', '6'),
 	('Schnitzel', 	'Paniertes Glück'						, '14', 	'1', '7', '7'),
 	('Bratrolle', 	'Aus Holland'							, '0',  	'0', '2', '10'),
-	('Krautsalat', 'Für Döner ?'							, '99', 	'1', '6', '4'),
+	('Krautsalat', 'Für Döner ?'							, '0', 	'0', '6', '4'),
 	('Falafel', 	'Die gesunde Alternative'			, '2',  	'1', '4', '12'),
 	('Currywurst', 'Baustellenklassiker'				, '5', 	'1', '3', '7'),
 	('Käsestulle', 'Wie für den Schweizer gemacht'	, '7', 	'1', '5', '13'),

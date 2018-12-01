@@ -104,41 +104,8 @@
     - Die Anzahl der Gerichte kann direkt aus dem Query-String hier mit übergeben werden (zb. "6")
     - zu den ersten 8 IDs wird je ein Objekt der Klasse "GerichtModel" erzeugt.
 *@
-@helper ProductHelper()
+@helper ProductHelper(bool available, bool vegetarian, bool vegan)
 {
-    Boolean available;
-    Boolean vegetarian;
-    Boolean vegan;
-    String currurl = HttpContext.Current.Request.RawUrl; //z.B "/Produkte.cshtml?available=..."
-    String QueryString = currurl.Substring(currurl.IndexOf('?') + 1); //z.b. "available=..."
-    try
-    {
-        var res = HttpUtility.ParseQueryString(QueryString).Get("available");
-        available = (res == "1");
-    }
-    catch
-    {
-        available = false;
-    }
-    try
-    {
-        var res = HttpUtility.ParseQueryString(QueryString).Get("vegetarian");
-        vegetarian = (res == "1");
-    }
-    catch
-    {
-        vegetarian = false;
-    }
-    try
-    {
-        var res = HttpUtility.ParseQueryString(QueryString).Get("vegan");
-        vegan = (res == "1");
-    }
-    catch
-    {
-        vegan = false;
-    }
-
     string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
     MySqlConnection con = new MySqlConnection(conString);
     try
@@ -146,14 +113,26 @@
         con.Open();
         MySqlCommand cmd;
         cmd = con.CreateCommand();
-        if (QueryString == "/Produkte.cshtml") //es wurden keine Parameter ünbergeben
+        cmd.CommandText = @"SELECT * FROM `Extended Product View`";
+        if (available || vegan || vegetarian)
         {
-            cmd.CommandText = @"SELECT * FROM `Extended Product View`;";
+            cmd.CommandText += " WHERE";
         }
-        else //es wurden Parameter übergeben
+        if (available)
         {
-            cmd.CommandText = @"SELECT * FROM `Extended Product View` WHERE available = " + (available ? 1 : 0) + " AND VGT = " + (vegetarian ? 1 : 0) + " AND VGN = " + (vegan ? 1 : 0) + ";";
+            cmd.CommandText += " available = 1";
         }
+        if (vegetarian)
+        {
+            if (available) { cmd.CommandText += " AND"; }
+            cmd.CommandText += " VGT = 1";
+        }
+        if (vegan)
+        {
+            if (available || vegetarian) { cmd.CommandText += " AND"; }
+            cmd.CommandText += " VGN = 1";
+        }
+        cmd.CommandText += ";";
         MySqlDataReader r = cmd.ExecuteReader();
         int count = 0;
         while (r.Read() || (r.Read() && count < 8)) //für jede id in der Tabelle Products (jedoch max. 8) :
@@ -206,5 +185,17 @@
     @*<img title="Wok-Bild" class="square unavailable" alt="gericht" src="" />*@
     <p class="mb-0">@e.Message</p>
 </div>
+    }
+}
+
+@helper CreateCheckbox(string name, string label, bool b)
+{
+    if (b)
+    {
+<input type="checkbox" name="@name" value="true" checked><label class="choice ml-1">@label</label><br />
+    }
+    else
+    {
+<input type="checkbox" name="@name" value="true"><label class="choice ml-1">@label</label><br />
     }
 }
