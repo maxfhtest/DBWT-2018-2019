@@ -4,13 +4,12 @@
     Page.Title = "Detail";
 }
 @{
-    string qstring = Request.QueryString["id"];
-
+    string qstringID = Request.QueryString["id"];
     GerichtModel G = new GerichtModel();
-    int id = 0;
+    int id = 0; int kat = 0;
     try
     {
-        id = Convert.ToInt32(qstring);
+        id = Convert.ToInt32(qstringID);
     }
     catch
     {
@@ -18,7 +17,7 @@
     }
     G.SetGerichtByID(id);
 
-    if (G.ID == 0 || qstring == "" || G.Beschreibung == null)
+    if (G.ID == 0 || qstringID == "" || G.Beschreibung == null)
     {
     @section head{
         <meta http-equiv="refresh" content="3; url=Start.cshtml">

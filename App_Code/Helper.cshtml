@@ -199,3 +199,28 @@
 <input type="checkbox" name="@name" value="true"><label class="choice ml-1">@label</label><br />
     }
 }
+
+@helper CategoryHelper(AllCategorysModel AllCategorys, KategorieModel CurrentCatagory)
+{
+    foreach (var Upper in AllCategorys.ListOfUpperCategorys)
+    {
+<optgroup label="@Upper">
+    @foreach (var cat in AllCategorys.ListOfCategorys)
+            {
+                if (cat.UpperCategoryName == Upper)
+                {
+
+                    if (cat == CurrentCatagory)
+                    {
+    <option id="category-@cat.ID" value="@cat.ID" selected>@cat.Name</option>
+                    }
+                    else
+                    {
+    <option id="category-@cat.ID" value="@cat.ID">@cat.Name</option>
+                    }
+                }
+
+            }
+</optgroup>
+    }
+}

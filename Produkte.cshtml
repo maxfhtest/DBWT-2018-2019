@@ -11,18 +11,30 @@
     Boolean available;
     Boolean vegetarian;
     Boolean vegan;
-
+    int categoryid;
     var res = HttpUtility.ParseQueryString(QueryString).Get("available");
     available = (res == "true");
     res = HttpUtility.ParseQueryString(QueryString).Get("vegetarian");
     vegetarian = (res == "true");
     res = HttpUtility.ParseQueryString(QueryString).Get("vegan");
     vegan = (res == "true");
+    try
+    {
+        res = HttpUtility.ParseQueryString(QueryString).Get("kat");
+        categoryid = Convert.ToInt32(res);
+    }
+    catch
+    {
+        categoryid = 0;
+    }
+    AllCategorysModel AllCategorys = new AllCategorysModel();
+    AllCategorys.SetAllCategorys();
+    KategorieModel CurrentCatagory = AllCategorys.GetCurrentCategory(categoryid);
 }
 <div class="row">
     <div class="col-3"></div>
     <div class="col-9">
-        <h1>Verfügbare Speisen (Bestseller)</h1>
+        <h1>Verfügbare Speisen (@CurrentCatagory.Name)</h1>
     </div>
 </div>
 <div class="row mt-5">
@@ -31,9 +43,7 @@
             <fieldset>
                 <legend>Speiseliste filtern</legend>
                 <select class="form-control btn-outline-success">
-                    <option selected> Kategorien</option>
-                    <option> Option 1 </option>
-                    <option> Option 2 </option>
+                    @Helper.CategoryHelper(AllCategorys, CurrentCatagory)
                 </select>
                 <br />
                 @Helper.CreateCheckbox("available", "nur verfügbare", available)
