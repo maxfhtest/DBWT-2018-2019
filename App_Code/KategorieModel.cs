@@ -17,7 +17,7 @@ public class KategorieModel
         Current = "";
     }
 
-    public KategorieModel GetCategorys()
+    public KategorieModel GetCategorys(int id)
     {
         string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
         MySqlConnection con = new MySqlConnection(conString);

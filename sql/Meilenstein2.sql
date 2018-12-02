@@ -432,12 +432,15 @@ CREATE VIEW `Extended Product View` AS
 SELECT p.id, p.description, p.name, p.stock, p.available, 
 MIN(ing.vegetarian) AS VGT, 
 MIN(ing.vegan) As VGN,
-img.blob_data, img.alttext, img.title
+img.blob_data, img.alttext, img.title,
+v.guest, v.student, v.employee
 FROM products p 
 JOIN products_ingredients pXing 
 JOIN ingredients ing
 ON p.id = pXing.product_id AND ing.id = pXing.ingredient_id 
 JOIN images img 
 ON p.image_id = img.id
+JOIN prices v 
+ON v.id = p.id
 GROUP BY p.name
 ORDER BY p.id;

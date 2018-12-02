@@ -44,18 +44,7 @@ public class GerichtModel
             con.Open();
             MySqlCommand cmd;
             cmd = con.CreateCommand();
-            cmd.CommandText = @"
-                           SELECT
-                               p.id, p.description, p.name, p.stock, p.available,
-                               i.`blob_data`, i.title,
-                               v.guest, v.student, v.employee
-                           FROM products p
-                           JOIN products_images pi ON (p.image_id = pi.image_id)
-                           JOIN images i ON (i.id = pi.image_id)
-                           JOIN prices v ON (v.id = p.id)
-                           WHERE p.id = @id
-                           ";
-            cmd.Parameters.Add(new SqlParameter("@id", id));
+            cmd.CommandText = @"SELECT *  FROM `Extended Product View` WHERE id = " + id + ";";
             MySqlDataReader r = cmd.ExecuteReader();
 
             //Speichere Informationen zum Gericht
@@ -68,9 +57,18 @@ public class GerichtModel
                 this.Verfuegbar = Convert.ToBoolean(r["available"]);
                 this.Bilddaten = r["blob_data"];
                 this.Bildtitel = r["alttext"].ToString();
-                this.Gastpreis = (float)Convert.ToDouble(r["guest"]);
-                this.Studentpreis = (float)Convert.ToDouble(r["student"]);
-                this.Mitarbeiterpreis = (float)Convert.ToDouble(r["employee"]);
+                if (r["guest"] != DBNull.Value)
+                {
+                    this.Gastpreis = (float)Convert.ToDouble(r["guest"]);
+                }
+                if (r["student"] != DBNull.Value)
+                {
+                    this.Studentpreis = (float)Convert.ToDouble(r["student"]);
+                }
+                if (r["employee"] != DBNull.Value)
+                {
+                    this.Mitarbeiterpreis = (float)Convert.ToDouble(r["employee"]);
+                }
                 OK = true;
             }
             else
