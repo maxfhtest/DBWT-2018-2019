@@ -39,10 +39,13 @@
 </div>
 <div class="row mt-5">
     <div class="col-3">
-        <form>
+        <form id="myFilter">
             <fieldset>
                 <legend>Speiseliste filtern</legend>
-                <select class="form-control btn-outline-success">
+                <select name="kat" class="form-control btn-outline-success">
+                    <optgroup label="Generell">
+                        <option value="0" selected>Alles Anzeigen</option>
+                    </optgroup>
                     @Helper.CategoryHelper(AllCategorys, CurrentCatagory)
                 </select>
                 <br />
@@ -56,7 +59,7 @@
     <div class="col-7">
         <div class="row">
             <!-- Obere Reihe der Speisen-->
-            @Helper.ProductHelper(available, vegetarian, vegan)
+            @Helper.ProductHelper(categoryid, available, vegetarian, vegan)
         </div>
     </div>
     <div class="col-2">

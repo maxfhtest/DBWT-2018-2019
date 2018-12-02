@@ -104,7 +104,7 @@
     - Die Anzahl der Gerichte kann direkt aus dem Query-String hier mit übergeben werden (zb. "6")
     - zu den ersten 8 IDs wird je ein Objekt der Klasse "GerichtModel" erzeugt.
 *@
-@helper ProductHelper(bool available, bool vegetarian, bool vegan)
+@helper ProductHelper(int categoryid, bool available, bool vegetarian, bool vegan)
 {
     string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
     MySqlConnection con = new MySqlConnection(conString);
@@ -113,8 +113,9 @@
         con.Open();
         MySqlCommand cmd;
         cmd = con.CreateCommand();
-        cmd.CommandText = @"SELECT * FROM `Extended Product View`";
-        if (available || vegan || vegetarian)
+        cmd.CommandText = @"SELECT * FROM `extended product view`";
+
+        if (available || vegan || vegetarian || categoryid > 0)
         {
             cmd.CommandText += " WHERE";
         }
@@ -131,6 +132,11 @@
         {
             if (available || vegetarian) { cmd.CommandText += " AND"; }
             cmd.CommandText += " VGN = 1";
+        }
+        if (categoryid > 0)
+        {
+            if (available || vegetarian || vegan) { cmd.CommandText += " AND"; }
+            cmd.CommandText += " category_id = "+categoryid;
         }
         cmd.CommandText += ";";
         MySqlDataReader r = cmd.ExecuteReader();

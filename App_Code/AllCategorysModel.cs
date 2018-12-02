@@ -60,11 +60,18 @@ public class AllCategorysModel
     public KategorieModel GetCurrentCategory(int id)
     {
         KategorieModel myCategory = new KategorieModel();
-        foreach (var item in ListOfCategorys)
+        if (id == 0)
         {
-            if (item.ID == id)
+            myCategory.Name = "Alles";
+        }
+        else
+        {
+            foreach (var item in ListOfCategorys)
             {
-                myCategory = item;
+                if (item.ID == id)
+                {
+                    myCategory = item;
+                }
             }
         }
         return myCategory;

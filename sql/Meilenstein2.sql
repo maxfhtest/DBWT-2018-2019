@@ -429,7 +429,7 @@ REPLACE INTO `users_friends` (`friendone`, `friendtwo`) VALUES (22, 23);
 REPLACE INTO `users_friends` (`friendone`, `friendtwo`) VALUES (22, 24);
 
 CREATE VIEW `Extended Product View` AS
-SELECT p.id, p.description, p.name, p.stock, p.available, 
+SELECT p.id, p.description, p.name, p.stock, p.available, p.category_id,
 MIN(ing.vegetarian) AS VGT, 
 MIN(ing.vegan) As VGN,
 img.blob_data, img.alttext, img.title,
@@ -444,3 +444,12 @@ JOIN prices v
 ON v.id = p.id
 GROUP BY p.name
 ORDER BY p.id;
+
+CREATE VIEW `Extended Category View` AS 
+SELECT c.name AS child, 
+c.id AS childID,
+p.name AS parent, 
+p.id AS parentID
+FROM categorys AS c
+LEFT JOIN categorys AS p
+ON c.upper_category_id = p.id;
