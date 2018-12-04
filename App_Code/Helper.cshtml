@@ -278,15 +278,12 @@
     }
     else
     {
-        Session.Clear();
-        Session.Abandon();
+        SignOut();
     }
 }
 
 @helper SignOut()
 {
-    //Session.Clear();
-    //Session.Abandon();
     Session["user"] = "";
     Session["role"] = "";
 }
