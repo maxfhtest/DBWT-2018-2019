@@ -1,0 +1,47 @@
+﻿@model IEnumerable<DBWT.Models.Zutat>
+@{
+    ViewBag.Title = "Zutaten";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@helper FlagIcon(bool flag)
+{
+    <i class="far @(flag ? "fa-check-circle" : "fa-circle")"></i>
+}
+@helper MarkBio(bool bio)
+{
+    if (bio)
+    {
+        <img src="~/Images/Bio.svg" height="25" alt="[BIO!]" />
+    }
+}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Zutat</th>
+                @*<th>Beschreibung</th>*@
+                <th>Vegetarisch?</th>
+                <th>Vegan?</th>
+                <th>Glutenfrei?</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var Z in Model)
+                {
+                    String Tooltipp = "Suchen Sie nach '" + Z.Name + "' im Web";
+                    String NameForWebSearch = Z.Name.Replace(" ", "%20");
+                    <tr>
+                        <td>
+                            <a href="@($"http://www.google.de/search?q={NameForWebSearch}")"
+                               target="_blank" title="@Tooltipp">@Z.Name@MarkBio(Z.Bio)</a>
+                        </td>
+                        <td>@FlagIcon(Z.Vegetarisch)</td>
+                        <td>@FlagIcon(Z.Vegan)</td>
+                        <td>@FlagIcon(Z.Glutenfrei)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

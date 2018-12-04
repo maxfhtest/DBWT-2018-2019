@@ -73,3 +73,7 @@ C:\Users\VFedex\Documents\GitHub\twbt-2018-2019\DBWT\DBWT\obj\Debug\DBWT.csproj.
 C:\Users\VFedex\Documents\GitHub\twbt-2018-2019\DBWT\DBWT\obj\Debug\DBWT.csproj.CopyComplete
 C:\Users\VFedex\Documents\GitHub\twbt-2018-2019\DBWT\DBWT\obj\Debug\DBWT.dll
 C:\Users\VFedex\Documents\GitHub\twbt-2018-2019\DBWT\DBWT\obj\Debug\DBWT.pdb
+C:\Users\VFedex\Documents\GitHub\twbt-2018-2019\DBWT\DBWT\bin\Google.Protobuf.dll
+C:\Users\VFedex\Documents\GitHub\twbt-2018-2019\DBWT\DBWT\bin\MySql.Data.dll
+C:\Users\VFedex\Documents\GitHub\twbt-2018-2019\DBWT\DBWT\bin\Google.Protobuf.xml
+C:\Users\VFedex\Documents\GitHub\twbt-2018-2019\DBWT\DBWT\bin\MySql.Data.xml
