@@ -9,15 +9,9 @@ namespace DBWT.Controllers
 {
     public class DefaultController : Controller
     {
-       public ActionResult Index()
-        {
-            return View();
-        }
+       public ActionResult Index() { return View(); }
 
-        public ActionResult Start()
-        {
-            return View();
-        }
+        public ActionResult Start() { return View(); }
 
         public ActionResult Zutaten()
         {
