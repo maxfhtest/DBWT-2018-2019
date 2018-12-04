@@ -1,5 +1,5 @@
-bin
-.vs
-VisualStudio
-obj
-docker-data/**
+﻿################################################################################
+# Diese .gitignore-Datei wurde von Microsoft(R) Visual Studio automatisch erstellt.
+################################################################################
+
+/.vs
