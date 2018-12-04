@@ -1,16 +1,72 @@
 @using System.Configuration
 @using MySql.Data.MySqlClient
 @using PasswordSecurity;
-
 @{
+    /**/
+
+    /**/
+
     Layout = "~/_Layout.cshtml";
     Page.Title = "Login";
 }
 @{
-    //Helper.Signin("bugfin", "1234"); //user id  = 21
-    //Helper.Signin("x", "y");
-    //Helper.test();
+    String PW = "";
+    String User = "";
+    try
+    {
+        //password = Request.QueryString["pass"].ToString();
+        PW = Request.Form["pass"];
+        User = Request.Form["user"];
+    }
+    catch
+    {
+        PW = "kein PW!"; // im Falle eines Problems mit QueryString
+        User = "error";
+    }
 }
-@Helper.Signin("bugfin", "1234")
-@Helper.Signin("bugfin", "12345")
-@Helper.Signin("bugfins", "1234")
+@if (Request.Form["pass"] != null)
+{
+@Helper.Signin(User, PW)
+}
+@if (!String.IsNullOrEmpty(Session["user"] as String))
+{
+<p>Sie sind angemeldet! </p>
+<p>Loginname = @Session["user"]</p>
+<p>Rolle = @Session["role"]</p>
+<a href="~/logout.cshtml" class="btn btn-outline-success btn-secondary btn-block mr-5">
+    <p class="button_filter text-center" role="button">Abmelden</p>
+</a>
+}
+else
+{
+@*@Helper.Signin("bugfin", "1234")*@
+<div class="row vertical-offset-md-1">
+    <div class="col-md-6">
+        <form role="form" method="post" action="~/Login.cshtml">
+            <h2>Please Sign In</h2>
+            <div class="row">
+                <div class="form-group col-md-10 offset-md-0">
+                    <input type="text" name="user" id="login_name" class="form-control input-lg" value="" placeholder="Username" tabindex="1">
+                </div>
+                <div class="form-group col-md-10 offset-md-0">
+                    <input type="password" name="pass" id="password" class="form-control input-lg" placeholder="Password" tabindex="2">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+                    <input type="submit" value="Sign Me In" class="btn btn-outline-success btn-secondary btn-block mr-5" tabindex="7">
+                </div>
+                @*<div class="col-md-5"><a href="#" class="btn btn-outline-success btn-secondary btn-block mr-5">Sign Up Here</a></div>*@
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <p>Beispieluser</p>
+        <ul>
+            <li>bugfin db (student)</li>
+            <li>dot testing (employee)</li>
+            <li>bkahuna s3cr3tz (guest)</li>
+        </ul>
+    </div>
+</div>
+}

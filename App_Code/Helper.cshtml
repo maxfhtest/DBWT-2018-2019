@@ -237,6 +237,7 @@
     string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
     MySqlConnection con = new MySqlConnection(conString);
     string GoodHash = "";
+    String Role = "";
     try
     {
         //HASH_ALGORITHM_INDEX      = 0 = "sha1"
@@ -248,11 +249,12 @@
         con.Open();
         MySqlCommand cmd;
         cmd = con.CreateCommand();
-        cmd.CommandText = "SELECT id, active, loginname, salt, `hash` FROM users WHERE loginname = '" + username + "'";
+        cmd.CommandText = "SELECT * FROM `extended user view` where loginname = '" + username + "'";
 
         MySqlDataReader r = cmd.ExecuteReader();
         if (r.Read()) //für jede id in der Tabelle incredients
         {
+            Role = r["Rolle"].ToString();
             GoodHash = "sha1:64000:18:" + r["salt"].ToString() + ":" + r["hash"].ToString();
         }
         r.Close();
@@ -271,16 +273,48 @@
 
     if (LoginSuccess)
     {
-<p>SUPER!</p>
+        Session["user"] = username;
+        Session["role"] = Role;
     }
     else
     {
-<p>nicht cool!</p>
+        Session.Clear();
+        Session.Abandon();
     }
 }
 
-@helper test()
+@helper SignOut()
 {
-    string test = PasswordSecurity.PasswordStorage.CreateHash("1234");
-    System.Console.WriteLine(test);
+    //Session.Clear();
+    //Session.Abandon();
+    Session["user"] = "";
+    Session["role"] = "";
+}
+
+@helper DoPriceInformation(GerichtModel G)
+{
+
+    if (!String.IsNullOrEmpty(Session["user"] as String))
+    {
+        if (Session["role"].ToString() == "student")
+        {
+<b>Student-Preis</b><br />
+<b id="preis">@G.Studentpreis &euro;</b>
+        }
+        else if (Session["role"].ToString() == "employee")
+        {
+<b>Mitarbeiter-Preis</b><br />
+<b id="preis">@G.Mitarbeiterpreis &euro;</b>
+        }
+        else
+        {
+<b>Gast-Preis</b><br />
+<b id="preis">@G.Gastpreis &euro;</b>
+        }
+    }
+    else
+    {
+<b>Gast-Preis</b><br />
+<b id="preis">@G.Gastpreis &euro;</b>
+    }
 }

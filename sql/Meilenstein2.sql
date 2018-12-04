@@ -381,16 +381,16 @@ INSERT INTO `products` (name, description, stock, available, image_id, category_
 	('Käsestulle', 'Wie für den Schweizer gemacht'	, '7', 	'1', '5', '13'),
 	('Spiegelei', 	'Wenns schnell gehen muss'			, '2', 	'1', '8', '3');
 
-INSERT INTO prices (id, `year`, guest)
+INSERT INTO prices (id, `year`, guest, student, employee)
 	VALUES
-	('1', '2018', '2.95'),
-	('2', '2018', '3.95'),
-	('3', '2018', '4.95'),
-	('4', '2018', '5.95'),
-	('5', '2018', '6.95'),
-	('6', '2018', '7.95'),
-	('7', '2018', '99.99'),
-	('8', '2018', '0.95');
+	('1', '2018', '9.95', '1.95', '51.95'),
+	('2', '2018', '10.95', '2.95', '52.95'),
+	('3', '2018', '11.95', '3.95', '53.95'),
+	('4', '2018', '12.95', '4.95', '54.95'),
+	('5', '2018', '13.95', '5.95', '55.95'),
+	('6', '2018', '14.95', '6.95', '56.95'),
+	('7', '2018', '15.99', '7.95', '57.95'),
+	('8', '2018', '16.95', '8.95', '58.95');
 
 INSERT INTO products_ingredients (`product_id`,`ingredient_id`) VALUES
 	('1',1010),
@@ -438,7 +438,6 @@ INSERT INTO guests (id, reason) VALUES (24,'HANDWERKER');
 INSERT INTO students (id, course, matric_no) VALUES (21, 'INF', 42342342);
 INSERT INTO employees (id) VALUES(22);
 
-
 CREATE VIEW `Extended Product View` AS
 SELECT p.id, p.description, p.name, p.stock, p.available, p.category_id,
 MIN(ing.vegetarian) AS VGT, 
@@ -466,7 +465,7 @@ LEFT JOIN categorys AS p
 ON c.upper_category_id = p.id;
 
 CREATE VIEW `Extended User View` AS 
-SELECT u.id , 
+SELECT u.id , u.salt, u.`hash`, u.firstname, u.lastname, u.active, u.loginname,
 	IF(s.id > 0,'student',
 		IF(e.id > 0,'employee',
 			IF(g.id > 0,'guest',

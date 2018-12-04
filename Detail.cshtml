@@ -130,8 +130,7 @@
     </div>
     <div class="col-2">
         <p class="text-end">
-            <b>Gast-Preis</b><br />
-            <b id="preis">@G.Gastpreis &euro;</b>
+            @Helper.DoPriceInformation(G)
         </p>
         <div class="input-group-append">
             <button class="btn btn-block btn-outline-success" type="submit"><i class="fas fa-utensils"> Vorbestellen</i></button>
