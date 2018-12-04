@@ -422,11 +422,22 @@ VALUES (24, 'Wendy', 'Burger', 's3cr3tz@ismypassword.com', 'bkahuna', '2018-11-1
 REPLACE INTO `users` (`id`, `firstname`, `lastname`, `mail`, `loginname`, `last_login`, `created_at`, `birth`, `age`, `salt`, `hash`, `active`) 
 VALUES (25, 'Monster', 'Robot', '^;_`;^@ismypassword.com', 'root', '2018-11-14 17:44:10', '2018-11-14', '1982-12-12', 0, 'dX8YsBM9atpYto9caWHJM6Eet7bUngxk', 'nRt3MSBdNUHPj/q02WPgXaDA', 1);
 
+UPDATE users 
+set users.salt = '+6AOUlRpIO9fIBUXtO8xLc0YjMuam7ky',
+users.`hash` = 'cnXcn4xLb9uBHHYJ+kRQsMW3'
+WHERE users.id = 21; 
+
 REPLACE INTO `users_friends` (`friendone`, `friendtwo`) VALUES (21, 22);
 REPLACE INTO `users_friends` (`friendone`, `friendtwo`) VALUES (21, 23);
 REPLACE INTO `users_friends` (`friendone`, `friendtwo`) VALUES (21, 24);
 REPLACE INTO `users_friends` (`friendone`, `friendtwo`) VALUES (22, 23);
 REPLACE INTO `users_friends` (`friendone`, `friendtwo`) VALUES (22, 24);
+
+INSERT INTO members (id) VALUES (21),(22),(23);
+INSERT INTO guests (id, reason) VALUES (24,'HANDWERKER');
+INSERT INTO students (id, course, matric_no) VALUES (21, 'INF', 42342342);
+INSERT INTO employees (id) VALUES(22);
+
 
 CREATE VIEW `Extended Product View` AS
 SELECT p.id, p.description, p.name, p.stock, p.available, p.category_id,
@@ -453,3 +464,22 @@ p.id AS parentID
 FROM categorys AS c
 LEFT JOIN categorys AS p
 ON c.upper_category_id = p.id;
+
+CREATE VIEW `Extended User View` AS 
+SELECT u.id , 
+	IF(s.id > 0,'student',
+		IF(e.id > 0,'employee',
+			IF(g.id > 0,'guest',
+				''
+			)
+		)
+	) AS Rolle
+FROM users u
+LEFT JOIN members m ON u.id = m.id
+LEFT JOIN students s ON u.id = s.id
+LEFT JOIN employees e ON u.id = e.id
+LEFT JOIN guests g ON u.id = g.id
+ORDER BY u.id;
+
+-- SELECT id, active, loginname FROM users WHERE loginname = 'root' AND salt = 'dX8YsBM9atpYto9caWHJM6Eet7bUngxk' AND  `hash` = 'nRt3MSBdNUHPj/q02WPgXaDA';
+-- SELECT id, active, loginname, salt, `hash` FROM users WHERE loginname = 'root';
