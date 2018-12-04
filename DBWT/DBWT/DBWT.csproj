@@ -117,6 +117,9 @@
     <Content Include="Scripts\Old\jquery-1.10.2.min.js" />
     <Content Include="Scripts\Old\modernizr-2.6.2.js" />
     <Content Include="Scripts\popper.min.js" />
+    <Content Include="SQL\Benutzer_Freunde.sql" />
+    <Content Include="SQL\Kategorien.sql" />
+    <Content Include="SQL\Meilenstein2.sql" />
     <Content Include="Web.config" />
     <Content Include="Views\Shared\_header.cshtml" />
     <Content Include="Views\Shared\_footer.cshtml" />
