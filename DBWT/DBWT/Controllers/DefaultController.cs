@@ -18,5 +18,11 @@ namespace DBWT.Controllers
             List<Zutat> Zutatenliste = new Zutat().GetZutaten();
             return View(Zutatenliste);
         }
+
+        public ActionResult Produkte()
+        {
+            List<Produkt> ProduktListe = new Produkt().GetProdukte();
+            return View(ProduktListe);
+        }
     }
 }

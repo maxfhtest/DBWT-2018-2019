@@ -1,0 +1,109 @@
+﻿@using System.Configuration
+@using MySql.Data.MySqlClient;
+@model IEnumerable<DBWT.Models.Produkt>
+@{
+    ViewBag.Title = "Produkte";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    //String qstring = Request.QueryString["meals"];
+    String currurl = HttpContext.Current.Request.RawUrl; //z.B "/Produkte.cshtml?available=..."
+    String QueryString = currurl.Substring(currurl.IndexOf('?') + 1); //z.b. "available=..."
+    Boolean available;
+    Boolean vegetarian;
+    Boolean vegan;
+    int categoryid;
+    var res = HttpUtility.ParseQueryString(QueryString).Get("available");
+    available = (res == "true");
+    res = HttpUtility.ParseQueryString(QueryString).Get("vegetarian");
+    vegetarian = (res == "true");
+    res = HttpUtility.ParseQueryString(QueryString).Get("vegan");
+    vegan = (res == "true");
+    try
+    {
+        res = HttpUtility.ParseQueryString(QueryString).Get("kat");
+        categoryid = Convert.ToInt32(res);
+    }
+    catch
+    {
+        categoryid = 0;
+    }
+    //AllCategorysModel AllCategorys = new AllCategorysModel();
+    //AllCategorys.SetAllCategorys();
+    //KategorieModel CurrentCatagory = AllCategorys.GetCurrentCategory(categoryid);
+}
+@helper Base64Image(byte[] bindata, string alt, bool available)
+{
+    if (bindata != null && bindata.Length > 0)
+    {
+        string Base64Prefix = "data:image/jpeg;base64,";
+        string image = Base64Prefix + System.Convert.ToBase64String(bindata);
+
+        // Diese Base64-codierte Repräsentation der Bilddatei wird dem Browser direkt übergeben
+        if (available)
+        {
+            <img class="square" alt="@alt" src="@image" />
+        }
+        else
+        {
+            <img class="square unavailable" alt="@alt" src="@image" />
+        }
+
+    }
+    else
+    {
+        <p class="error">Es kann kein Bild gezeigt werden </p>
+    }
+}
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-9">
+        <h1>Verfügbare Speisen (@*@CurrentCatagory.Name*@)</h1>
+    </div>
+</div>
+<div class="row mt-5">
+    <div class="col-3">
+        <form id="myFilter">
+            <fieldset>
+                <legend>Speiseliste filtern</legend>
+                <select name="kat" class="form-control btn-outline-success">
+                    <optgroup label="Generell">
+                        <option value="0" selected>Alles Anzeigen</option>
+                    </optgroup>
+                    @*@Helper.CategoryHelper(AllCategorys, CurrentCatagory)*@
+                </select>
+                <br />
+                @*@Helper.CreateCheckbox("available", "nur verfügbare", available)
+                    @Helper.CreateCheckbox("vegetarian", "nur vegetarische", vegetarian)
+                    @Helper.CreateCheckbox("vegan", "nur vegane", vegan)*@
+                <input class="btn btn-outline-success btn-center" type="submit" value="Speisen filtern"><br />
+            </fieldset>
+        </form>
+    </div>
+    <div class="col-7">
+        <div class="row">
+            <!-- Obere Reihe der Speisen-->
+            @*@Helper.ProductHelper(categoryid, available, vegetarian, vegan)*@
+            @{
+                foreach (var G in Model)
+                {
+                    <div class="col-3">
+                        @Base64Image((byte[])G.Bilddaten, G.Bildtitel, G.Verfuegbar)
+                        <p class="mb-0">@G.Name</p>
+
+                        @if (G.Verfuegbar)
+                        {
+                            <a href="Detail.cshtml?id=@G.ID" class="mb-1">Details</a>
+                        }
+                        else
+                        {
+                            <p>Vergriffen</p>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <div class="col-2">
+    </div>
+</div>
