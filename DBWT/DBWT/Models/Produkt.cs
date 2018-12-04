@@ -26,6 +26,8 @@ namespace DBWT.Models
         public float Gastpreis { get; set; }
         public float Studentpreis { get; set; }
         public float Mitarbeiterpreis { get; set; }
+
+        //========== Konstruktur ===============
         public Gericht()
         {
             ID = 0;
@@ -40,6 +42,8 @@ namespace DBWT.Models
             Studentpreis = 0;
             Mitarbeiterpreis = 0;
         }
+
+        //========== Funktionen ================
         public List<Gericht> GetProdukte()
         {
             string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
@@ -256,5 +260,6 @@ namespace DBWT.Models
             }
             return GerichtListe;
         } //End of Function "GetProdukteWithFilter()"
+
     } //End of Class "Produkt"
 }

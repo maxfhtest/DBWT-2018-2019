@@ -1,37 +1,25 @@
-﻿@using System.Configuration
-@using MySql.Data.MySqlClient;
-@model IEnumerable<DBWT.Models.Produkt>
+﻿@model IEnumerable<DBWT.Models.Gericht>
 @{
     ViewBag.Title = "Produkte";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @{
-    //String qstring = Request.QueryString["meals"];
-    String currurl = HttpContext.Current.Request.RawUrl; //z.B "/Produkte.cshtml?available=..."
-    String QueryString = currurl.Substring(currurl.IndexOf('?') + 1); //z.b. "available=..."
-    Boolean available;
-    Boolean vegetarian;
-    Boolean vegan;
-    int categoryid;
-    var res = HttpUtility.ParseQueryString(QueryString).Get("available");
-    available = (res == "true");
-    res = HttpUtility.ParseQueryString(QueryString).Get("vegetarian");
-    vegetarian = (res == "true");
-    res = HttpUtility.ParseQueryString(QueryString).Get("vegan");
-    vegan = (res == "true");
-    try
-    {
-        res = HttpUtility.ParseQueryString(QueryString).Get("kat");
-        categoryid = Convert.ToInt32(res);
-    }
-    catch
-    {
-        categoryid = 0;
-    }
     //AllCategorysModel AllCategorys = new AllCategorysModel();
     //AllCategorys.SetAllCategorys();
     //KategorieModel CurrentCatagory = AllCategorys.GetCurrentCategory(categoryid);
 }
+@helper CreateCheckbox(string name, string label, bool b)
+{
+    if (b)
+    {
+        <input type="checkbox" name="@name" value="true" checked><label class="choice ml-1">@label</label><br />
+    }
+    else
+    {
+        <input type="checkbox" name="@name" value="true"><label class="choice ml-1">@label</label><br />
+    }
+}
+
 @helper Base64Image(byte[] bindata, string alt, bool available)
 {
     if (bindata != null && bindata.Length > 0)
@@ -73,9 +61,9 @@
                     @*@Helper.CategoryHelper(AllCategorys, CurrentCatagory)*@
                 </select>
                 <br />
-                @*@Helper.CreateCheckbox("available", "nur verfügbare", available)
-                    @Helper.CreateCheckbox("vegetarian", "nur vegetarische", vegetarian)
-                    @Helper.CreateCheckbox("vegan", "nur vegane", vegan)*@
+                    @CreateCheckbox("available", "nur verfügbare", ViewBag.available)
+                    @CreateCheckbox("vegetarian", "nur vegetarische", ViewBag.vegetarian)
+                    @CreateCheckbox("vegan", "nur vegane", ViewBag.vegan)
                 <input class="btn btn-outline-success btn-center" type="submit" value="Speisen filtern"><br />
             </fieldset>
         </form>
