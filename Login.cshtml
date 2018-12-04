@@ -1,0 +1,16 @@
+@using System.Configuration
+@using MySql.Data.MySqlClient
+@using PasswordSecurity;
+
+@{
+    Layout = "~/_Layout.cshtml";
+    Page.Title = "Login";
+}
+@{
+    //Helper.Signin("bugfin", "1234"); //user id  = 21
+    //Helper.Signin("x", "y");
+    //Helper.test();
+}
+@Helper.Signin("bugfin", "1234")
+@Helper.Signin("bugfin", "12345")
+@Helper.Signin("bugfins", "1234")

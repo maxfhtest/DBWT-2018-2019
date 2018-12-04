@@ -1,5 +1,6 @@
 @using System.Configuration
-@using MySql.Data.MySqlClient;
+@using MySql.Data.MySqlClient
+@using PasswordSecurity;
 
 @helper Base64Image(byte[] bindata, string alt, bool available)
 {
@@ -136,7 +137,7 @@
         if (categoryid > 0)
         {
             if (available || vegetarian || vegan) { cmd.CommandText += " AND"; }
-            cmd.CommandText += " category_id = "+categoryid;
+            cmd.CommandText += " category_id = " + categoryid;
         }
         cmd.CommandText += ";";
         MySqlDataReader r = cmd.ExecuteReader();
@@ -229,4 +230,57 @@
             }
 </optgroup>
     }
+}
+
+@helper Signin(string username, string passwort)
+{
+    string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
+    MySqlConnection con = new MySqlConnection(conString);
+    string GoodHash = "";
+    try
+    {
+        //HASH_ALGORITHM_INDEX      = 0 = "sha1"
+        //ITERATION_INDEX           = 1 = 64000 (laut Folien)
+        //HASH_SIZE_INDEX           = 2 = 18 (laut Folien)
+        //SALT_INDEX                = 3 =
+        //PBKDF2_INDEX              = 4 = SALT
+        //HASH_SECTIONS             = 5 = HASH
+        con.Open();
+        MySqlCommand cmd;
+        cmd = con.CreateCommand();
+        cmd.CommandText = "SELECT id, active, loginname, salt, `hash` FROM users WHERE loginname = '" + username + "'";
+
+        MySqlDataReader r = cmd.ExecuteReader();
+        if (r.Read()) //für jede id in der Tabelle incredients
+        {
+            GoodHash = "sha1:64000:18:" + r["salt"].ToString() + ":" + r["hash"].ToString();
+        }
+        r.Close();
+        con.Close();
+    }
+    catch
+    {
+        con.Close();
+    }
+
+    bool LoginSuccess = false;
+    if (GoodHash != "")
+    {
+        LoginSuccess = PasswordSecurity.PasswordStorage.VerifyPassword(passwort, GoodHash);
+    }
+
+    if (LoginSuccess)
+    {
+<p>SUPER!</p>
+    }
+    else
+    {
+<p>nicht cool!</p>
+    }
+}
+
+@helper test()
+{
+    string test = PasswordSecurity.PasswordStorage.CreateHash("1234");
+    System.Console.WriteLine(test);
 }

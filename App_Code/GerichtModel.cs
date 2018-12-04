@@ -33,7 +33,7 @@ public class GerichtModel
         Studentpreis = 0;
         Mitarbeiterpreis = 0;
     }
-    public bool SetGerichtByID(int id)
+    public bool SelectGerichtByID(int id)
     {
         string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
         MySqlConnection con = new MySqlConnection(conString);
