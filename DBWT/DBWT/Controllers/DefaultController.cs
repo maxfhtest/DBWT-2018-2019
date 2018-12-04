@@ -54,7 +54,7 @@ namespace DBWT.Controllers
             List<Gericht> ProduktListe;
             if (categoryid == 0 && !available && !vegetarian && !vegan)
             {
-                //Hole alle Produkte (Aber dann werden Checkboxen ignoriert)
+                //Hole alle Produkte (Schnellere SQL Abfrage)
                 ProduktListe = new Gericht().GetProdukte();
             }
             else
@@ -64,6 +64,6 @@ namespace DBWT.Controllers
             }
 
             return View(ProduktListe);
-        }
-    }
-}
+        } //End of ActionResult Produkte
+    }//End of Controller
+}//End of Namespace
