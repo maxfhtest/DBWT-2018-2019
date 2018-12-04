@@ -13,7 +13,7 @@ namespace DBWT.Models
     using System.Web;
     using System.Data.SqlClient;
 
-    public class Produkt
+    public class Gericht
     {
         public int ID { get; set; }
         public string Name { get; set; }
@@ -26,7 +26,7 @@ namespace DBWT.Models
         public float Gastpreis { get; set; }
         public float Studentpreis { get; set; }
         public float Mitarbeiterpreis { get; set; }
-        public Produkt()
+        public Gericht()
         {
             ID = 0;
             Name = "";
@@ -40,11 +40,11 @@ namespace DBWT.Models
             Studentpreis = 0;
             Mitarbeiterpreis = 0;
         }
-        public List<Produkt> GetProdukte()
+        public List<Gericht> GetProdukte()
         {
             string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
             MySqlConnection con = new MySqlConnection(conString);
-            List<Produkt> AlleProdukte = new List<Produkt>();
+            List<Gericht> AlleProdukte = new List<Gericht>();
             try
             {
                 con.Open();
@@ -56,7 +56,7 @@ namespace DBWT.Models
                 //Speichere Informationen zum Gericht
                 while (r.Read())
                 {
-                    var G = new Produkt { };
+                    var G = new Gericht { };
                     G.ID = Convert.ToInt32(r["id"]);
                     G.Name = r["name"].ToString();
                     G.Beschreibung = r["description"].ToString();
@@ -115,7 +115,7 @@ namespace DBWT.Models
         {
             string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
             MySqlConnection con = new MySqlConnection(conString);
-            var G = new Produkt { };
+            var G = new Gericht { };
             bool OK = false;
             try
             {
@@ -183,5 +183,78 @@ namespace DBWT.Models
             }
             return OK;
         }
-    }
+        public List<Gericht> GetProdukteWithFilter(int categoryid, bool available, bool vegetarian, bool vegan)
+        {
+            string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
+            MySqlConnection con = new MySqlConnection(conString);
+            List<Gericht> GerichtListe = new List<Gericht>();
+            try
+            {
+                con.Open();
+                MySqlCommand cmd;
+                cmd = con.CreateCommand();
+                cmd.CommandText = @"SELECT * FROM `extended product view`";
+
+                if (available || vegan || vegetarian || categoryid > 0)
+                {
+                    cmd.CommandText += " WHERE";
+                }
+                if (available)
+                {
+                    cmd.CommandText += " available = 1";
+                }
+                if (vegetarian)
+                {
+                    if (available) { cmd.CommandText += " AND"; }
+                    cmd.CommandText += " VGT = 1";
+                }
+                if (vegan)
+                {
+                    if (available || vegetarian) { cmd.CommandText += " AND"; }
+                    cmd.CommandText += " VGN = 1";
+                }
+                if (categoryid > 0)
+                {
+                    if (available || vegetarian || vegan) { cmd.CommandText += " AND"; }
+                    cmd.CommandText += " category_id = " + categoryid;
+                }
+                cmd.CommandText += ";";
+                MySqlDataReader r = cmd.ExecuteReader();
+                int count = 0;
+                while (r.Read() || (r.Read() && count < 8)) //für jede id in der Tabelle Products (jedoch max. 8) :
+                {
+                    Gericht G = new Gericht();
+                    try
+                    {
+                        G.ID = Convert.ToInt32(r["id"]);
+                        G.Name = r["name"].ToString();
+                        G.Beschreibung = r["description"].ToString();
+                        G.Stock = Convert.ToInt32(r["stock"]);
+                        G.Verfuegbar = Convert.ToBoolean(r["available"]);
+                        G.Bilddaten = r["blob_data"];
+                        G.Bildtitel = r["alttext"].ToString();
+                    }
+                    catch
+                    {
+                        G.ID = 0;
+                        G.Name = "";
+                        G.Beschreibung = "";
+                        G.Stock = 0;
+                        G.Verfuegbar = false;
+                        G.Bilddaten = null;
+                        G.Bildtitel = "";
+                    }
+                    count++;
+                    GerichtListe.Add(G);
+                }
+                r.Close();
+                con.Close();
+            }
+            catch (Exception e)
+            {
+
+            }
+            return GerichtListe;
+        } //End of Function "GetProdukteWithFilter()"
+    } //End of Class "Produkt"
 }
