@@ -39,6 +39,7 @@ namespace DBWT.Controllers
             {
                 categoryid = 0;
             }
+            ViewBag.categoryid = categoryid;
             List<Gericht> ProduktListe;
             if (categoryid == 0 && !available && !vegetarian && !vegan)
             {
@@ -58,5 +59,5 @@ namespace DBWT.Controllers
             List<Zutat> Zutatenliste = new Zutat().GetZutaten();
             return View(Zutatenliste);
         } //End of ActionResult Zutaten
-    }
-}
+    } //End of MensaController
+} //End of Namespace

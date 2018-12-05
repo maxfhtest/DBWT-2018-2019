@@ -1,10 +1,13 @@
 ﻿@model IEnumerable<DBWT.Models.Gericht>
+@using DBWT.Models
 @{
     ViewBag.Title = "Produkte";
-    //AllCategorysModel AllCategorys = new AllCategorysModel();
-    //AllCategorys.SetAllCategorys();
-    //KategorieModel CurrentCatagory = AllCategorys.GetCurrentCategory(categoryid);
+    Kategorie CurrentCatagory = new Kategorie();
+    List<Kategorie> AlleKategorien = CurrentCatagory.GetKategorien();
+    List<String> Überkategorien = CurrentCatagory.GetUpperKategorien(AlleKategorien);
+    CurrentCatagory = CurrentCatagory.GetKategorieByID(AlleKategorien, ViewBag.categoryid);
 }
+
 @helper CreateCheckbox(string name, string label, bool b)
 {
     if (b)
@@ -40,10 +43,11 @@
         <p class="error">Es kann kein Bild gezeigt werden </p>
     }
 }
+
 <div class="row">
     <div class="col-3"></div>
     <div class="col-9">
-        <h1>Verfügbare Speisen (@*@CurrentCatagory.Name*@)</h1>
+        <h1>Verfügbare Speisen (@CurrentCatagory.Name)</h1>
     </div>
 </div>
 <div class="row mt-5">
@@ -55,12 +59,31 @@
                     <optgroup label="Generell">
                         <option value="0" selected>Alles Anzeigen</option>
                     </optgroup>
-                    @*@Helper.CategoryHelper(AllCategorys, CurrentCatagory)*@
+                    @foreach (var Upper in Überkategorien)
+                    {
+                        <optgroup label="@Upper">
+                            @foreach (var cat in AlleKategorien)
+                            {
+                                if (cat.UpperCategoryName == Upper)
+                                {
+                                    if (cat.ID == CurrentCatagory.ID)
+                                    {
+                                        <option id="category-@cat.ID" value="@cat.ID" selected>@cat.Name</option>
+                                    }
+                                    else
+                                    {
+                                        <option id="category-@cat.ID" value="@cat.ID">@cat.Name</option>
+                                    }
+                                }
+
+                            }
+                        </optgroup>
+                    }
                 </select>
                 <br />
-                    @CreateCheckbox("available", "nur verfügbare", ViewBag.available)
-                    @CreateCheckbox("vegetarian", "nur vegetarische", ViewBag.vegetarian)
-                    @CreateCheckbox("vegan", "nur vegane", ViewBag.vegan)
+                @CreateCheckbox("available", "nur verfügbare", ViewBag.available)
+                @CreateCheckbox("vegetarian", "nur vegetarische", ViewBag.vegetarian)
+                @CreateCheckbox("vegan", "nur vegane", ViewBag.vegan)
                 <input class="btn btn-outline-success btn-center" type="submit" value="Speisen filtern"><br />
             </fieldset>
         </form>
@@ -72,20 +95,20 @@
             @{
                 foreach (var G in Model)
                 {
-            <div class="col-3">
-                @Base64Image((byte[])G.Bilddaten, G.Bildtitel, G.Verfuegbar)
-                <p class="mb-0">@G.Name</p>
+                    <div class="col-3">
+                        @Base64Image((byte[])G.Bilddaten, G.Bildtitel, G.Verfuegbar)
+                        <p class="mb-0">@G.Name</p>
 
-                @if (G.Verfuegbar)
-                {
-                    @*<a href="Detail.cshtml?id=@G.ID" class="mb-1">Details</a>*@
-                    @Html.ActionLink("Details", "Details", "Mensa")
-                }
-                else
-                {
-                    <p>Vergriffen</p>
-                }
-            </div>
+                        @if (G.Verfuegbar)
+                        {
+                            @*<a href="Detail.cshtml?id=@G.ID" class="mb-1">Details</a>*@
+                            @Html.ActionLink("Details", "Details", "Mensa")
+                        }
+                        else
+                        {
+                            <p>Vergriffen</p>
+                        }
+                    </div>
                 }
             }
         </div>
