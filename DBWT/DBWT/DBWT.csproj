@@ -154,6 +154,7 @@
     <Content Include="Views\User\Logout.cshtml" />
     <Content Include="Views\Mensa\Detail.cshtml" />
     <Content Include="Views\User\Register.cshtml" />
+    <Content Include="Views\Shared\_IngredientTableHeader.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
