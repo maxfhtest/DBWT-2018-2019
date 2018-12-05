@@ -20,6 +20,13 @@ namespace DBWT.Controllers
             Session["role"] = "";
             return View();
         }
+        public ActionResult Register()
+        {
+            if (!String.IsNullOrEmpty(Session["user"] as String)){
+                return RedirectToAction("Login");
+            }
+            return View();
+        }
         public ActionResult Login()
         {
             bool LoginSuccess = false;
