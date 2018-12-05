@@ -32,3 +32,4 @@ DBWT/DBWT/bin/DBWT.dll
 DBWT/DBWT/obj/Debug/DBWT.csproj.CoreCompileInputs.cache
 *.dll
 DBWT/DBWT/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+*.cache
