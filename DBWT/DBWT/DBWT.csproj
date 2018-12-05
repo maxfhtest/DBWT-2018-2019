@@ -152,6 +152,7 @@
     <Content Include="Views\Home\Impressum.cshtml" />
     <Content Include="Views\User\Login.cshtml" />
     <Content Include="Views\User\Logout.cshtml" />
+    <Content Include="Views\Mensa\Detail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -160,7 +160,7 @@ namespace DBWT.Models
                 r.Close();
 
                 //Speichere Zutatenliste zum Gericht
-                cmd.CommandText = "Select ingredients.id, ingredients.name, ingredients.bio, ingredients.vegetarian, ingredients.vegan, ingredients.glutenfree, `products_ingredients`.`product_id` FROM ingredients, `products_ingredients` WHERE ingredients.id = `products_ingredients`.`ingredient_id` and `products_ingredients`.`product_id` = " + this.ID + ";";
+                cmd.CommandText = "Select ingredients.id, ingredients.name, ingredients.bio, ingredients.vegetarian, ingredients.vegan, ingredients.glutenfree, `products_ingredients`.`product_id` FROM ingredients, `products_ingredients` WHERE ingredients.id = `products_ingredients`.`ingredient_id` and `products_ingredients`.`product_id` = " + this.ID + " ORDER BY bio DESC, name, vegetarian, vegan;";
                 MySqlDataReader r2 = cmd.ExecuteReader();
                 while (r2.Read())
                 {

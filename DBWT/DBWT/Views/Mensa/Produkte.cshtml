@@ -7,42 +7,6 @@
     List<String> Überkategorien = CurrentCatagory.GetUpperKategorien(AlleKategorien);
     CurrentCatagory = CurrentCatagory.GetKategorieByID(AlleKategorien, ViewBag.categoryid);
 }
-
-@helper CreateCheckbox(string name, string label, bool b)
-{
-    if (b)
-    {
-        <input type="checkbox" name="@name" value="true" checked><label class="choice ml-1">@label</label><br />
-    }
-    else
-    {
-        <input type="checkbox" name="@name" value="true"><label class="choice ml-1">@label</label><br />
-    }
-}
-
-@helper Base64Image(byte[] bindata, string alt, bool available)
-{
-    if (bindata != null && bindata.Length > 0)
-    {
-        string Base64Prefix = "data:image/jpeg;base64,";
-        string image = Base64Prefix + System.Convert.ToBase64String(bindata);
-
-        // Diese Base64-codierte Repräsentation der Bilddatei wird dem Browser direkt übergeben
-        if (available)
-        {
-            <img class="square" alt="@alt" src="@image" />
-        }
-        else
-        {
-            <img class="square unavailable" alt="@alt" src="@image" />
-        }
-
-    }
-    else
-    {
-        <p class="error">Es kann kein Bild gezeigt werden </p>
-    }
-}
 <div class="row">
     <div class="col-3"></div>
     <div class="col-9">
@@ -89,29 +53,61 @@
     </div>
     <div class="col-7">
         <div class="row">
-            <!-- Obere Reihe der Speisen-->
-            @*@Helper.ProductHelper(categoryid, available, vegetarian, vegan)*@
-            @{
-                foreach (var G in Model)
-                {
-                    <div class="col-3">
-                        @Base64Image((byte[])G.Bilddaten, G.Bildtitel, G.Verfuegbar)
-                        <p class="mb-0">@G.Name</p>
+            @foreach (var G in Model)
+            {
+                <div class="col-3">
+                    @Base64Image((byte[])G.Bilddaten, G.Bildtitel, G.Verfuegbar)
+                    <p class="mb-0">@G.Name</p>
 
-                        @if (G.Verfuegbar)
-                        {
-                            @*<a href="Detail.cshtml?id=@G.ID" class="mb-1">Details</a>*@
-                            @Html.ActionLink("Details", "Details", "Mensa")
-                        }
-                        else
-                        {
-                            <p>Vergriffen</p>
-                        }
-                    </div>
-                }
+                    @if (G.Verfuegbar)
+                    {
+                        @*<a href="Detail.cshtml?id=@G.ID" class="mb-1">Details</a>*@
+                        @Html.ActionLink("Details", "Detail/" + G.ID, "Mensa")
+                    }
+                    else
+                    {
+                        <p>Vergriffen</p>
+                    }
+                </div>
             }
         </div>
     </div>
     <div class="col-2">
     </div>
 </div>
+@*<================= HELPER ======================>*@
+@helper CreateCheckbox(string name, string label, bool b)
+{
+    if (b)
+    {
+        <input type="checkbox" name="@name" value="true" checked><label class="choice ml-1">@label</label><br />
+    }
+    else
+    {
+        <input type="checkbox" name="@name" value="true"><label class="choice ml-1">@label</label><br />
+    }
+}
+
+@helper Base64Image(byte[] bindata, string alt, bool available)
+{
+    if (bindata != null && bindata.Length > 0)
+    {
+        string Base64Prefix = "data:image/jpeg;base64,";
+        string image = Base64Prefix + System.Convert.ToBase64String(bindata);
+
+        // Diese Base64-codierte Repräsentation der Bilddatei wird dem Browser direkt übergeben
+        if (available)
+        {
+            <img class="square" alt="@alt" src="@image" />
+        }
+        else
+        {
+            <img class="square unavailable" alt="@alt" src="@image" />
+        }
+
+    }
+    else
+    {
+        <p class="error">Es kann kein Bild gezeigt werden </p>
+    }
+}

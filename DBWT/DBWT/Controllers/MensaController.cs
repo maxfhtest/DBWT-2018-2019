@@ -13,6 +13,12 @@ namespace DBWT.Controllers
         {
             return RedirectToAction("Produkte");
         }
+        public ActionResult Detail(int ID = 0)
+        {
+            Gericht G = new Gericht();
+            G.SelectGerichtByID(ID);
+            return View(G);
+        }
         public ActionResult Produkte()
         {
             Boolean available = false;
