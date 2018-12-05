@@ -11,6 +11,10 @@ namespace DBWT.Controllers
     {
         public ActionResult Index()
         {
+            return RedirectToAction("Produkte");
+        }
+        public ActionResult Produkte()
+        {
             Boolean available = false;
             Boolean vegetarian = false;
             Boolean vegan = false;

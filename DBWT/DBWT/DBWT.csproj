@@ -123,17 +123,19 @@
     <Content Include="Web.config" />
     <Content Include="Views\Shared\_header.cshtml" />
     <Content Include="Views\Shared\_footer.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\Start.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MensaController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Kategorie.cs" />
     <Compile Include="Models\Gericht.cs" />
+    <Compile Include="Models\PasswordStorage.cs" />
     <Compile Include="Models\Zutat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -145,10 +147,11 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Scripts\Old\jquery-1.10.2.min.map" />
     <Content Include="Views\Mensa\Zutaten.cshtml" />
-    <Content Include="Views\Mensa\Index.cshtml" />
+    <Content Include="Views\Mensa\Produkte.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Home.cshtml" />
     <Content Include="Views\Home\Impressum.cshtml" />
+    <Content Include="Views\User\Login.cshtml" />
+    <Content Include="Views\User\Logout.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -158,7 +161,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\User\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

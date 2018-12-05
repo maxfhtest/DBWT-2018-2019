@@ -10,9 +10,13 @@ namespace DBWT.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("Start");
         }
 
+        public ActionResult Start()
+        {
+            return View();
+        }
         public ActionResult Impressum()
         {
             return View();
