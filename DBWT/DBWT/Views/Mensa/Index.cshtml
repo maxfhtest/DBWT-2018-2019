@@ -72,19 +72,20 @@
             @{
                 foreach (var G in Model)
                 {
-                    <div class="col-3">
-                        @Base64Image((byte[])G.Bilddaten, G.Bildtitel, G.Verfuegbar)
-                        <p class="mb-0">@G.Name</p>
+            <div class="col-3">
+                @Base64Image((byte[])G.Bilddaten, G.Bildtitel, G.Verfuegbar)
+                <p class="mb-0">@G.Name</p>
 
-                        @if (G.Verfuegbar)
-                        {
-                            <a href="Detail.cshtml?id=@G.ID" class="mb-1">Details</a>
-                        }
-                        else
-                        {
-                            <p>Vergriffen</p>
-                        }
-                    </div>
+                @if (G.Verfuegbar)
+                {
+                    @*<a href="Detail.cshtml?id=@G.ID" class="mb-1">Details</a>*@
+                    @Html.ActionLink("Details", "Details", "Mensa")
+                }
+                else
+                {
+                    <p>Vergriffen</p>
+                }
+            </div>
                 }
             }
         </div>

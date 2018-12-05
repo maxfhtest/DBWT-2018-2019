@@ -2,17 +2,20 @@
     <div class="row">
         <div class="col-4 pdr-0">
             <nav class="navbar navbar-expand">
-                <a class="navbar-brand" href="/Default/Start">e-Mensa</a>
+                @*<a class="navbar-brand" href="/Default/Start">e-Mensa</a>*@
+                @Html.ActionLink("E-Mensa", "Index", "", new object { }, new { @class = "nav-link" })
             </nav>
         </div>
         <div class="col-8 pdl-0">
             <nav class="navbar navbar-expand">
                 <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="/Default/Start">Start</a>
+                        @*<a class="nav-link" href="/Default/Start">Start</a>*@
+                        @Html.ActionLink("Start", "Index", "", new object { }, new { @class = "nav-link" })
                     </li>
                     <li class="nav-item active">
-                        <a class="nav-link" href="/Default/Produkte">Mahlzeiten <span class="sr-only">(current)</span></a>
+                        @*<a class="nav-link" href="/Default/Produkte">Mahlzeiten <span class="sr-only">(current)</span></a>*@
+                        @Html.ActionLink("Mahlzeiten", "Index", "Mensa", new object { }, new { @class = "nav-link" })
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Bestellung</a>

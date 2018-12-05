@@ -1,4 +1,6 @@
-﻿@ViewBag.Title = "Start";
+﻿@{
+    ViewBag.Title = "Start";
+}
 <div class="row">
     <div class="col splash" style="background-position: right 0px bottom 1000px">
         <img src="~/Images/Campus.jpg" alt="Titelfoto Oben">
@@ -7,17 +9,17 @@
 <div class="row mt-5">
     <div class="col-4">
         <p>Der Dienst der <b>e-Mensa</b> ist noch beta. Sie können bereits <a class="link" href="#">Mahlzeiten</a> durchstöbern, aber noch nicht bestellen.</p>
-        <p>Registrieren <i class="far fa-check-circle"></i> Sie sich <a href="#">hier</a>, um über die Veröffentlichung des Dienstes per E-Mail informiert zu werden.</p>
+        <p>Registrieren <i class="far fa-check-circle"></i> Sie sich @Html.ActionLink("hier", "Register", "User"), um über die Veröffentlichung des Dienstes per E-Mail informiert zu werden.</p>
     </div>
     <div class="col-8">
         <div class="row">
             <div class="col-8"><h2>Leckere Gerichte vorbestellen</h2><p>... und gemeinsam mit Kommilitonen und Freunden essen</p></div>
             <div class="col-4">
                 <button type="button" class="btn btn-outline-success btn-primary btn-block mr-5">
-                    <i class="fas fa-angle-double-right"></i> Registrieren
+                    <i class="fas fa-angle-double-right"></i> @Html.ActionLink("Registrieren", "Register", "User")
                 </button>
                 <button type="button" class="btn btn-outline-success btn-secondary btn-block mr-5">
-                    <i class="fas fa-check"></i> Anmelden
+                    <i class="fas fa-check"></i> @Html.ActionLink("Login", "Index", "User")
                 </button>
             </div>
         </div>
@@ -28,4 +30,3 @@
         </div>
     </div>
 </div>
-

@@ -4,26 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using System.Configuration;
-using MySql.Data.MySqlClient;
 
 namespace DBWT.Controllers
 {
-    public class DefaultController : Controller
+    public class MensaController : Controller
     {
-        public ActionResult Index() { return View(); }
-
-        public ActionResult Start() { return View(); }
-
-        public ActionResult Zutaten()
+        public ActionResult Index()
         {
-            List<Zutat> Zutatenliste = new Zutat().GetZutaten();
-            return View(Zutatenliste);
-        }
-
-        public ActionResult Produkte()
-        {
-            Boolean available = false; 
+            Boolean available = false;
             Boolean vegetarian = false;
             Boolean vegan = false;
             int categoryid;
@@ -37,7 +25,7 @@ namespace DBWT.Controllers
             }
             if (Request["vegan"] != null)
             {
-                 vegan = (Request["vegan"].ToString() == "true");
+                vegan = (Request["vegan"].ToString() == "true");
             }
             ViewBag.available = available;
             ViewBag.vegetarian = vegetarian;
@@ -64,6 +52,11 @@ namespace DBWT.Controllers
             }
 
             return View(ProduktListe);
-        } //End of ActionResult Produkte
-    }//End of Controller
-}//End of Namespace
+        } //End of ActionResult Index
+        public ActionResult Zutaten()
+        {
+            List<Zutat> Zutatenliste = new Zutat().GetZutaten();
+            return View(Zutatenliste);
+        } //End of ActionResult Zutaten
+    }
+}

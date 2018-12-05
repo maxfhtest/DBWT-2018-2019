@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<DBWT.Models.Zutat>
-@ViewBag.Title = "Zutaten";
+@{
+    ViewBag.Title = "Zutaten";
+}
 @helper FlagIcon(bool flag)
 {
     <i class="far @(flag ? "fa-check-circle" : "fa-circle")"></i>
