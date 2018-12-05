@@ -5,25 +5,18 @@
             <nav class="navbar navbar-expand">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        @*<a class="nav-link" href="#">Login</a>*@
                         @Html.ActionLink("Login", "Index", "User", new object { }, new { @class = "nav-link" })
                     </li>
                     <li class="nav-item">
-                        @*<a class="nav-link" href="#">Registrieren</a>*@
                         @Html.ActionLink("Registrieren", "Register", "User", new object { }, new { @class = "nav-link" })
                     </li>
                     <li class="nav-item">
-                        @*<a class="nav-link" href="/Default/Zutaten">Zutatenliste</a>*@
                         @Html.ActionLink("Zutatenliste", "Zutaten", "Mensa", new object { }, new { @class = "nav-link" })
 
                     </li>
                     <li class="nav-item">
-                        @*<a class="nav-link" href="#">Impressum</a>*@
                         @Html.ActionLink("Impressum", "Impressum", "", new object { }, new { @class = "nav-link" })
                     </li>
-                    <!-- <li class="nav-item">
-                        <a class="nav-link disabled" href="#">Disabled</a>
-                    </li> -->
                 </ul>
                 <p>
                     <a href="">
