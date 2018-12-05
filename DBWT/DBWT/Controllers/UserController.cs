@@ -63,6 +63,7 @@ namespace DBWT.Controllers
                         MySqlConnection con = new MySqlConnection(conString);
                         string GoodHash = "";
                         String Role = "";
+                        int active = 0;
                         try
                         {
                             //HASH_ALGORITHM_INDEX      = 0 = "sha1"
@@ -81,6 +82,7 @@ namespace DBWT.Controllers
                             {
                                 Role = r["Rolle"].ToString();
                                 GoodHash = "sha1:64000:18:" + r["salt"].ToString() + ":" + r["hash"].ToString();
+                                active = Convert.ToInt32(r["active"]);
                             }
                             r.Close();
                             con.Close();
@@ -105,6 +107,14 @@ namespace DBWT.Controllers
                             Session["user"] = "";
                             Session["role"] = "";
                             AccessDenied = true;
+                        }
+                        
+                        if(active == 0 && LoginSuccess)
+                        {
+                            Session["user"] = "";
+                            Session["role"] = "";
+                            AccessDenied = true;
+                            LoginSuccess = false;
                         }
                     } //End of if(ParamsGiven)
                 }
