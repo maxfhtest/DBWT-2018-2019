@@ -4,6 +4,9 @@
 
 /.vs
 DBWT/.vs
+DBWT/DBWT/obj
+DBWT/DBWT/bin
+
 DBWT/obj\Debug/
 *.pdb
 *.dll
