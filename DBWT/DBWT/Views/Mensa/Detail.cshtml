@@ -4,14 +4,6 @@
     ViewBag.Title = "Detail";
     Gericht G = Model;
 }
-@{
-    if (G.ID == 0 || G.Beschreibung == null)
-    {
-        @section head{
-            <meta http-equiv="refresh" content="3; url=/Mensa">
-        }
-    }
-}
 <div class="row">
     <div class="col-3"></div>
     <div class="col-6">

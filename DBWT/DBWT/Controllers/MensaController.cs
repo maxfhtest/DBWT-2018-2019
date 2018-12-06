@@ -17,6 +17,10 @@ namespace DBWT.Controllers
         {
             Gericht G = new Gericht();
             G.SelectGerichtByID(ID);
+            if(G.ID == 0 || G.Beschreibung == null)
+            {
+                return RedirectToAction("Index");
+            }
             return View(G);
         }
         public ActionResult Produkte()
