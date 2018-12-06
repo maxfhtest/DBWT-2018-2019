@@ -1,2 +1,2 @@
-# DBWt-2018-2019
+# DBWT-2018-2019
 Mathe ist toller...
