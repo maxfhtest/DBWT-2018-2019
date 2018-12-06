@@ -3,9 +3,9 @@
 @{
     ViewBag.Title = "Produkte";
     Kategorie CurrentCatagory = new Kategorie();
-    List<Kategorie> AlleKategorien = CurrentCatagory.GetKategorien();
-    List<String> Überkategorien = CurrentCatagory.GetUpperKategorien(AlleKategorien);
-    CurrentCatagory = CurrentCatagory.GetKategorieByID(AlleKategorien, ViewBag.categoryid);
+    List<Kategorie> AlleKategorien = Service.GetKategorien();
+    List<String> Überkategorien = Service.GetUpperKategorien(AlleKategorien);
+    CurrentCatagory = Service.GetKategorieByID(ViewBag.categoryid);
 }
 <div class="row">
     <div class="col-3"></div>

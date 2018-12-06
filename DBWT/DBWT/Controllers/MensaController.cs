@@ -15,8 +15,7 @@ namespace DBWT.Controllers
         }
         public ActionResult Detail(int ID = 0)
         {
-            Gericht G = new Gericht();
-            G.SelectGerichtByID(ID);
+            Gericht G = Service.SelectGerichtByID(ID);
             if(G.ID == 0 || G.Beschreibung == null)
             {
                 return RedirectToAction("Index");
@@ -58,19 +57,19 @@ namespace DBWT.Controllers
             if (categoryid == 0 && !available && !vegetarian && !vegan)
             {
                 //Hole alle Produkte (Schnellere SQL Abfrage)
-                ProduktListe = new Gericht().GetProdukte();
+                ProduktListe = Service.GetGerichte();
             }
             else
             {
                 //Hole die gefilterten Gerichte
-                ProduktListe = new Gericht().GetProdukteWithFilter(categoryid, available, vegetarian, vegan);
+                ProduktListe = Service.GetProdukteWithFilter(categoryid, available, vegetarian, vegan);
             }
 
             return View(ProduktListe);
         } //End of ActionResult Index
         public ActionResult Zutaten()
         {
-            List<Zutat> Zutatenliste = new Zutat().GetZutaten();
+            List<Zutat> Zutatenliste = Service.GetZutaten();
             return View(Zutatenliste);
         } //End of ActionResult Zutaten
     } //End of MensaController
