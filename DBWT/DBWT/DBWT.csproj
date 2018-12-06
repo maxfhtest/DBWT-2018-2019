@@ -136,6 +136,7 @@
     <Compile Include="Models\Kategorie.cs" />
     <Compile Include="Models\Gericht.cs" />
     <Compile Include="Models\PasswordStorage.cs" />
+    <Compile Include="Models\Service.cs" />
     <Compile Include="Models\Zutat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -164,6 +165,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Service\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

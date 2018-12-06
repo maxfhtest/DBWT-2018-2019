@@ -25,6 +25,7 @@ namespace DBWT.Controllers
             if (!String.IsNullOrEmpty(Session["user"] as String)){
                 return RedirectToAction("Login");
             }
+            // TODO: fetch form
             return View();
         }
         public ActionResult Login()
