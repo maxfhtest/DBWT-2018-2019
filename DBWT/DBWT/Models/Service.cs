@@ -18,15 +18,15 @@ namespace DBWT.Models
             Connection.Open();
         }
 
-        public static void CreateStudent()
+        public static void CreateStudent(User u)
         {
         }
 
-        public static void CreateEmployee()
+        public static void CreateEmployee(User u)
         {
         }
 
-        public static void CreateGuest()
+        public static void CreateGuest(User u)
         {
         }
 
