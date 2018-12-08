@@ -1,14 +1,14 @@
 # DBWT-2018-2019
 Semester Project
 
-# Example of the Views
+# View Outputs
 ## Product View
 | id | description                   | name       | stock | available | category_id | VGT | VGN | HEX(blob_data) | alttext             | title                | guest | student | employee |
 |----|-------------------------------|------------|-------|-----------|-------------|-----|-----|----------------|---------------------|----------------------|-------|---------|----------|
 | 1  | Ein leckerer Wok              | Curry Wok  | 12    | 1         | 6           | 0   | 0   | 0x123456ABCDEF | wokbildtext         | wokbildtitle         | 9,95  | 1,95    | 51,95    |
 | 2  | Paniertes Glück               | Schnitzel  | 14    | 1         | 7           | 0   | 0   | 0x123456ABCDEF | schnitzelbildtext   | schnitzelbildtitle   | 10,95 | 2,95    | 52,95    |
 | 3  | Aus Holland                   | Bratrolle  | 0     | 0         | 10          | 0   | 0   | 0x123456ABCDEF | bratrollbildetext   | bratrollebildtitle   | 11,95 | 3,95    | 53,95    |
-| 4  | Fuer Doener                   | Krautsalat | 0     | 0         | 4           | 1   | 1   | 0x123456ABCDEF | krautsalatbildtext  | krautsalatbildtitle  | 12,95 | 4,95    | 54,95    |
+| 4  | Für  Döner                   | Krautsalat | 0     | 0         | 4           | 1   | 1   | 0x123456ABCDEF | krautsalatbildtext  | krautsalatbildtitle  | 12,95 | 4,95    | 54,95    |
 | 5  | Die gesunde Alternative       | Falafel    | 2     | 1         | 12          | 1   | 1   | 0x123456ABCDEF | falafelbildtext     | falafelbildtitlte    | 13,95 | 5,95    | 55,95    |
 | 6  | Baustellenklassiker           | Currywurst | 5     | 1         | 7           | 0   | 0   | 0x123456ABCDEF | currywurstbildtext  | currywurstbildtitle  | 14,95 | 6,95    | 56,95    |
 | 7  | Wie für den Schweizer gemacht | Käsestulle | 7     | 1         | 13          | 1   | 0   | 0x123456ABCDEF | kaesestullebildtext | kaesestullebildtitle | 15,99 | 7,95    | 57,95    |
