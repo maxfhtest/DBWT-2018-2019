@@ -5,6 +5,8 @@ using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using DBWT.Models;
+using System.Security.Cryptography;
 
 namespace DBWT.Controllers
 {
@@ -22,10 +24,47 @@ namespace DBWT.Controllers
         }
         public ActionResult Register()
         {
-            if (!String.IsNullOrEmpty(Session["user"] as String)){
+            if (!String.IsNullOrEmpty(Session["user"] as String))
+            {
                 return RedirectToAction("Login");
             }
-            // TODO: fetch form
+            if (Request.HttpMethod == "GET")
+            {
+                return View();
+            }
+            User u = new User();
+            u.Firstname = Request.Params.Get("first_name");
+            u.Lastname = Request.Params.Get("last_name");
+            u.Loginname = Request.Params.Get("display_name");
+            u.Mail = Request.Params.Get("email");
+            u.Reason = Request.Params.Get("reason");
+            u.Birthday = Request.Params.Get("birthday");
+            u.Matric_no = Request.Params.Get("matric_no");
+            u.Course = Request.Params.Get("course");
+            u.Building = Request.Params.Get("building");
+            u.Office = Request.Params.Get("office");
+            u.Telephone = Request.Params.Get("phone_number");
+            
+            string pwd = Request.Params.Get("password");
+            byte[] saltBytes = new byte[24];
+            var key = PasswordSecurity.PasswordStorage.CreateHash(pwd).Split(':');
+
+            u.Hash = key[key.Length - 1];
+            u.Salt = key[key.Length - 2];
+
+            String role = Request["role"];
+            if (role == "guest")
+            {
+               Service.CreateGuest(u);
+            }
+            if (role == "student")
+            {
+                Service.CreateStudent(u);
+            }
+            if (role == "employee")
+            {
+                Service.CreateEmployee(u);
+            }
             return View();
         }
         public ActionResult Login()

@@ -20,15 +20,6 @@
                 </div>
             </div>
             <div class="row">
-                <div class="form-group col-md-10">
-                    <select class="form-control form-control-lg" name="role">
-                        <option value="guest">Gast</option>
-                        <option value="student">Student</option>
-                        <option value="employee">Mitarbeiter</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row">
                 <div class="form-group col-md-10 offset-md-0">
                     <input type="text" name="display_name" id="display_name" class="form-control input-lg" placeholder="Display Name" tabindex="3" required>
                 </div>
@@ -36,6 +27,67 @@
                     <input type="email" name="email" id="email" class="form-control input-lg" placeholder="Email Address" tabindex="4" data-error="Bruh, that email address is invalid" required>
                 </div>
             </div>
+            <div class="row">
+                <div class="form-group col-md-10">
+                    <select class="form-control form-control-lg" name="role" id="role">
+                        <option value="guest">Gast</option>
+                        <option value="student">Student</option>
+                        <option value="employee">Mitarbeiter</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" id="guest-data">
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <input type="text" name="reason" id="reason" class="form-control input-lg" placeholder="Reason" tabindex="6" data-error="Give me a reason babe">
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="student-data">
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <input type="date" name="birthday" id="birthday" class="form-control input-lg" placeholder="Birthday" tabindex="5" min="1900-01-01" max="@DateTime.Today.ToString("yyyy-MM-dd")">
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <input type="text" name="matric_no" id="matric_no" class="form-control input-lg" placeholder="Matriculation number" tabindex="6" min="10000000" max="999999999" data-error="Hey Guy, i need 8 or 9 numbers">
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label for="course">Course</label>
+                        <select class="form-control custom-select" name="course" id="course">
+                            <option value="INF">Informatik</option>
+                            <option value="ET">Elektrotechnik</option>
+                            <option value="ISE">IT Systems Engineering</option>
+                            <option value="MCD">Media & Communication for Digital Business</option>
+                            <option value="WI">Wirtschaftsinformatik</option>
+                        </select>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="employee-data">
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="building" id="building" placeholder="Building" />
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="office" id="office" placeholder="Room number" min="100" max="999" />
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <input class="form-control" type="tel" name="phone_number" id="phone_number" placeholder="Telephone number" />
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-md-5">
                     <div class="form-group">
@@ -59,3 +111,33 @@
     <div class="col-md-3">
     </div>
 </div>
+
+<script>
+    $(function () {
+       let role = $("#role");
+        let employee = $("#employee-data");
+        let student = $("#student-data");
+        let guest = $("#guest-data");
+        function select() {
+            switch (role.val()) {
+                case "guest":
+                    guest.show();
+                    employee.hide();
+                    student.hide();
+                    break;
+                case "employee":
+                    guest.hide();
+                    employee.show();
+                    student.hide();
+                    break;
+                case "student":
+                    guest.hide();
+                    employee.hide();
+                    student.show();
+                    break;
+            }
+        }
+        role.change(select);
+        select();
+    });
+</script>

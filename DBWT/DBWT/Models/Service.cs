@@ -20,14 +20,53 @@ namespace DBWT.Models
 
         public static void CreateStudent(User u)
         {
+            
         }
 
         public static void CreateEmployee(User u)
         {
         }
 
-        public static void CreateGuest(User u)
+        public static bool CreateGuest(User u)
         {
+            var transaction = Service.Connection.BeginTransaction();
+            try
+            {
+                var query = "INSERT INTO `meilenstein2`.`users` (`firstname`, `lastname`, `loginname`, `salt`, `hash`, `mail`) VALUES ('@firstname', '@lastname', '@username', '@salt', '@hash', '@mail')";
+                var command = new MySqlCommand(query, Service.Connection);
+                command.Transaction = transaction;
+                command.Parameters.AddWithValue("username", u.Loginname);
+                command.Parameters.AddWithValue("firstname", u.Firstname);
+                command.Parameters.AddWithValue("lastname", u.Lastname);
+                command.Parameters.AddWithValue("@mail", u.Mail);
+                command.Parameters.AddWithValue("hash", u.Hash);
+                command.Parameters.AddWithValue("salt", u.Salt);
+  
+                //  command.Parameters.AddWithValue("birthday", u.Birthday.ToString("yyyy-MM-dd"));
+                command.ExecuteNonQuery();
+
+                command.CommandText = "SELECT LAST_INSERT_ID() AS id";
+                using (var r = command.ExecuteReader())
+                {
+                    if (r.Read())
+                    {
+                        u.ID = Convert.ToInt32(r["id"]);
+                    }
+                }
+
+                // command.CommandText = "INSERT INTO `meilenstein2`.`guests` (`id`, `reason`) VALUES (SELECT LAST_INSERT_ID(), @reason)";
+                command.CommandText = "INSERT INTO `meilenstein2`.`guests` (`id`, `reason`) VALUES (@id, @reason)";
+                command.Parameters.AddWithValue("id", u.ID);
+                command.Parameters.AddWithValue("reason", u.Reason);
+                command.ExecuteNonQuery();
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+                return false;
+            }
+            return true;
         }
 
         public static List<Gericht> GetGerichte()
@@ -136,7 +175,7 @@ namespace DBWT.Models
             }
             catch (Exception e)
             {
-
+                Console.WriteLine(e.Message);
             }
 
             try
@@ -160,7 +199,7 @@ namespace DBWT.Models
             }
             catch (Exception e)
             {
-
+                Console.WriteLine(e.Message);
             }
             return G;
         }

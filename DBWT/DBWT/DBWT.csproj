@@ -137,6 +137,7 @@
     <Compile Include="Models\Gericht.cs" />
     <Compile Include="Models\PasswordStorage.cs" />
     <Compile Include="Models\Service.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Models\Zutat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
