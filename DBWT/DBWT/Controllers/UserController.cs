@@ -28,10 +28,12 @@ namespace DBWT.Controllers
             {
                 return RedirectToAction("Login");
             }
+
             if (Request.HttpMethod == "GET")
             {
                 return View();
             }
+
             User u = new User();
             u.Firstname = Request.Params.Get("first_name");
             u.Lastname = Request.Params.Get("last_name");
@@ -57,14 +59,17 @@ namespace DBWT.Controllers
             {
                 Service.CreateGuest(u);
             }
+
             if (role == "student")
             {
                 Service.CreateStudent(u);
             }
+
             if (role == "employee")
             {
                 Service.CreateEmployee(u);
             }
+
             return View();
         }
         public ActionResult Login()
@@ -139,6 +144,7 @@ namespace DBWT.Controllers
                         AccessDenied = true;
                     }
 
+                    //Only Allow Active Users to Log In
                     if (active == 0 && LoginSuccess)
                     {
                         Session["user"] = "";
@@ -147,7 +153,6 @@ namespace DBWT.Controllers
                         LoginSuccess = false;
                     }
                 } //End of if(ParamsGiven)
-
             } //End of Initial Session Else-Case
             ViewBag.LoginSuccess = LoginSuccess;
             ViewBag.AccessDenied = AccessDenied;
