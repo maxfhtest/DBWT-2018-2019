@@ -20,7 +20,7 @@ namespace DBWT.Models
 
         public static void CreateStudent(User u)
         {
-            
+
         }
 
         public static void CreateEmployee(User u)
@@ -41,7 +41,7 @@ namespace DBWT.Models
                 command.Parameters.AddWithValue("@mail", u.Mail);
                 command.Parameters.AddWithValue("hash", u.Hash);
                 command.Parameters.AddWithValue("salt", u.Salt);
-  
+
                 //  command.Parameters.AddWithValue("birthday", u.Birthday.ToString("yyyy-MM-dd"));
                 command.ExecuteNonQuery();
 
@@ -309,7 +309,6 @@ namespace DBWT.Models
             }
             return AlleKategorien;
         }
-
         public static Kategorie GetKategorieByID(int id)
         {
             // build custom query
@@ -331,7 +330,6 @@ namespace DBWT.Models
             }
             return myCategory;
         }
-
         public static List<string> GetUpperKategorien(List<Kategorie> AlleKategorien)
         {
             List<string> Überkategorien = new List<string>();
@@ -344,7 +342,6 @@ namespace DBWT.Models
             }
             return Überkategorien;
         }
-
         public static List<Zutat> GetZutaten()
         {
             List<Zutat> AlleZutaten = new List<Zutat>();
@@ -387,5 +384,5 @@ namespace DBWT.Models
             }
             return AlleZutaten;
         }
-    }
-}
+    } //End of Class "Service"
+} //End of Namespace

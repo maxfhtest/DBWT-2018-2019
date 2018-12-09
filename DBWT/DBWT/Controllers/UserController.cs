@@ -44,7 +44,7 @@ namespace DBWT.Controllers
             u.Building = Request.Params.Get("building");
             u.Office = Request.Params.Get("office");
             u.Telephone = Request.Params.Get("phone_number");
-            
+
             string pwd = Request.Params.Get("password");
             byte[] saltBytes = new byte[24];
             var key = PasswordSecurity.PasswordStorage.CreateHash(pwd).Split(':');
@@ -55,7 +55,7 @@ namespace DBWT.Controllers
             String role = Request["role"];
             if (role == "guest")
             {
-               Service.CreateGuest(u);
+                Service.CreateGuest(u);
             }
             if (role == "student")
             {
@@ -72,96 +72,82 @@ namespace DBWT.Controllers
             bool LoginSuccess = false;
             bool AccessDenied = false;
 
-            //Initial Session
-            if (Session["user"] == null || Session["role"] == null)
+            if (String.IsNullOrEmpty(Session["user"] as String))
             {
-                Session["user"] = "";
-                Session["role"] = "";
-            }
-            else
-            {
-                if (String.IsNullOrEmpty(Session["user"].ToString()))
+                Boolean ParamsGiven = false;
+                if (Request["pass"] != "" && Request["pass"] != null || Request["user"] != "" && Request["user"] != null)
                 {
+                    ParamsGiven = true;
+                }
 
+                //Avoid Logging Out if Visiting this View again
+                if (ParamsGiven)
+                {
+                    String PW = "";
+                    String User = "";
 
-                    Boolean ParamsGiven = false;
-                    if (Request["pass"] != "" && Request["pass"] != null || Request["user"] != "" && Request["user"] != null)
+                    PW = Request["pass"];
+                    User = Request["user"];
+
+                    string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
+                    MySqlConnection con = new MySqlConnection(conString);
+                    string GoodHash = "";
+                    String Role = "";
+                    int active = 0;
+                    try
                     {
-                        ParamsGiven = true;
+                        //HASH_ALGORITHM_INDEX      = 0 = "sha1"
+                        //ITERATION_INDEX           = 1 = 64000 (laut Folien)
+                        //HASH_SIZE_INDEX           = 2 = 18 (laut Folien)
+                        //SALT_INDEX                = 3 =
+                        //PBKDF2_INDEX              = 4 = SALT
+                        //HASH_SECTIONS             = 5 = HASH
+                        con.Open();
+                        MySqlCommand cmd;
+                        cmd = con.CreateCommand();
+                        cmd.CommandText = "SELECT * FROM `extended user view` where loginname = '" + User + "'";
+
+                        MySqlDataReader r = cmd.ExecuteReader();
+                        if (r.Read()) //für jede id in der Tabelle incredients
+                        {
+                            Role = r["Rolle"].ToString();
+                            GoodHash = "sha1:64000:18:" + r["salt"].ToString() + ":" + r["hash"].ToString();
+                            active = Convert.ToInt32(r["active"]);
+                        }
+                        r.Close();
+                        con.Close();
+                    }
+                    catch
+                    {
+                        con.Close();
                     }
 
-                    //Avoid Logging Out if Visiting this View again
-                    if (ParamsGiven)
+                    if (GoodHash != "")
                     {
-                        String PW = "";
-                        String User = "";
+                        LoginSuccess = PasswordSecurity.PasswordStorage.VerifyPassword(PW, GoodHash);
+                    }
 
-                        PW = Request["pass"];
-                        User = Request["user"];
+                    if (LoginSuccess)
+                    {
+                        Session["user"] = User;
+                        Session["role"] = Role;
+                    }
+                    else
+                    {
+                        Session["user"] = "";
+                        Session["role"] = "";
+                        AccessDenied = true;
+                    }
 
-                        string conString = ConfigurationManager.ConnectionStrings["dbConStr"].ConnectionString;
-                        MySqlConnection con = new MySqlConnection(conString);
-                        string GoodHash = "";
-                        String Role = "";
-                        int active = 0;
-                        try
-                        {
-                            //HASH_ALGORITHM_INDEX      = 0 = "sha1"
-                            //ITERATION_INDEX           = 1 = 64000 (laut Folien)
-                            //HASH_SIZE_INDEX           = 2 = 18 (laut Folien)
-                            //SALT_INDEX                = 3 =
-                            //PBKDF2_INDEX              = 4 = SALT
-                            //HASH_SECTIONS             = 5 = HASH
-                            con.Open();
-                            MySqlCommand cmd;
-                            cmd = con.CreateCommand();
-                            cmd.CommandText = "SELECT * FROM `extended user view` where loginname = '" + User + "'";
+                    if (active == 0 && LoginSuccess)
+                    {
+                        Session["user"] = "";
+                        Session["role"] = "";
+                        AccessDenied = true;
+                        LoginSuccess = false;
+                    }
+                } //End of if(ParamsGiven)
 
-                            MySqlDataReader r = cmd.ExecuteReader();
-                            if (r.Read()) //für jede id in der Tabelle incredients
-                            {
-                                Role = r["Rolle"].ToString();
-                                GoodHash = "sha1:64000:18:" + r["salt"].ToString() + ":" + r["hash"].ToString();
-                                active = Convert.ToInt32(r["active"]);
-                            }
-                            r.Close();
-                            con.Close();
-                        }
-                        catch
-                        {
-                            con.Close();
-                        }
-
-                        if (GoodHash != "")
-                        {
-                            LoginSuccess = PasswordSecurity.PasswordStorage.VerifyPassword(PW, GoodHash);
-                        }
-
-                        if (LoginSuccess)
-                        {
-                            Session["user"] = User;
-                            Session["role"] = Role;
-                        }
-                        else
-                        {
-                            Session["user"] = "";
-                            Session["role"] = "";
-                            AccessDenied = true;
-                        }
-                        
-                        if(active == 0 && LoginSuccess)
-                        {
-                            Session["user"] = "";
-                            Session["role"] = "";
-                            AccessDenied = true;
-                            LoginSuccess = false;
-                        }
-                    } //End of if(ParamsGiven)
-                }
-                else //If Session was already set
-                {
-                    LoginSuccess = true; //User was already signed in
-                }
             } //End of Initial Session Else-Case
             ViewBag.LoginSuccess = LoginSuccess;
             ViewBag.AccessDenied = AccessDenied;

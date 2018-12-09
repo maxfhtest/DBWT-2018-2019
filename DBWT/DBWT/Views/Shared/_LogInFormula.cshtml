@@ -1,0 +1,33 @@
+﻿<div class="col-3">
+    <form method="post" action="/User/Login">
+        <fieldset>
+            <legend>Login</legend>
+            @{
+                if (ViewBag.AccessDenied == true)
+                {
+                    <div class="form-group">
+                        <label for="login_name" class="text-black">Benutzer:</label><br>
+                        <input type="text" name="user" id="login_name" class="form-control input-lg is-invalid" placeholder="Benutzer">
+                    </div>
+                    <div class="form-group">
+                        <label for="pass">Passwort</label>
+                        <input type="password" class="form-control input-lg is-invalid" name="pass" id="password" placeholder="*******">
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group">
+                        <label for="login_name" class="text-black">Benutzer:</label><br>
+                        <input type="text" name="user" id="login_name" class="form-control" placeholder="Benutzer">
+                    </div>
+                    <div class="form-group">
+                        <label for="pass">Passwort</label>
+                        <input type="password" class="form-control" name="pass" id="password" placeholder="*******">
+                    </div>
+                }
+            }
+            <input class="btn btn-outline-success btn-center" type="submit" value="Anmelden"><br />
+        </fieldset>
+    </form>
+    <p>Melden Sie sich jetzt an, um die wirklich viel günstigeren Preise für Mitarbeiter oder Studenten zu sehen.</p>
+</div>
